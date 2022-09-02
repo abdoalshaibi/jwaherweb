@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Rap2hpoutre\FastExcel\FastExcel;
 use App\Model\Cart;
+use function App\CPU\translate;
 
 class ProductController extends Controller
 {
@@ -73,25 +74,31 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'category_id' => 'required',
-            'brand_id' => 'required',
-            'unit' => 'required',
-            'images' => 'required',
-            'image' => 'required',
-            'tax' => 'required|min:0',
-            'unit_price' => 'required|numeric|min:1',
-            'purchase_price' => 'required|numeric|min:1',
-            'discount' => 'required|gt:-1',
-            'shipping_cost' => 'required|gt:-1',
-            
+            'name'              => 'required',
+            'category_id'       => 'required',
+            'brand_id'          => 'required',
+            'unit'              => 'required',
+            'images'            => 'required',
+            'image'             => 'required',
+            'tax'               => 'required|min:0',
+            'unit_price'        => 'required|numeric|min:1',
+            'purchase_price'    => 'required|numeric|min:1',
+            'discount'          => 'required|gt:-1',
+            'shipping_cost'     => 'required|gt:-1',
+            'code'              => 'required|numeric|min:1|digits_between:6,20|unique:products',
+            'minimum_order_qty' => 'required|numeric|min:1',
+
         ], [
-            'name.required' => 'Product name is required!',
-            'category_id.required' => 'category  is required!',
-            'images.required' => 'Product images is required!',
-            'image.required' => 'Product thumbnail is required!',
-            'brand_id.required' => 'brand  is required!',
-            'unit.required' => 'Unit  is required!',
+            'name.required'         => 'Product name is required!',
+            'category_id.required'  => 'category  is required!',
+            'images.required'       => 'Product images is required!',
+            'image.required'        => 'Product thumbnail is required!',
+            'brand_id.required'     => 'brand  is required!',
+            'unit.required'         => 'Unit  is required!',
+            'code.min'              => 'The code must be positive!',
+            'code.digits_between'   => 'The code must be minimum 6 digits!',
+            'minimum_order_qty.required' => 'The minimum order quantity is required!',
+            'minimum_order_qty.min' => 'The minimum order quantity must be positive!',
         ]);
 
         if ($request['discount_type'] == 'percent') {
@@ -104,6 +111,14 @@ class ProductController extends Controller
             $validator->after(function ($validator) {
                 $validator->errors()->add(
                     'unit_price', 'Discount can not be more or equal to the price!'
+                );
+            });
+        }
+
+        if (is_null($request->name[array_search('en', $request->lang)])) {
+            $validator->after(function ($validator) {
+                $validator->errors()->add(
+                    'name', 'Name field is required!'
                 );
             });
         }
@@ -138,6 +153,8 @@ class ProductController extends Controller
         $product->category_ids = json_encode($category);
         $product->brand_id = $request->brand_id;
         $product->unit = $request->unit;
+        $product->code = $request->code;
+        $product->minimum_order_qty = $request->minimum_order_qty;
         $product->details = $request->description[array_search('en', $request->lang)];
 
         if ($request->has('colors_active') && $request->has('colors') && count($request->colors) > 0) {
@@ -215,7 +232,6 @@ class ProductController extends Controller
         $product->discount_type = $request->discount_type;
         $product->attributes = json_encode($request->choice_attributes);
         $product->current_stock = abs($stock_count);
-
         $product->video_provider = 'youtube';
         $product->video_url = $request->video_link;
         $product->request_status = Helpers::get_business_settings('new_product_approval')==1?0:1;
@@ -424,21 +440,28 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
+        $product = Product::find($id);
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'category_id' => 'required',
-            'brand_id' => 'required',
-            'unit' => 'required',
-            'tax' => 'required|min:0',
-            'unit_price' => 'required|numeric|min:1',
-            'purchase_price' => 'required|numeric|min:1',
-            'discount' => 'required|gt:-1',
-            'shipping_cost' => 'required|gt:-1',
+            'name'              => 'required',
+            'category_id'       => 'required',
+            'brand_id'          => 'required',
+            'unit'              => 'required',
+            'tax'               => 'required|min:0',
+            'unit_price'        => 'required|numeric|min:1',
+            'purchase_price'    => 'required|numeric|min:1',
+            'discount'          => 'required|gt:-1',
+            'shipping_cost'     => 'required|gt:-1',
+            'code'              => 'required|numeric|min:1|digits_between:6,20|unique:products,code,'.$product->id,
+            'minimum_order_qty' => 'required|numeric|min:1',
         ], [
-            'name.required' => 'Product name is required!',
-            'category_id.required' => 'category  is required!',
-            'brand_id.required' => 'brand  is required!',
-            'unit.required' => 'Unit  is required!',
+            'name.required'                 => 'Product name is required!',
+            'category_id.required'          => 'category  is required!',
+            'brand_id.required'             => 'brand  is required!',
+            'unit.required'                 => 'Unit  is required!',
+            'code.min'                      => 'The code must be positive!',
+            'code.digits_between'           => 'The code must be minimum 6 digits!',
+            'minimum_order_qty.required'    => 'The minimum order quantity is required!',
+            'minimum_order_qty.min'         => 'The minimum order quantity must be positive!',
         ]);
 
         if ($request['discount_type'] == 'percent') {
@@ -453,7 +476,15 @@ class ProductController extends Controller
             });
         }
 
-        $product = Product::find($id);
+        if (is_null($request->name[array_search('en', $request->lang)])) {
+            $validator->after(function ($validator) {
+                $validator->errors()->add(
+                    'name', 'Name field is required!'
+                );
+            });
+        }
+
+
         $product->name = $request->name[array_search('en', $request->lang)];
 
         $category = [];
@@ -551,6 +582,8 @@ class ProductController extends Controller
         $product->unit_price = Convert::usd($request->unit_price);
         $product->purchase_price = Convert::usd($request->purchase_price);
         $product->tax = $request->tax;
+        $product->code = $request->code;
+        $product->minimum_order_qty = $request->minimum_order_qty;
         $product->tax_type = $request->tax_type;
         $product->discount = $request->discount_type == 'flat' ? Convert::usd($request->discount) : $request->discount;
         $product->attributes = json_encode($request->choice_attributes);
@@ -558,12 +591,12 @@ class ProductController extends Controller
         $product->current_stock = abs($stock_count);
         $product->shipping_cost = Helpers::get_business_settings('product_wise_shipping_cost_approval')==1?$product->shipping_cost:Convert::usd($request->shipping_cost);
         $product->multiply_qty = $request->multiplyQTY=='on'?1:0;
-        
+
         if(Helpers::get_business_settings('product_wise_shipping_cost_approval')==1 && $product->shipping_cost != Convert::usd($request->shipping_cost))
         {
             $product->temp_shipping_cost = Convert::usd($request->shipping_cost);
             $product->is_shipping_cost_updated = 0;
-            
+
         }
 
         $product->video_provider = 'youtube';
@@ -762,4 +795,16 @@ class ProductController extends Controller
         }
         return (new FastExcel($storage))->download('products.xlsx');
     }
+
+    public function barcode(Request $request, $id)
+    {
+        if ($request->limit > 270) {
+            Toastr::warning(translate('You can not generate more than 270 barcode'));
+             return back();
+        }
+        $product = Product::findOrFail($id);
+        $limit =  $request->limit ?? 4;
+        return view('seller-views.product.barcode', compact('product', 'limit'));
+    }
+
 }

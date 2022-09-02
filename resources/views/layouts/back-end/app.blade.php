@@ -86,10 +86,10 @@
                 height: 250px;
                 padding-bottom: 10px;
             }
-            
+
         }
 
-        
+
 
         .deco-none {
             color: inherit;
@@ -164,9 +164,9 @@
             .view-web-site-info {
                 display: none;
             }
-        
+
         }
-        
+
 
     </style>
     <script
@@ -386,19 +386,21 @@
     }
 </script>
 <script>
-    setInterval(function () {
-        $.get({
-            url: '{{route('admin.get-order-data')}}',
-            dataType: 'json',
-            success: function (response) {
-                let data = response.data;
-                if (data.new_order > 0) {
-                    playAudio();
-                    $('#popup-modal').appendTo("body").modal('show');
-                }
-            },
-        });
-    }, 10000);
+    @if(\App\CPU\Helpers::module_permission_check('order_management'))
+        setInterval(function () {
+            $.get({
+                url: '{{route('admin.get-order-data')}}',
+                dataType: 'json',
+                success: function (response) {
+                    let data = response.data;
+                    if (data.new_order > 0) {
+                        playAudio();
+                        $('#popup-modal').appendTo("body").modal('show');
+                    }
+                },
+            });
+        }, 10000);
+    @endif
 
     function check_order() {
         location.href = '{{route('admin.orders.list',['status'=>'all'])}}';
@@ -480,7 +482,12 @@
 </script>
 
 <script>
-    
+
+</script>
+<script>
+    function getRndInteger() {
+        return Math.floor(Math.random() * 90000) + 100000;
+    }
 </script>
 </body>
 </html>

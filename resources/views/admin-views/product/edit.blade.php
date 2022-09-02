@@ -78,7 +78,7 @@
                                         <label class="input-label">{{\App\CPU\translate('description')}}
                                             ({{strtoupper($lang)}})</label>
                                         <textarea name="description[]" style="display:none" class="textarea"
-                                                  required>{!! $translate[$lang]['description']??$product['details'] !!}</textarea>
+                                                  >{!! $translate[$lang]['description']??$product['details'] !!}</textarea>
                                     </div>
                                 </div>
                             @endforeach
@@ -131,7 +131,20 @@
 
                             <div class="form-group">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="input-label"
+                                                for="exampleFormControlInput1">{{ \App\CPU\translate('product_code_sku') }}
+                                                <span class="text-danger">*</span>
+                                                <a class="style-one-pro" style="cursor: pointer;"
+                                                    onclick="document.getElementById('generate_number').value = getRndInteger()">{{ \App\CPU\translate('generate') }}
+                                                    {{ \App\CPU\translate('code') }}</a></label>
+                                            <input type="text" id="generate_number" name="code"
+                                                class="form-control"  value="{{ $product->code  }}" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
                                         <label for="name">{{\App\CPU\translate('Brand')}}</label>
                                         <select
                                             class="js-example-basic-multiple js-states js-example-responsive form-control"
@@ -144,7 +157,7 @@
                                         </select>
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <label for="name">{{\App\CPU\translate('Unit')}}</label>
                                         <select
                                             class="js-example-basic-multiple js-states js-example-responsive form-control"
@@ -244,8 +257,7 @@
                                                name="purchase_price" class="form-control"
                                                value={{ \App\CPU\Convert::default($product->purchase_price) }} required>
                                     </div>
-
-                                    <div class="col-md-5">
+                                    <div class="col-md-4 mt-2">
                                         <label class="control-label">{{\App\CPU\translate('Tax')}}</label>
                                         <label class="badge badge-info">{{\App\CPU\translate('Percent')}} ( % )</label>
                                         <input type="number" min="0" value={{ $product->tax }} step="0.01"
@@ -254,14 +266,14 @@
                                         <input name="tax_type" value="percent" style="display: none">
                                     </div>
 
-                                    <div class="col-md-5">
+                                    <div class="col-md-4 mt-2">
                                         <label class="control-label">{{\App\CPU\translate('Discount')}}</label>
                                         <input type="number" min="0"
                                                value={{ $product->discount_type=='flat'?\App\CPU\Convert::default($product->discount): $product->discount}} step="0.01"
                                                placeholder="{{\App\CPU\translate('Discount') }}" name="discount"
                                                class="form-control" required>
                                     </div>
-                                    <div class="col-md-2" style="padding-top: 30px;">
+                                    <div class="col-md-4 mt-6">
                                         <select
                                             style="width: 100%"
                                             class="js-example-basic-multiple js-states js-example-responsive demo-select2"
@@ -276,25 +288,31 @@
                                     <div class="col-12 pt-4 sku_combination" id="sku_combination">
                                         @include('admin-views.product.partials._edit_sku_combinations',['combinations'=>json_decode($product['variation'],true)])
                                     </div>
-                                    <div class="col-sm-6 col-md-6 col-lg-4" id="quantity">
+                                    <div class="col-md-3" id="quantity">
                                         <label
                                             class="control-label">{{\App\CPU\translate('total')}} {{\App\CPU\translate('Quantity')}}</label>
                                         <input type="number" min="0" value={{ $product->current_stock }} step="1"
                                                placeholder="{{\App\CPU\translate('Quantity') }}"
                                                name="current_stock" class="form-control" required>
                                     </div>
-                                    <div class="col-sm-6 col-md-6 col-lg-4" id="shipping_cost">
+                                    <div class="col-md-3" id="minimum_order_qty">
+                                        <label class="control-label">{{\App\CPU\translate('minimum_order_quantity')}}</label>
+                                        <input type="number" min="1" value={{ $product->minimum_order_qty }} step="1"
+                                               placeholder="{{\App\CPU\translate('minimum_order_quantity') }}"
+                                               name="minimum_order_qty" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-3" id="shipping_cost">
                                         <label
                                             class="control-label">{{\App\CPU\translate('shipping_cost')}} </label>
                                         <input type="number" min="0" value="{{\App\CPU\Convert::default($product->shipping_cost)}}" step="1"
                                                placeholder="{{\App\CPU\translate('shipping_cost')}}"
                                                name="shipping_cost" class="form-control" required>
                                     </div>
-                                    <div class="col-md-6 col-lg-4 mt-sm-1" id="shipping_cost_multy">
+                                    <div class="col-md-3" id="shipping_cost_multy">
                                         <div>
                                             <label
                                             class="control-label">{{\App\CPU\translate('shipping_cost_multiply_with_quantity')}} </label>
-                                        
+
                                         </div>
                                         <div>
                                             <label class="switch">

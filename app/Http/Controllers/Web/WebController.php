@@ -79,7 +79,7 @@ class WebController extends Controller
 
         $latest_products = Product::with(['reviews'])->active()->orderBy('id', 'desc')->take(8)->get();
         $categories = Category::where('position', 0)->priority()->take(11)->get();
-        $brands = Brand::take(15)->get();
+        $brands = Brand::active()->take(15)->get();
         //best sell product
         $bestSellProduct = OrderDetail::with('product.reviews')
             ->whereHas('product', function ($query) {
@@ -109,14 +109,20 @@ class WebController extends Controller
             $topRated = $bestSellProduct;
         }
 
-        $deal_of_the_day = DealOfTheDay::join('products', 'products.id', '=', 'deal_of_the_days.product_id')->select('deal_of_the_days.*', 'products.unit_price')->where('deal_of_the_days.status', 1)->first();
+        $deal_of_the_day = DealOfTheDay::join('products', 'products.id', '=', 'deal_of_the_days.product_id')->select('deal_of_the_days.*', 'products.unit_price')->where('products.status', 1)->where('deal_of_the_days.status', 1)->first();
 
         return view('web-views.home', compact('featured_products', 'topRated', 'bestSellProduct', 'latest_products', 'categories', 'brands', 'deal_of_the_day', 'top_sellers', 'home_categories'));
     }
 
     public function flash_deals($id)
     {
-        $deal = FlashDeal::with(['products.product.reviews'])->where(['id' => $id, 'status' => 1])->whereDate('start_date', '<=', date('Y-m-d'))->whereDate('end_date', '>=', date('Y-m-d'))->first();
+        $deal = FlashDeal::with(['products.product.reviews', 'products.product' => function($query){
+                $query->active();
+            }])
+            ->where(['id' => $id, 'status' => 1])
+            ->whereDate('start_date', '<=', date('Y-m-d'))
+            ->whereDate('end_date', '>=', date('Y-m-d'))
+            ->first();
 
         $discountPrice = FlashDealProduct::with(['product'])->whereHas('product', function ($query) {
             $query->active();
@@ -166,7 +172,7 @@ class WebController extends Controller
 
     public function all_brands()
     {
-        $brands = Brand::paginate(24);
+        $brands = Brand::active()->paginate(24);
         return view('web-views.brands', compact('brands'));
     }
 
@@ -231,7 +237,7 @@ class WebController extends Controller
                     $shipping_type = isset($seller_shipping)==true?$seller_shipping->shipping_type:'order_wise';
                 }
             }
-            
+
             if($shipping_type == 'order_wise'){
                 $cart_shipping = CartShipping::where('cart_group_id', $cart->cart_group_id)->first();
                 if (!isset($cart_shipping)) {
@@ -240,7 +246,7 @@ class WebController extends Controller
                 }
             }
         }
-        
+
 
         if (count($cart_group_ids) > 0) {
             return view('web-views.checkout-shipping');
@@ -254,7 +260,7 @@ class WebController extends Controller
     public function checkout_payment()
     {
         $cart_group_ids = CartManager::get_cart_group_ids();
-        
+
         $shippingMethod = Helpers::get_business_settings('shipping_method');
         $carts = Cart::whereIn('cart_group_id', $cart_group_ids)->get();
         foreach($carts as $cart)
@@ -289,7 +295,7 @@ class WebController extends Controller
     }
 
     public function checkout_complete(Request $request)
-    { 
+    {
         $unique_id = OrderManager::gen_unique_id();
         $order_ids = [];
         foreach (CartManager::get_cart_group_ids() as $group_id) {
@@ -306,7 +312,7 @@ class WebController extends Controller
         }
 
         CartManager::cart_clean();
-    
+
 
         return view('web-views.checkout-complete');
     }
@@ -333,7 +339,7 @@ class WebController extends Controller
                 $order_id = OrderManager::generate_order($data);
                 array_push($order_ids, $order_id);
             }
-            
+
             CustomerManager::create_wallet_transaction($user->id, Convert::default($cartTotal), 'order_place','order payment');
             CartManager::cart_clean();
         }
@@ -363,7 +369,14 @@ class WebController extends Controller
     public function seller_shop(Request $request, $id)
     {
         $business_mode=Helpers::get_business_settings('business_mode');
-        
+
+        $active_seller = Seller::approved()->find($id);
+
+        if(($id != 0) && empty($active_seller)) {
+            Toastr::warning(translate('not_found'));
+            return redirect('/');
+        }
+
         if($id!=0 && $business_mode == 'single')
         {
             Toastr::error(translate('access_denied!!'));
@@ -379,7 +392,7 @@ class WebController extends Controller
             })
             ->pluck('id')->toArray();
 
-        
+
         $avg_rating = Review::whereIn('product_id', $product_ids)->avg('rating');
         $total_review = Review::whereIn('product_id', $product_ids)->count();
         if($id == 0){
@@ -388,7 +401,7 @@ class WebController extends Controller
             $seller = Seller::find($id);
             $total_order = $seller->orders->where('seller_is','seller')->where('order_type','default_type')->count();
         }
-        
+
 
         //finding category ids
         $products = Product::whereIn('id', $product_ids)->paginate(12);
@@ -596,11 +609,28 @@ class WebController extends Controller
 
         if ($request['data_from'] == 'search') {
             $key = explode(' ', $request['name']);
-            $query = $porduct_data->where(function ($q) use ($key) {
+            $product_ids = Product::where(function ($q) use ($key) {
                 foreach ($key as $value) {
                     $q->orWhere('name', 'like', "%{$value}%");
                 }
-            });
+            })->pluck('id');
+
+            if($product_ids->count()==0)
+            {
+                $product_ids = Translation::where('translationable_type', 'App\Model\Product')
+                    ->where('key', 'name')
+                    ->where(function ($q) use ($key) {
+                        foreach ($key as $value) {
+                            $q->orWhere('value', 'like', "%{$value}%");
+                        }
+                    })
+                    ->pluck('translationable_id');
+
+
+            }
+
+            $query = $porduct_data->WhereIn('id', $product_ids);
+
         }
 
         if ($request['data_from'] == 'discounted') {
@@ -638,6 +668,7 @@ class WebController extends Controller
         $products = $fetched->paginate(20)->appends($data);
 
         if ($request->ajax()) {
+
             return response()->json([
                 'total_product'=>$products->total(),
                 'view' => view('web-views.products._ajax-products', compact('products'))->render()
@@ -647,7 +678,13 @@ class WebController extends Controller
             $data['brand_name'] = Category::find((int)$request['id'])->name;
         }
         if ($request['data_from'] == 'brand') {
-            $data['brand_name'] = Brand::find((int)$request['id'])->name;
+            $brand_data = Brand::active()->find((int)$request['id']);
+            if($brand_data) {
+                $data['brand_name'] = $brand_data->name;
+            }else {
+                Toastr::warning(translate('not_found'));
+                return redirect('/');
+            }
         }
 
         return view('web-views.products.view', compact('products', 'data'), $data);
@@ -774,7 +811,7 @@ class WebController extends Controller
             $data['brand_name'] = Category::find((int)$request['id'])->name;
         }
         if ($request['data_from'] == 'brand') {
-            $data['brand_name'] = Brand::find((int)$request['id'])->name;
+            $data['brand_name'] = Brand::active()->find((int)$request['id'])->name;
         }
 
         return view('web-views.products.view', compact('products', 'data'), $data);
@@ -783,7 +820,11 @@ class WebController extends Controller
 
     public function viewWishlist()
     {
-        $wishlists = Wishlist::where('customer_id', auth('customer')->id())->get();
+        $wishlists = Wishlist::whereHas('wishlistProduct',function($q){
+            $q->whereHas('brand',function($query){
+                $query->where('status',1);
+            })->where('status',1);
+        })->where('customer_id', auth('customer')->id())->get();
         return view('web-views.users-profile.account-wishlist', compact('wishlists'));
     }
 
@@ -799,7 +840,9 @@ class WebController extends Controller
                     $wishlist->product_id = $request->product_id;
                     $wishlist->save();
 
-                    $countWishlist = Wishlist::where('customer_id', auth('customer')->id())->get();
+                    $countWishlist = Wishlist::whereHas('wishlistProduct',function($q){
+                        $q->where('status',1);
+                    })->where('customer_id', auth('customer')->id())->get();
                     $data = \App\CPU\translate("Product has been added to wishlist");
 
                     $product_count = Wishlist::where(['product_id' => $request->product_id])->count();
@@ -891,7 +934,7 @@ class WebController extends Controller
         //recaptcha validation
         $recaptcha = Helpers::get_business_settings('recaptcha');
         if (isset($recaptcha) && $recaptcha['status'] == 1) {
-            
+
             try {
                 $request->validate([
                     'g-recaptcha-response' => [
@@ -984,14 +1027,14 @@ class WebController extends Controller
             return back();
 
         }
-        
+
     }
     public function review_list_product(Request $request)
     {
-        
+
         $productReviews =Review::where('product_id',$request->product_id)->latest()->paginate(2, ['*'], 'page', $request->offset);
-        
-        
+
+
         return response()->json([
             'productReview'=> view('web-views.partials.product-reviews',compact('productReviews'))->render(),
             'not_empty'=>$productReviews->count()

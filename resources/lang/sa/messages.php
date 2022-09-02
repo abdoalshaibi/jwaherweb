@@ -1962,4 +1962,8 @@
   'customers_settings' => 'Customers settings',
   'generate_sitemap' => 'Generate sitemap',
   'Before delivered you need to make payment status paid!' => 'Before delivered you need to make payment status paid!',
+  'order_settings' => 'Order settings',
+  'Order_list' => 'Order list',
+  'view_website' => 'View website',
+  'refund_management' => 'Refund management',
 );

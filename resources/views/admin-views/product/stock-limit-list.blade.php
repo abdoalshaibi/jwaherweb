@@ -81,6 +81,8 @@
                                     <th>{{\App\CPU\translate('Product Name')}}</th>
                                     <th>{{\App\CPU\translate('purchase_price')}}</th>
                                     <th>{{\App\CPU\translate('selling_price')}}</th>
+                                    {{-- <th>{{\App\CPU\translate('verify_status')}}</th> --}}
+                                    <th>{{\App\CPU\translate('Active')}} {{\App\CPU\translate('status')}}</th>
                                     <th>{{\App\CPU\translate('quantity')}}</th>
                                     <th>{{\App\CPU\translate('orders')}}</th>
                                 </tr>
@@ -100,6 +102,24 @@
                                         <td>
                                             {{\App\CPU\BackEndHelper::set_symbol(\App\CPU\BackEndHelper::usd_to_currency($p['unit_price']))}}
                                         </td>
+                                        {{-- <td>
+                                            @if($p->request_status == 0)
+                                                <label class="badge badge-warning">{{\App\CPU\translate('New Request')}}</label>
+                                            @elseif($p->request_status == 1)
+                                                <label class="badge badge-success">{{\App\CPU\translate('Approved')}}</label>
+                                            @elseif($p->request_status == 2)
+                                                <label class="badge badge-danger">{{\App\CPU\translate('Denied')}}</label>
+                                            @endif
+                                        </td> --}}
+                                        @if($p->request_status != 2 )
+                                        <td>
+                                            <label class="switch">
+                                                <input type="checkbox" class="status"
+                                                       id="{{$p['id']}}" {{$p->status == 1?'checked':''}}>
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </td>
+                                        @endif
                                         <td>
                                             {{$p['current_stock']}}
                                             <button class="btn btn-sm" id="{{ $p->id }}"
@@ -180,5 +200,45 @@
                 $('input[name="current_stock"]').attr("readonly", false);
             }
         }
+    </script>
+     <script>
+        // Call the dataTables jQuery plugin
+        $(document).ready(function () {
+            $('#dataTable').DataTable();
+        });
+
+        $(document).on('change', '.status', function () {
+            var id = $(this).attr("id");
+            if ($(this).prop("checked") == true) {
+                var status = 1;
+            } else if ($(this).prop("checked") == false) {
+                var status = 0;
+            }
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{route('admin.product.status-update')}}",
+                method: 'POST',
+                data: {
+                    id: id,
+                    status: status
+                },
+                success: function (data) {
+                    if(data.success == true) {
+                        toastr.success('{{\App\CPU\translate('Status updated successfully')}}');
+                    }
+                    else if(data.success == false) {
+                        toastr.error('{{\App\CPU\translate('Status updated failed. Product must be approved')}}');
+                        setTimeout(function(){
+                            location.reload();
+                        }, 2000);
+                    }
+                }
+            });
+        });
+
     </script>
 @endpush

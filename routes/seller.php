@@ -35,7 +35,7 @@ Route::group(['namespace' => 'Seller', 'prefix' => 'seller', 'as' => 'seller.'],
         //dashboard routes
 
         Route::get('/get-order-data', 'SystemController@order_data')->name('get-order-data');
-        
+
         Route::group(['prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
             Route::get('dashboard', 'DashboardController@dashboard');
             Route::get('/', 'DashboardController@dashboard')->name('index');
@@ -57,6 +57,8 @@ Route::group(['namespace' => 'Seller', 'prefix' => 'seller', 'as' => 'seller.'],
             Route::post('update/{id}', 'ProductController@update')->name('update');
             Route::post('sku-combination', 'ProductController@sku_combination')->name('sku-combination');
             Route::get('get-categories', 'ProductController@get_categories')->name('get-categories');
+            Route::get('barcode', 'ProductController@get_categories')->name('get-categories');
+            Route::get('barcode/{id}', 'ProductController@barcode')->name('barcode');
 
             Route::delete('delete/{id}', 'ProductController@delete')->name('delete');
 
@@ -71,7 +73,7 @@ Route::group(['namespace' => 'Seller', 'prefix' => 'seller', 'as' => 'seller.'],
             Route::get('details/{id}', 'RefundController@details')->name('details');
             Route::get('inhouse-order-filter', 'RefundController@inhouse_order_filter')->name('inhouse-order-filter');
             Route::post('refund-status-update', 'RefundController@refund_status_update')->name('refund-status-update');
-        
+
         });
         Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
             Route::get('list/{status}', 'OrderController@list')->name('list');
@@ -83,6 +85,8 @@ Route::group(['namespace' => 'Seller', 'prefix' => 'seller', 'as' => 'seller.'],
 
             Route::post('update-deliver-info','OrderController@update_deliver_info')->name('update-deliver-info');
             Route::get('add-delivery-man/{order_id}/{d_man_id}', 'OrderController@add_delivery_man')->name('add-delivery-man');
+
+            Route::get('export-order-data/{status}', 'OrderController@bulk_export_data')->name('order-bulk-export');
         });
         //pos management
         Route::group(['prefix' => 'pos', 'as' => 'pos.'], function () {
@@ -103,7 +107,8 @@ Route::group(['namespace' => 'Seller', 'prefix' => 'seller', 'as' => 'seller.'],
             Route::get('invoice/{id}', 'POSController@generate_invoice');
             Route::any('store-keys', 'POSController@store_keys')->name('store-keys');
             Route::get('search-products','POSController@search_product')->name('search-products');
-            
+            Route::get('order-bulk-export','POSController@bulk_export_data')->name('order-bulk-export');
+
 
             Route::post('coupon-discount', 'POSController@coupon_discount')->name('coupon-discount');
             Route::get('change-cart','POSController@change_cart')->name('change-cart');
@@ -118,6 +123,8 @@ Route::group(['namespace' => 'Seller', 'prefix' => 'seller', 'as' => 'seller.'],
 
         Route::group(['prefix' => 'reviews', 'as' => 'reviews.'], function () {
             Route::get('list', 'ReviewsController@list')->name('list');
+            Route::get('export', 'ReviewsController@export')->name('export')->middleware('actch');
+            Route::get('status/{id}/{status}', 'ReviewsController@status')->name('status');
 
         });
 
@@ -162,10 +169,10 @@ Route::group(['namespace' => 'Seller', 'prefix' => 'seller', 'as' => 'seller.'],
             });
 
             Route::group(['prefix' => 'shipping-type', 'as' => 'shipping-type.'], function () {
-                Route::post('store', 'ShippingTypeController@store')->name('store'); 
+                Route::post('store', 'ShippingTypeController@store')->name('store');
             });
             Route::group(['prefix' => 'category-shipping-cost', 'as' => 'category-shipping-cost.'], function () {
-                Route::post('store', 'CategoryShippingCostController@store')->name('store'); 
+                Route::post('store', 'CategoryShippingCostController@store')->name('store');
             });
 
             Route::group(['prefix' => 'withdraw', 'as' => 'withdraw.'], function () {

@@ -426,6 +426,9 @@ class Helpers
         return $res['message'];
     }
 
+    /*
+     * Device wise notification send
+     */
     public static function send_push_notif_to_device($fcm_token, $data)
     {
         $key = BusinessSetting::where(['type' => 'push_notification_key'])->first()->value;
@@ -476,6 +479,9 @@ class Helpers
         return $result;
     }
 
+    /*
+     *
+     */
     public static function send_push_notif_to_topic($data)
     {
         $key = BusinessSetting::where(['type' => 'push_notification_key'])->first()->value;
@@ -498,7 +504,7 @@ class Helpers
                 "title":"' . $data->title . '",
                 "body" : "' . $data->description . '",
                 "image" : "' . $image . '",
-                "title_loc_key":"' . $data['order_id'] . '",
+                "title_loc_key":null,
                 "is_read": 0,
                 "icon" : "new",
                 "sound" : "default"

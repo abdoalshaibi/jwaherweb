@@ -350,7 +350,7 @@
                 ],
                 datasets: [{
                     label: '{{\App\CPU\translate('business')}}',
-                    data: ['', '{{$data['store']}}', '{{$data['product']}}', '{{$data['order']}}', '{{$data['brand']}}'],
+                    data: ['{{$data['customer']}}', '{{$data['store']}}', '{{$data['product']}}', '{{$data['order']}}', '{{$data['brand']}}'],
                     backgroundColor: [
                         '#041562',
                         '#DA1212',

@@ -99,6 +99,11 @@
                                         </label>
                                     </td>
                                     <td>
+                                        <a class="btn btn-warning btn-sm" title="{{ \App\CPU\translate('barcode') }}"
+                                                    href="{{ route('admin.product.barcode', [$p['id']]) }}">
+                                                    <i class="tio-barcode"></i>
+                                                </a>
+
                                         <a class="btn btn-info btn-sm"
                                             title="{{\App\CPU\translate('view')}}"
                                            href="{{route('admin.product.view',[$p['id']])}}">
@@ -112,7 +117,7 @@
                                         <a class="btn btn-danger btn-sm" href="javascript:"
                                             title="{{\App\CPU\translate('Delete')}}"
                                            onclick="form_alert('product-{{$p['id']}}','Want to delete this item ?')">
-                                            <i class="tio-add-to-trash"></i> 
+                                            <i class="tio-add-to-trash"></i>
                                         </a>
                                         <form action="{{route('admin.product.delete',[$p['id']])}}"
                                               method="post" id="product-{{$p['id']}}">

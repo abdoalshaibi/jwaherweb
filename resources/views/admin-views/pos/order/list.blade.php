@@ -69,21 +69,30 @@
                             <!-- End Search -->
                         </form>
                     </div>
-                    <div class="col-12 col-sm-6 mt-2 mt-sm-0">
-                        <form action="{{ url()->current() }}" method="GET">
-                            
+                    <div class="col-12 col-sm-7 mt-2 mt-sm-0 float-right">
+                        <form action="" id="form-data" method="GET">
                             <div class="row">
-                                
-                                <div class="col-12 col-sm-5">
+                                <div class="col-12 col-sm-4">
                                     <input type="date" name="from" value="{{$from}}" id="from_date"
-                                            class="form-control" required>
+                                            class="form-control">
                                 </div>
-                                <div class="col-12 col-sm-5 mt-2 mt-sm-0">
+                                <div class="col-12 col-sm-4 mt-2 mt-sm-0">
                                     <input type="date" value="{{$to}}" name="to" id="to_date"
-                                            class="form-control" required> 
+                                            class="form-control">
                                 </div>
-                                <div class="col-12 col-sm-2 mt-2 mt-sm-0  ">
-                                    <button type="submit" class="btn btn-primary float-right float-sm-none">{{\App\CPU\translate('filter')}}</button>
+                                <div class="col-md-3 text-right mt-3 mt-sm-0">
+                                    <div class="row">
+                                        <div class="col-6 col-md-6">
+                                            <button type="submit" class="btn btn-primary" onclick="formUrlChange(this)" data-action="{{ url()->current() }}">
+                                                {{\App\CPU\translate('filter')}}
+                                            </button>
+                                        </div>
+                                        <div class="col-6  col-md-6 text-left">
+                                            <button type="submit" class="btn btn-success" onclick="formUrlChange(this)" data-action="{{ route('admin.pos.order-bulk-export') }}">
+                                                {{\App\CPU\translate('export')}}
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </form>
@@ -120,7 +129,7 @@
                                 {{$orders->firstItem()+$key}}
                             </td>
                             <td>
-                                <a href="{{route('admin.pos.order-details',['id'=>$order['id']])}}">{{$order['id']}}</a>
+                                <a href="{{route('admin.pos.order-details',['id'=>$order['id']])}}">{{ $order['id'] }}</a>
                             </td>
                             <td>{{date('d M Y',strtotime($order['created_at']))}}</td>
                             <td>
@@ -180,18 +189,18 @@
                                 @endif
                             </td>
                             <td>
-                                
+
                                 <a class="btn btn-primary btn-sm mr-1" title="{{\App\CPU\translate('view')}}"
                                     href="{{route('admin.pos.order-details',['id'=>$order['id']])}}"><i
                                         class="tio-visible"></i></a>
                                 <a class="btn btn-info btn-sm mr-1" target="_blank" title="{{\App\CPU\translate('invoice')}}"
                                     href="{{route('admin.orders.generate-invoice',[$order['id']])}}"><i
                                         class="tio-download"></i> </a>
-                                    
+
                             </td>
                         </tr>
                     @endforeach
-                    
+
                     </tbody>
                 </table>
                 @if(count($orders)==0)
@@ -216,7 +225,7 @@
                 </div>
                 <!-- End Pagination -->
             </div>
-            
+
             <!-- End Footer -->
         </div>
         <!-- End Card -->
@@ -247,6 +256,12 @@
         $('#from_date,#to_date').change(function () {
             let fr = $('#from_date').val();
             let to = $('#to_date').val();
+            if(fr != ''){
+                $('#to_date').attr('required','required');
+            }
+            if(to != ''){
+                $('#from_date').attr('required','required');
+            }
             if (fr != '' && to != '') {
                 if (fr > to) {
                     $('#from_date').val('');

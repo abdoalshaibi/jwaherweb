@@ -4,19 +4,21 @@ namespace App\Http\Controllers\api\v2\seller;
 
 use App\CPU\Convert;
 use App\CPU\Helpers;
-use App\CPU\ImageManager;
-use App\Http\Controllers\Controller;
 use App\Model\Color;
-use App\Model\DealOfTheDay;
-use App\Model\FlashDealProduct;
 use App\Model\Product;
-use App\Model\Translation;
-use Brian2694\Toastr\Facades\Toastr;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 use PHPUnit\Exception;
+use App\CPU\ImageManager;
+use App\Model\Translation;
+use App\Model\DealOfTheDay;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Model\FlashDealProduct;
 use function App\CPU\translate;
+use App\Http\Controllers\Controller;
+use Brian2694\Toastr\Facades\Toastr;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Validator;
+use Barryvdh\DomPDF\PDF;
 
 class ProductController extends Controller
 {
@@ -47,7 +49,10 @@ class ProductController extends Controller
                 'auth-001' => translate('Your existing session token does not authorize you any more')
             ], 401);
         }
-        $products = Product::where(['added_by' => 'seller', 'user_id' => $seller->id])->where('current_stock', '<', $stock_limit)->paginate($request['limit'], ['*'], 'page', $request['offset']);
+        $products = Product::where(['added_by' => 'seller', 'user_id' => $seller->id])
+                            ->where('request_status',1)
+                            ->where('current_stock', '<', $stock_limit)
+                            ->paginate($request['limit'], ['*'], 'page', $request['offset']);
         /*$paginator->count();*/
         $products->map(function ($data) {
             $data = Helpers::product_data_formatting($data);
@@ -56,8 +61,8 @@ class ProductController extends Controller
 
         return response()->json([
             'total_size' => $products->total(),
-            'limit' => (integer)$request['limit'],
-            'offset' => (integer)$request['offset'],
+            'limit' => (int)$request['limit'],
+            'offset' => (int)$request['offset'],
             'products' => $products->items()
         ], 200);
     }
@@ -91,26 +96,31 @@ class ProductController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'category_id' => 'required',
-            'brand_id' => 'required',
-            'unit' => 'required',
-            'images' => 'required',
-            'thumbnail' => 'required',
-            'discount_type' => 'required|in:percent,flat',
-            'tax' => 'required|min:0',
-            'lang' => 'required',
-            'unit_price' => 'required|min:1',
-            'purchase_price' => 'required|min:1',
-            'discount' => 'required|gt:-1',
-            'shipping_cost' => 'required|gt:-1',
+            'name'              => 'required',
+            'category_id'       => 'required',
+            'brand_id'          => 'required',
+            'unit'              => 'required',
+            'images'            => 'required',
+            'thumbnail'         => 'required',
+            'discount_type'     => 'required|in:percent,flat',
+            'tax'               => 'required|min:0',
+            'lang'              => 'required',
+            'unit_price'        => 'required|min:1',
+            'purchase_price'    => 'required|min:1',
+            'discount'          => 'required|gt:-1',
+            'shipping_cost'     => 'required|gt:-1',
+            'code'              => 'required|unique:products',
+            'minimum_order_qty' => 'required|numeric|min:1',
         ], [
-            'name.required' => translate('Product name is required!'),
-            'category_id.required' => translate('category  is required!'),
-            'images.required' => translate('Product images is required!'),
-            'image.required' => translate('Product thumbnail is required!'),
-            'brand_id.required' => translate('brand  is required!'),
-            'unit.required' => translate('Unit  is required!'),
+            'name.required'         => translate('Product name is required!'),
+            'category_id.required'  => translate('category  is required!'),
+            'images.required'       => translate('Product images is required!'),
+            'image.required'        => translate('Product thumbnail is required!'),
+            'brand_id.required'     => translate('brand  is required!'),
+            'unit.required'         => translate('Unit  is required!'),
+            'code.required'         => translate('Code is required!'),
+            'minimum_order_qty.required' => translate('The minimum order quantity is required!'),
+            'minimum_order_qty.min' => translate('The minimum order quantity must be positive!'),
         ]);
 
         if ($request['discount_type'] == 'percent') {
@@ -122,7 +132,8 @@ class ProductController extends Controller
         if ($request['unit_price'] <= $dis) {
             $validator->after(function ($validator) {
                 $validator->errors()->add(
-                    'unit_price', translate('Discount can not be more or equal to the price!')
+                    'unit_price',
+                    translate('Discount can not be more or equal to the price!')
                 );
             });
         }
@@ -158,6 +169,8 @@ class ProductController extends Controller
         $product->category_ids = json_encode($category);
         $product->brand_id = $request->brand_id;
         $product->unit = $request->unit;
+        $product->code = $request->code;
+        $product->minimum_order_qty = $request->minimum_order_qty;
         $product->details = $request->description[array_search(Helpers::default_lang(), $request->lang)];
 
         $product->images = json_encode($request->images);
@@ -224,7 +237,7 @@ class ProductController extends Controller
                 $stock_count += $item['qty'];
             }
         } else {
-            $stock_count = (integer)$request['current_stock'];
+            $stock_count = (int)$request['current_stock'];
         }
 
         /*if ((integer)$request['current_stock'] != $stock_count) {
@@ -254,10 +267,10 @@ class ProductController extends Controller
 
         $product->video_provider = 'youtube';
         $product->video_url = $request->video_link;
-        $product->request_status = Helpers::get_business_settings('new_product_approval')==1?0:1;
+        $product->request_status = Helpers::get_business_settings('new_product_approval') == 1 ? 0 : 1;
         $product->status = 0;
         $product->shipping_cost = Convert::usd($request->shipping_cost);
-        $product->multiply_qty = $request->multiplyQTY==1?1:0;
+        $product->multiply_qty = $request->multiplyQTY == 1 ? 1 : 0;
         $product->save();
         $data = [];
         foreach ($request->lang as $index => $key) {
@@ -313,6 +326,8 @@ class ProductController extends Controller
             ], 401);
         }
 
+        $product = Product::find($id);
+
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'category_id' => 'required',
@@ -325,11 +340,18 @@ class ProductController extends Controller
             'purchase_price' => 'required|min:1',
             'discount' => 'required|gt:-1',
             'shipping_cost' => 'required|gt:-1',
+            'minimum_order_qty' => 'required|numeric|min:1',
+            'code' => 'required|numeric|min:1|digits_between:6,20|unique:products,code,'.$product->id,
         ], [
             'name.required' => 'Product name is required!',
             'category_id.required' => 'category  is required!',
             'brand_id.required' => 'brand  is required!',
             'unit.required' => 'Unit  is required!',
+            'code.min' => 'The code must be positive!',
+            'code.digits_between' => 'The code must be minimum 6 digits!',
+            'code.required' => 'Code  is required!',
+            'minimum_order_qty.required' => 'The minimum order quantity is required!',
+            'minimum_order_qty.min' => 'The minimum order quantity must be positive!',
         ]);
 
         if ($request['discount_type'] == 'percent') {
@@ -341,12 +363,13 @@ class ProductController extends Controller
         if ($request['unit_price'] <= $dis) {
             $validator->after(function ($validator) {
                 $validator->errors()->add(
-                    'unit_price', translate('Discount can not be more or equal to the price!')
+                    'unit_price',
+                    translate('Discount can not be more or equal to the price!')
                 );
             });
         }
 
-        $product = Product::find($id);
+
         $product->user_id = $seller->id;
         $product->added_by = "seller";
 
@@ -377,6 +400,8 @@ class ProductController extends Controller
         $product->category_ids = json_encode($category);
         $product->brand_id = $request->brand_id;
         $product->unit = $request->unit;
+        $product->code = $request->code;
+        $product->minimum_order_qty = $request->minimum_order_qty;
         $product->details = $request->description[array_search(Helpers::default_lang(), $request->lang)];
 
         $product->images = json_encode($request->images);
@@ -443,7 +468,7 @@ class ProductController extends Controller
                 $stock_count += $item['qty'];
             }
         } else {
-            $stock_count = (integer)$request['current_stock'];
+            $stock_count = (int)$request['current_stock'];
         }
 
         /*if ((integer)$request['current_stock'] != $stock_count) {
@@ -470,11 +495,10 @@ class ProductController extends Controller
         $product->meta_title = $request->meta_title;
         $product->meta_description = $request->meta_description;
 
-        $product->shipping_cost = Helpers::get_business_settings('product_wise_shipping_cost_approval')==1?$product->shipping_cost:Convert::usd($request->shipping_cost);
-        $product->multiply_qty = $request->multiplyQTY==1?1:0;
+        $product->shipping_cost = Helpers::get_business_settings('product_wise_shipping_cost_approval') == 1 ? $product->shipping_cost : Convert::usd($request->shipping_cost);
+        $product->multiply_qty = $request->multiplyQTY == 1 ? 1 : 0;
 
-        if(Helpers::get_business_settings('product_wise_shipping_cost_approval')==1 && $product->shipping_cost != Convert::usd($request->shipping_cost))
-        {
+        if (Helpers::get_business_settings('product_wise_shipping_cost_approval') == 1 && $product->shipping_cost != Convert::usd($request->shipping_cost)) {
             $product->temp_shipping_cost = Convert::usd($request->shipping_cost);
             $product->is_shipping_cost_updated = 0;
         }
@@ -494,25 +518,48 @@ class ProductController extends Controller
         foreach ($request->lang as $index => $key) {
             if ($request->name[$index] && $key != 'en') {
                 Translation::updateOrInsert(
-                    ['translationable_type' => 'App\Model\Product',
+                    [
+                        'translationable_type' => 'App\Model\Product',
                         'translationable_id' => $product->id,
                         'locale' => $key,
-                        'key' => 'name'],
+                        'key' => 'name'
+                    ],
                     ['value' => $request->name[$index]]
                 );
             }
             if ($request->description[$index] && $key != 'en') {
                 Translation::updateOrInsert(
-                    ['translationable_type' => 'App\Model\Product',
+                    [
+                        'translationable_type' => 'App\Model\Product',
                         'translationable_id' => $product->id,
                         'locale' => $key,
-                        'key' => 'description'],
+                        'key' => 'description'
+                    ],
                     ['value' => $request->description[$index]]
                 );
             }
         }
 
         return response()->json(['message' => translate('successfully product updated!')], 200);
+    }
+    public function status_update(Request $request)
+    {
+        $data = Helpers::get_seller_by_token($request);
+        if ($data['success'] == 1) {
+            $seller = $data['data'];
+        } else {
+            return response()->json([
+                'auth-001' => translate('Your existing session token does not authorize you any more')
+            ], 401);
+        }
+
+        $product = Product::find($request->id);
+        $product->status = $request->status;
+        $product->save();
+
+        return response()->json([
+            'success' => translate('updated successfully'),
+        ], 200);
     }
 
     public function delete(Request $request, $id)
@@ -535,5 +582,31 @@ class ProductController extends Controller
         FlashDealProduct::where(['product_id' => $id])->delete();
         DealOfTheDay::where(['product_id' => $id])->delete();
         return response()->json(['message' => translate('successfully product deleted!')], 200);
+    }
+
+    public function barcode_generate(Request $request)
+    {
+        $request->validate([
+            'id' => 'required',
+            'quantity' => 'required',
+        ], [
+            'id.required' => 'Product ID is required',
+            'quantity.required' => 'Barcode quantity is required',
+        ]);
+
+        if ($request->limit > 270) {
+            return response()->json(['code' => 403, 'message' => 'You can not generate more than 270 barcode']);
+        }
+        $product = Product::where('id', $request->id)->first();
+        $quantity = $request->quantity ?? 30;
+        if (isset($product->code)) {
+            $pdf = app()->make(PDF::class);
+            $pdf->loadView('seller-views.product.barcode-pdf', compact('product', 'quantity'));
+            $pdf->save(storage_path('app/public/product/barcode.pdf'));
+            return response()->json(asset('storage/app/public/product/barcode.pdf'));
+        } else {
+            return response()->json(['message' => translate('Please update product code!')], 203);
+        }
+
     }
 }

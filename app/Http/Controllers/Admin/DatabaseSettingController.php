@@ -30,7 +30,7 @@ class DatabaseSettingController extends Controller
         return view('admin-views.business-settings.db-index', compact('tables', 'rows'));
     }
     public function clean_db(Request $request)
-    { 
+    {
         $tables = (array)$request->tables;
 
         if(count($tables) == 0) {

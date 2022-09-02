@@ -24,10 +24,10 @@
                         <div class="row flex-between justify-content-between align-items-center flex-grow-1">
                             <div class="col-12 mb-1 col-md-4">
                                 <h5>{{ \App\CPU\translate('Product')}} {{ \App\CPU\translate('Table')}} ({{ $products->total() }})</h5>
-                                
+
                             </div>
-    
-                            
+
+
                             <div class="col-12 mb-1 col-md-5">
                                 <form action="{{ url()->current() }}" method="GET">
                                     <!-- Search -->
@@ -51,7 +51,7 @@
                                 </a>
                             </div>
                         </div>
-                        
+
                     </div>
                     <div class="card-body" style="padding: 0">
                         <div class="table-responsive">
@@ -100,6 +100,11 @@
                                             </label>
                                         </td>
                                         <td>
+                                            <a class="btn btn-warning btn-sm" title="{{ \App\CPU\translate('barcode') }}"
+                                                    href="{{ route('seller.product.barcode', [$p['id']]) }}">
+                                                    <i class="tio-barcode"></i>
+                                                </a>
+
                                             <a class="btn btn-info btn-sm"
                                                 title="{{\App\CPU\translate('view')}}"
                                                 href="{{route('seller.product.view',[$p['id']])}}">
@@ -113,7 +118,7 @@
                                             <a  class="btn btn-danger btn-sm" href="javascript:"
                                                 title="{{\App\CPU\translate('Delete')}}"
                                                 onclick="form_alert('product-{{$p['id']}}','{{\App\CPU\translate("Want to delete this item")}} ?')">
-                                               <i class="tio-add-to-trash"></i> 
+                                               <i class="tio-add-to-trash"></i>
                                             </a>
                                             <form action="{{route('seller.product.delete',[$p['id']])}}"
                                                   method="post" id="product-{{$p['id']}}">

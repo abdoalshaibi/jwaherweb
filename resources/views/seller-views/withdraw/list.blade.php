@@ -129,7 +129,7 @@
               confirmButtonText: "{{\App\CPU\translate('OK')}}",
           })
               .then((willDelete) => {
-                  if (willDelete) {
+                  if (willDelete.value) {
                       window.location.href = (route_name);
                   }
               });

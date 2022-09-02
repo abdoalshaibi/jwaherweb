@@ -163,11 +163,11 @@
                                         <td class="bodytr">
                                             {{$loyalty_point_list->firstItem()+$key}}
                                         </td>
-                                        <td class="bodytr orderDate"><span class="text-capitalize">{{str_replace('_', ' ',$item['transaction_type'])}}</span></td>
-                                        <td class="bodytr orderDate"><span class="">{{ $item['credit']}}</span></td>
-                                        <td class="bodytr orderDate"><span class="">{{ $item['debit']}}</span></td>
-                                        <td class="bodytr orderDate"><span class="">{{ $item['balance']}}</span></td>
-                                        <td class="bodytr orderDate"><span class="">{{$item['created_at']}}</span></td>
+                                        <td class="bodytr"><span class="text-capitalize">{{str_replace('_', ' ',$item['transaction_type'])}}</span></td>
+                                        <td class="bodytr"><span class="">{{ $item['credit']}}</span></td>
+                                        <td class="bodytr"><span class="">{{ $item['debit']}}</span></td>
+                                        <td class="bodytr"><span class="">{{ $item['balance']}}</span></td>
+                                        <td class="bodytr"><span class="">{{$item['created_at']}}</span></td>
                                         
                                     </tr>
                                 @endforeach

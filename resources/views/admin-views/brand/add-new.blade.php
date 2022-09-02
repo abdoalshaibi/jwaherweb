@@ -48,7 +48,7 @@
                                     <div class="form-group {{$lang != $default_lang ? 'd-none':''}} lang_form"
                                             id="{{$lang}}-form">
                                         <label for="name">{{ \App\CPU\translate('name')}} ({{strtoupper($lang)}})</label>
-                                        <input type="text" name="name[]" class="form-control" id="name" value="{{old('name')}}" placeholder="{{\App\CPU\translate('Ex')}} : {{\App\CPU\translate('LUX')}}" {{$lang == $default_lang? 'required':''}}>
+                                        <input type="text" name="name[]" class="form-control" id="name" value="" placeholder="{{\App\CPU\translate('Ex')}} : {{\App\CPU\translate('LUX')}}" {{$lang == $default_lang? 'required':''}}>
                                     </div>
                                     <input type="hidden" name="lang[]" value="{{$lang}}">
                                 @endforeach
@@ -91,7 +91,7 @@
 
             let form_id = this.id;
             let lang = form_id.split("-")[0];
-            console.log(lang);
+
             $("#" + lang + "-form").removeClass('d-none');
             if (lang == '{{$default_lang}}') {
                 $(".from_part_2").removeClass('d-none');

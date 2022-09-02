@@ -11,7 +11,7 @@ class AddDealTypeToFlashDeals extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up()    
     {
         Schema::table('flash_deals', function (Blueprint $table) {
             $table->string('deal_type')->nullable();

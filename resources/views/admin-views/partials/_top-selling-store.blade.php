@@ -18,7 +18,7 @@
                      style="padding-left: 6px;padding-right: 6px;cursor: pointer">
                     <div class="grid-card" style="min-height: 170px">
                         <div class="label_1" style="width: 78px">
-                            {{$item['count']}} {{\App\CPU\BackEndHelper::currency_symbol()}}
+                            {{\App\CPU\Helpers::currency_converter($item['count'])}} 
                         </div>
                         <div class="text-center mt-3">
                             <img style="border-radius: 50%;width: 60px;height: 60px;border:2px solid #80808082;"

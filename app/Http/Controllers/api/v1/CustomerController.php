@@ -56,6 +56,21 @@ class CustomerController extends Controller
         }
         return response()->json(['message' => 'Support ticket created successfully.'], 200);
     }
+    public function account_delete(Request $request, $id)
+    {
+        if($request->user()->id == $id)
+        {
+            $user = User::find($id);
+
+            ImageManager::delete('/profile/' . $user['image']);
+
+            $user->delete();
+           return response()->json(['message' => translate('Your_account_deleted_successfully!!')],200);
+            
+        }else{
+            return response()->json(['message' =>'access_denied!!'],403);
+        }
+    }
 
     public function reply_support_ticket(Request $request, $ticket_id)
     {
@@ -122,7 +137,14 @@ class CustomerController extends Controller
 
     public function wish_list(Request $request)
     {
-        return response()->json(Wishlist::whereHas('product')->with(['product'])->where('customer_id', $request->user()->id)->get(), 200);
+        $wishlist =Wishlist::
+        whereHas('wishlistProduct',function($query){
+            $query->whereHas('brand',function($q){
+                $q->where('status',1);
+            })->where('status',1);
+        })->with(['product'])->where('customer_id', $request->user()->id)->get();
+
+        return response()->json($wishlist, 200);
     }
 
     public function address_list(Request $request)

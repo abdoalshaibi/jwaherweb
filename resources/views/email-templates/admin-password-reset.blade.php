@@ -99,6 +99,7 @@
             outline: none;
         }
     </style>
+    
 </head>
 <body style="background-color: #e9ecef;">
 <!-- end preheader -->

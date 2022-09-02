@@ -32,6 +32,11 @@
                             </div>
                         </form>
                         <!-- End Search -->
+
+                        <a href="{{ route('admin.brand.export') }}" class="btn btn-success">
+                            <i class="tio-download-to"></i>
+                            {{ \App\CPU\translate('Export') }}
+                        </a>
                     </div>
                     <div class="card-body" style="padding: 0">
                         <div class="table-responsive">
@@ -43,7 +48,10 @@
                                         {{ \App\CPU\translate('brand')}} {{ \App\CPU\translate('ID')}}
                                     </th>
                                     <th scope="col">{{ \App\CPU\translate('name')}}</th>
+                                    <th scope="col">{{ \App\CPU\translate('Total Product')}}</th>
+                                    <th scope="col">{{ \App\CPU\translate('Total Order')}}</th>
                                     <th scope="col">{{ \App\CPU\translate('image')}}</th>
+                                    <th scope="col">{{\App\CPU\translate('Active')}} {{\App\CPU\translate('status')}}</th>
                                     <th scope="col" style="width: 100px" class="text-center">
                                         {{ \App\CPU\translate('action')}}
                                     </th>
@@ -52,22 +60,33 @@
                                 <tbody>
 
                                 @foreach($br as $k=>$b)
+
+
                                     <tr>
                                         <td class="text-center">{{$br->firstItem()+$k}}</td>
                                         <td>{{$b['name']}}</td>
+                                        <td>{{ $b['brand_all_products_count'] }}</td>
+                                        <td>{{ $b['brandAllProducts']->sum('order_details_count') }}</td>
                                         <td>
                                             <img class="rounded" style="width: 60px;height: 60px;"
-                                                 onerror="this.src='{{asset('public/assets/front-end/img/image-place-holder.png')}}'"
+                                                onerror="this.src='{{asset('public/assets/back-end/img/160x160/img2.jpg')}}'"
                                                  src="{{asset('storage/app/public/brand')}}/{{$b['image']}}">
+                                        </td>
+                                        <td>
+                                            <label class="switch switch-status">
+                                                <input type="checkbox" class="status"
+                                                       id="{{$b['id']}}" {{$b['status'] == 1 ? 'checked':''}}>
+                                                <span class="slider round"></span>
+                                            </label>
                                         </td>
                                         <td>
                                             <a class="btn btn-primary btn-sm" title="{{ \App\CPU\translate('Edit')}}"
                                                href="{{route('admin.brand.update',[$b['id']])}}">
-                                                <i class="tio-edit"></i> 
+                                                <i class="tio-edit"></i>
                                             </a>
                                             <a class="btn btn-danger btn-sm delete" title="{{ \App\CPU\translate('Delete')}}"
                                                id="{{$b['id']}}">
-                                                <i class="tio-add-to-trash"></i> 
+                                                <i class="tio-add-to-trash"></i>
                                             </a>
                                         </td>
                                     </tr>
@@ -105,7 +124,7 @@
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
                 confirmButtonText: '{{ \App\CPU\translate('Yes')}}, {{ \App\CPU\translate('delete_it')}}!',
-                cancelButtonText: "{{ \App\CPU\translate('cancel')}}",      
+                cancelButtonText: "{{ \App\CPU\translate('cancel')}}",
                 reverseButtons: true
             }).then((result) => {
                 if (result.value) {
@@ -125,6 +144,37 @@
                     });
                 }
             })
+        });
+
+        $(document).on('change', '.status', function () {
+            var id = $(this).attr("id");
+            if ($(this).prop("checked") == true) {
+                var status = 1;
+            } else if ($(this).prop("checked") == false) {
+                var status = 0;
+            }
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{route('admin.brand.status-update')}}",
+                method: 'POST',
+                data: {
+                    id: id,
+                    status: status
+                },
+                success: function (data) {
+                    console.log(data)
+                    if (data.success == true) {
+                        toastr.success('{{\App\CPU\translate('Status updated successfully')}}');
+                    } else {
+                        toastr.error('{{\App\CPU\translate('Status updated failed. Product must be approved')}}');
+                        location.reload();
+                    }
+                }
+            });
         });
     </script>
 @endpush

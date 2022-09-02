@@ -424,7 +424,7 @@
                                     <option value="0">
                                         {{\App\CPU\translate('choose_delivery_type')}}
                                     </option>
-                                    
+
                                     <option value="self_delivery" {{$order->delivery_type=='self_delivery'?'selected':''}}>
                                         {{\App\CPU\translate('by_self_delivery_man')}}
                                     </option>
@@ -539,7 +539,7 @@
 
                             <span class="d-block">{{\App\CPU\translate('Name')}} :
                                 <strong>{{$shipping_address? $shipping_address->contact_person_name : \App\CPU\translate('empty')}}</strong><br>
-                                 
+
                                 {{\App\CPU\translate('City')}}:
                                 <strong>{{$shipping_address ? $shipping_address->city : \App\CPU\translate('empty')}}</strong><br>
                                 {{\App\CPU\translate('zip_code')}} :
@@ -565,7 +565,7 @@
 
                             <span class="d-block">{{\App\CPU\translate('Name')}} :
                                 <strong>{{$billing? $billing->contact_person_name : \App\CPU\translate('empty')}}</strong><br>
-                                
+
                                 {{\App\CPU\translate('City')}}:
                                 <strong>{{$billing ? $billing->city : \App\CPU\translate('empty')}}</strong><br>
                                 {{\App\CPU\translate('zip_code')}} :
@@ -644,8 +644,8 @@
                             </form>
                         </div>
                     </div>
-                        
-                    
+
+
                 </div>
             </div>
         </div>
@@ -680,8 +680,15 @@
                             "payment_status": value
                         },
                         success: function (data) {
-                            toastr.success('{{\App\CPU\translate('Status Change successfully')}}');
-                            location.reload();
+                            if(data.customer_status==0)
+                            {
+                                toastr.warning('{{\App\CPU\translate('Account has been deleted, you can not change the status!')}}!');
+                                // location.reload();
+                            }else
+                            {
+                                toastr.success('{{\App\CPU\translate('Status Change successfully')}}');
+                                // location.reload();
+                            }
                         }
                     });
                 }
@@ -712,16 +719,23 @@
                             "order_status": status
                         },
                         success: function (data) {
+
                             if (data.success == 0) {
                                 toastr.success('{{\App\CPU\translate('Order is already delivered, You can not change it')}} !!');
-                                location.reload();
+                                // location.reload();
                             } else {
+
                                 if(data.payment_status == 0){
                                     toastr.warning('{{\App\CPU\translate('Before delivered you need to make payment status paid!')}}!');
-                                    location.reload();
-                                }else{
+                                    // location.reload();
+                                }else if(data.customer_status==0)
+                                {
+                                    toastr.warning('{{\App\CPU\translate('Account has been deleted, you can not change the status!')}}!');
+                                    // location.reload();
+                                }
+                                else{
                                     toastr.success('{{\App\CPU\translate('Status Change successfully')}}!');
-                                    location.reload();
+                                    // location.reload();
                                 }
                             }
 
@@ -754,14 +768,18 @@
                         success: function (data) {
                             if (data.success == 0) {
                                 toastr.success('{{\App\CPU\translate('Order is already delivered, You can not change it')}} !!');
-                                location.reload();
+                                // location.reload();
                             } else {
                                 if(data.payment_status == 0){
                                     toastr.warning('{{\App\CPU\translate('Before delivered you need to make payment status paid!')}}!');
-                                    location.reload();
+                                    // location.reload();
+                                }else if(data.customer_status==0)
+                                {
+                                    toastr.warning('{{\App\CPU\translate('Account has been deleted, you can not change the status!')}}!');
+                                    // location.reload();
                                 }else{
                                     toastr.success('{{\App\CPU\translate('Status Change successfully')}}!');
-                                    location.reload();
+                                    // location.reload();
                                 }
                             }
 
@@ -776,7 +794,7 @@
     $( document ).ready(function() {
         let delivery_type = '{{$order->delivery_type}}';
 
-        
+
         if(delivery_type === 'self_delivery'){
             $('#choose_delivery_man').show();
             $('#by_third_party_delivery_service_info').hide();
@@ -806,7 +824,7 @@
             $('#choose_delivery_man').hide();
             $('#by_third_party_delivery_service_info').hide();
         }
-        
+
     }
 </script>
     <script>

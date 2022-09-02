@@ -126,6 +126,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'as' => 'admin.'], fu
             Route::get('update/{id}', 'BrandController@edit')->name('update');
             Route::post('update/{id}', 'BrandController@update');
             Route::post('delete', 'BrandController@delete')->name('delete');
+            Route::get('export', 'BrandController@export')->name('export');
+            Route::post('status-update', 'BrandController@status_update')->name('status-update');
         });
 
         Route::group(['prefix' => 'banner', 'as' => 'banner.','middleware'=>['module:marketing_section']], function () {
@@ -189,10 +191,14 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'as' => 'admin.'], fu
             Route::get('edit/{id}', 'NotificationController@edit')->name('edit');
             Route::post('update/{id}', 'NotificationController@update')->name('update');
             Route::post('status', 'NotificationController@status')->name('status');
+            Route::post('resend-notification', 'NotificationController@resendNotification')->name('resend-notification');
             Route::post('delete', 'NotificationController@delete')->name('delete');
         });
         Route::group(['prefix' => 'reviews', 'as' => 'reviews.','middleware'=>['module:business_section']], function () {
-            Route::get('list', 'ReviewsController@list')->name('list')->middleware('actch');;
+            Route::get('list', 'ReviewsController@list')->name('list')->middleware('actch');
+            Route::get('export', 'ReviewsController@export')->name('export')->middleware('actch');
+            //Route::get('export', 'ReviewsController@export')->name('export')->middleware('actch');
+            Route::get('status/{id}/{status}', 'ReviewsController@status')->name('status');
         });
 
         Route::group(['prefix' => 'customer', 'as' => 'customer.','middleware'=>['module:user_section']], function () {
@@ -213,10 +219,10 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'as' => 'admin.'], fu
             Route::group(['prefix' => 'loyalty', 'as' => 'loyalty.'], function () {
                 Route::get('report', 'CustomerLoyaltyController@report')->name('report');
             });
-            
+
         });
 
-        
+
         ///Report
         Route::group(['prefix' => 'report', 'as' => 'report.' ,'middleware'=>['module:report']], function () {
             Route::get('order', 'ReportController@order_index')->name('order');
@@ -229,10 +235,11 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'as' => 'admin.'], fu
         Route::group(['prefix' => 'stock', 'as' => 'stock.' ,'middleware'=>['module:business_section']], function () {
             //product stock report
             Route::get('product-stock', 'ProductStockReportController@index')->name('product-stock');
+            Route::get('product-stock-export', 'ProductStockReportController@export')->name('product-stock-export');
             Route::post('ps-filter', 'ProductStockReportController@filter')->name('ps-filter');
             //product in wishlist report
             Route::get('product-in-wishlist', 'ProductWishlistReportController@index')->name('product-in-wishlist');
-            Route::post('piw-filter', 'ProductWishlistReportController@filter')->name('piw-filter');
+            Route::get('wishlist-product-export', 'ProductWishlistReportController@export')->name('wishlist-product-export');
         });
         Route::group(['prefix' => 'sellers', 'as' => 'sellers.','middleware'=>['module:user_section']], function () {
             Route::get('seller-add', 'SellerController@add_seller')->name('seller-add');
@@ -275,30 +282,40 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'as' => 'admin.'], fu
             Route::get('bulk-import', 'ProductController@bulk_import_index')->name('bulk-import');
             Route::post('bulk-import', 'ProductController@bulk_import_data');
             Route::get('bulk-export', 'ProductController@bulk_export_data')->name('bulk-export');
+            Route::get('barcode/{id}', 'ProductController@barcode')->name('barcode');
+            Route::get('barcode/generate', 'ProductController@barcode_generate')->name('barcode.generate');
         });
 
         Route::group(['prefix' => 'transaction', 'as' => 'transaction.' ,'middleware'=>['module:business_section']], function () {
             Route::get('list', 'TransactionController@list')->name('list');
+            Route::get('transaction-export', 'TransactionController@export')->name('transaction-export');
+        });
+
+        Route::group(['prefix' => 'refund-section', 'as' => 'refund-section.' ,'middleware'=>['module:business_section']], function () {
             Route::get('refund-list', 'RefundTransactionController@list')->name('refund-list');
+
+            //refund request
+            Route::group(['prefix' => 'refund', 'as' => 'refund.'], function () {
+                Route::get('list/{status}', 'RefundController@list')->name('list');
+                Route::get('details/{id}', 'RefundController@details')->name('details');
+                Route::get('inhouse-order-filter', 'RefundController@inhouse_order_filter')->name('inhouse-order-filter');
+                Route::post('refund-status-update', 'RefundController@refund_status_update')->name('refund-status-update');
+
+            });
+
+            Route::get('refund-index','RefundController@index')->name('refund-index');
+            Route::post('refund-update','RefundController@update')->name('refund-update');
         });
 
 
         Route::group(['prefix' => 'business-settings', 'as' => 'business-settings.'], function () {
             Route::group(['middleware'=>['module:business_settings']],function (){
-                //refund request
-                Route::group(['prefix' => 'refund', 'as' => 'refund.'], function () {
-                    Route::get('list/{status}', 'RefundController@list')->name('list');
-                    Route::get('details/{id}', 'RefundController@details')->name('details');
-                    Route::get('inhouse-order-filter', 'RefundController@inhouse_order_filter')->name('inhouse-order-filter');
-                    Route::post('refund-status-update', 'RefundController@refund_status_update')->name('refund-status-update');
-
-                });
 
                 Route::get('sms-module', 'SMSModuleController@sms_index')->name('sms-module');
                 Route::post('sms-module-update/{sms_module}', 'SMSModuleController@sms_update')->name('sms-module-update');
 
             });
-            
+
 
             Route::group(['prefix' => 'shipping-method', 'as' => 'shipping-method.','middleware'=>['module:business_settings']], function () {
                 Route::get('by/admin', 'ShippingMethodController@index_admin')->name('by.admin');
@@ -362,13 +379,17 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'as' => 'admin.'], fu
                 Route::get('environment-setup', 'EnvironmentSettingsController@environment_index')->name('environment-setup');
                 Route::post('update-environment', 'EnvironmentSettingsController@environment_setup')->name('update-environment');
 
-                Route::get('refund-index','RefundController@index')->name('refund-index');
-                Route::post('refund-update','RefundController@update')->name('refund-update');
-
                 //sitemap generate
                 Route::get('mysitemap','SiteMapController@index')->name('mysitemap');
+                Route::get('mysitemap-download','SiteMapController@download')->name('mysitemap-download');
 
             });
+
+            Route::group(['prefix' => 'order-settings', 'as' => 'order-settings.','middleware'=>['module:business_settings']], function () {
+                Route::get('index', 'OrderSettingsController@order_settings')->name('index');
+                Route::post('update-order-settings','OrderSettingsController@update_order_settings')->name('update-order-settings');
+            });
+
             Route::group(['prefix' => 'seller-settings', 'as' => 'seller-settings.','middleware'=>['module:business_settings']], function () {
                 Route::get('/', 'BusinessSettingsController@seller_settings')->name('index')->middleware('actch');;
                 Route::post('update-seller-settings', 'BusinessSettingsController@sales_commission')->name('update-seller-settings');
@@ -415,7 +436,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'as' => 'admin.'], fu
 
                 Route::post('update-fcm-messages', 'BusinessSettingsController@update_fcm_messages')->name('update-fcm-messages');
 
-                
+
                 //analytics
                 Route::get('analytics-index', 'BusinessSettingsController@analytics_index')->name('analytics-index');
                 Route::post('analytics-update', 'BusinessSettingsController@analytics_update')->name('analytics-update');
@@ -423,7 +444,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'as' => 'admin.'], fu
 
 
             });
-            
+
         });
         //order management
         Route::group(['prefix' => 'orders', 'as' => 'orders.','middleware'=>['module:order_management']], function () {
@@ -432,11 +453,13 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'as' => 'admin.'], fu
             Route::post('status', 'OrderController@status')->name('status');
             Route::post('payment-status', 'OrderController@payment_status')->name('payment-status');
             Route::post('productStatus', 'OrderController@productStatus')->name('productStatus');
-            Route::get('generate-invoice/{id}', 'OrderController@generate_invoice')->name('generate-invoice');
+            Route::get('generate-invoice/{id}', 'OrderController@generate_invoice')->name('generate-invoice')->withoutMiddleware(['module:order_management']);
             Route::get('inhouse-order-filter', 'OrderController@inhouse_order_filter')->name('inhouse-order-filter');
 
             Route::post('update-deliver-info','OrderController@update_deliver_info')->name('update-deliver-info');
             Route::get('add-delivery-man/{order_id}/{d_man_id}', 'OrderController@add_delivery_man')->name('add-delivery-man');
+
+            Route::get('export-order-data/{status}', 'OrderController@bulk_export_data')->name('order-bulk-export');
         });
 
         //pos management
@@ -458,6 +481,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'as' => 'admin.'], fu
             Route::get('invoice/{id}', 'POSController@generate_invoice');
             Route::any('store-keys', 'POSController@store_keys')->name('store-keys');
             Route::get('search-products','POSController@search_product')->name('search-products');
+            Route::get('order-bulk-export','POSController@bulk_export_data')->name('order-bulk-export');
 
 
             Route::post('coupon-discount', 'POSController@coupon_discount')->name('coupon-discount');

@@ -110,6 +110,7 @@ Route::group(['namespace' => 'api\v1', 'prefix' => 'v1', 'middleware' => ['api_l
         Route::get('info', 'CustomerController@info');
         Route::put('update-profile', 'CustomerController@update_profile');
         Route::put('cm-firebase-token', 'CustomerController@update_cm_firebase_token');
+        Route::get('account-delete/{id}','CustomerController@account_delete');
 
         Route::group(['prefix' => 'address'], function () {
             Route::get('list', 'CustomerController@address_list');
@@ -168,6 +169,7 @@ Route::group(['namespace' => 'api\v1', 'prefix' => 'v1', 'middleware' => ['api_l
     Route::group(['prefix' => 'seller'], function () {
         Route::get('/', 'SellerController@get_seller_info');
         Route::get('{seller_id}/products', 'SellerController@get_seller_products');
+        Route::get('{seller_id}/all-products', 'SellerController@get_seller_all_products');
         Route::get('top', 'SellerController@get_top_sellers');
         Route::get('all', 'SellerController@get_all_sellers');
     });

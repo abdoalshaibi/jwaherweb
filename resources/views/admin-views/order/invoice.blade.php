@@ -13,7 +13,6 @@
             color: #333542;
         }
 
-
         /* IE 6 */
         * html .footer {
             position: absolute;
@@ -352,7 +351,7 @@
             </th>
             <th style="text-align: right">
                 <h1 style="color: #030303; margin-bottom: 0px; font-size: 30px;text-transform: capitalize">{{\App\CPU\translate('invoice')}}</h1>
-                @if($order['seller_is']!='admin' && $order['seller']->gst != null)
+                @if($order['seller_is']!='admin' && isset($order['seller']) && $order['seller']->gst != null)
                     <h5 style="color: #030303; margin-bottom: 0px;text-transform: capitalize">{{\App\CPU\translate('GST')}}
                         : {{ $order['seller']->gst }}</h5>
                 @endif

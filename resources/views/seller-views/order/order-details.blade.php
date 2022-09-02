@@ -112,7 +112,7 @@
                                             value="confirmed" {{$order->order_status == 'confirmed'?'selected':''}} > {{\App\CPU\translate('Confirmed')}}</option>
                                         <option
                                             value="processing" {{$order->order_status == 'processing'?'selected':''}} >{{\App\CPU\translate('Processing')}} </option>
-                                        
+
                                         @php($shippingMethod=\App\CPU\Helpers::get_business_settings('shipping_method'))
                                         @if( $shippingMethod=='sellerwise_shipping')
                                             <option
@@ -130,7 +130,7 @@
                                 </div>
                             </div>
 
-                            
+
                             @if($order['payment_method']=='cash_on_delivery' && $shipping_method=='sellerwise_shipping')
                                 <div class="col-6 col-sm-6 hs-unfold float-right pr-2">
                                     <div class="dropdown">
@@ -196,7 +196,7 @@
                                     <h6 class="mx-1"
                                         style="color: #8a8a8a;">{{str_replace('_',' ',$order['transaction_ref'])}}</h6>
                                 </div>
-    
+
                             </div>
                         </div>
                     </div>
@@ -365,7 +365,7 @@
                                     <option value="0">
                                         {{\App\CPU\translate('choose_delivery_type')}}
                                     </option>
-                                    
+
                                     <option value="self_delivery" {{$order->delivery_type=='self_delivery'?'selected':''}}>
                                         {{\App\CPU\translate('by_self_delivery_man')}}
                                     </option>
@@ -434,7 +434,7 @@
                                 class="text-body text-hover-primary">{{$order->customer['f_name'].' '.$order->customer['l_name']}}</span>
                                 </div>
                                 <div class="media-body text-right">
-                                    
+
                                 </div>
                             </div>
 
@@ -491,7 +491,7 @@
 
                             <span class="d-block">{{\App\CPU\translate('Name')}} :
                                 <strong>{{$shipping_address? $shipping_address->contact_person_name : \App\CPU\translate('empty')}}</strong><br>
-                                
+
                                 {{\App\CPU\translate('City')}}:
                                 <strong>{{$shipping_address ? $shipping_address->city : \App\CPU\translate('empty')}}</strong><br>
                                 {{\App\CPU\translate('zip_code')}} :
@@ -516,7 +516,7 @@
 
                             <span class="d-block">{{\App\CPU\translate('Name')}} :
                                 <strong>{{$billing? $billing->contact_person_name : \App\CPU\translate('empty')}}</strong><br>
-                                 
+
                                 {{\App\CPU\translate('City')}}:
                                 <strong>{{$billing ? $billing->city : \App\CPU\translate('empty')}}</strong><br>
                                 {{\App\CPU\translate('zip_code')}} :
@@ -592,8 +592,8 @@
                             </form>
                         </div>
                     </div>
-                        
-                    
+
+
                 </div>
             </div>
         </div>
@@ -627,8 +627,14 @@
                             "payment_status": value
                         },
                         success: function (data) {
-                            toastr.success('{{\App\CPU\translate('Status Change successfully')}}');
-                            location.reload();
+                            if(data.customer_status==0)
+                            {
+                                toastr.warning('{{\App\CPU\translate('Account has been deleted, you can not change the status!')}}!');
+                                // location.reload();
+                            }else {
+                                toastr.success('{{\App\CPU\translate('Status Change successfully')}}');
+                                // location.reload();
+                            }
                         }
                     });
                 }
@@ -661,14 +667,18 @@
                         success: function (data) {
                             if (data.success == 0) {
                                 toastr.success('{{\App\CPU\translate('Order is already delivered, You can not change it !!')}}');
-                                location.reload();
+                                // location.reload();
                             } else {
                                 if(data.payment_status == 0){
                                     toastr.warning('{{\App\CPU\translate('Before delivered you need to make payment status paid!')}}!');
-                                    location.reload();
+                                    // location.reload();
+                                }else if(data.customer_status==0)
+                                {
+                                    toastr.warning('{{\App\CPU\translate('Account has been deleted, you can not change the status!')}}!');
+                                    // location.reload();
                                 }else{
                                     toastr.success('{{\App\CPU\translate('Status Change successfully')}}!');
-                                    location.reload();
+                                    // location.reload();
                                 }
                             }
                         }
@@ -680,7 +690,7 @@
 <script>
     $( document ).ready(function() {
         let delivery_type = '{{$order->delivery_type}}';
-         
+
         if(delivery_type === 'self_delivery'){
             $('#choose_delivery_man').show();
             $('#by_third_party_delivery_service_info').hide();
@@ -710,7 +720,7 @@
             $('#choose_delivery_man').hide();
             $('#by_third_party_delivery_service_info').hide();
         }
-        
+
     }
 </script>
     <script>

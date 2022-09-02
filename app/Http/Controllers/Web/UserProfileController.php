@@ -71,6 +71,25 @@ class UserProfileController extends Controller
         }
     }
 
+    public function account_delete($id)
+    {
+        if(auth('customer')->id() == $id)
+        {
+            $user = User::find($id);
+            auth()->guard('customer')->logout();
+
+            ImageManager::delete('/profile/' . $user['image']);
+            session()->forget('wish_list');
+
+            $user->delete();
+            Toastr::info(translate('Your_account_deleted_successfully!!'));
+            return redirect()->route('home');
+        }else{
+            Toastr::warning('access_denied!!');
+        }
+        
+    }
+
     public function account_address()
     {
         if (auth('customer')->check()) {

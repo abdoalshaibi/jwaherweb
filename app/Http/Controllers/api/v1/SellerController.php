@@ -42,6 +42,13 @@ class SellerController extends Controller
         return response()->json($data, 200);
     }
 
+    public function get_seller_all_products($seller_id, Request $request)
+    {
+        $data = ProductManager::get_seller_all_products($seller_id, $request['limit'], $request['offset']);
+        $data['products'] = Helpers::product_data_formatting($data['products'], true);
+        return response()->json($data, 200);
+    }
+
     public function get_top_sellers()
     {
         $top_sellers = Shop::whereHas('seller',function ($query){return $query->approved();})

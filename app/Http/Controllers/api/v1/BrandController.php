@@ -12,7 +12,7 @@ class BrandController extends Controller
     public function get_brands()
     {
         try {
-            $brands = BrandManager::get_brands();
+            $brands = BrandManager::get_active_brands();
         } catch (\Exception $e) {
         }
 

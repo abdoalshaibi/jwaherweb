@@ -135,8 +135,7 @@
                             <!-- Form Group -->
                             <div class="row form-group">
                                 <label for="phoneLabel"
-                                       class="col-sm-3 col-form-label input-label mt-3">{{\App\CPU\translate('Phone')}} <span
-                                        class="input-label-secondary">({{\App\CPU\translate('Optional')}})</span></label>
+                                       class="col-sm-3 col-form-label input-label mt-3">{{\App\CPU\translate('Phone')}} </label>
 
                                 <div class="col-sm-9"><small class="text-danger">( * {{\App\CPU\translate('country_code_is_must')}} {{\App\CPU\translate('like_for_BD_880')}} )</small>
                                     <input type="number" class="js-masked-input form-control" name="phone" id="phoneLabel"
@@ -144,7 +143,7 @@
                                            value="{{$data->phone}}"
                                            data-hs-mask-options='{
                                            "template": "+(880)00-000-00000"
-                                         }'>
+                                         }' required>
                                 </div>
                             </div>
                             <!-- End Form Group -->
@@ -156,7 +155,7 @@
                                 <div class="col-sm-9">
                                     <input type="email" class="form-control" name="email" id="newEmailLabel"
                                            value="{{$data->email}}"
-                                           placeholder="{{\App\CPU\translate('Enter new email address')}}" aria-label="Enter new email address">
+                                           placeholder="{{\App\CPU\translate('Enter new email address')}}" aria-label="Enter new email address" readonly>
                                 </div>
                             </div>
 

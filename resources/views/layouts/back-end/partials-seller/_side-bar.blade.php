@@ -1,7 +1,7 @@
 <style>
     .navbar-vertical .nav-link {
         color: #041562;
-        
+
     }
 
     .navbar .nav-link:hover {
@@ -114,10 +114,10 @@
                                                 </span>
                                             </span>
                                             </a>
-                                        </li> 
+                                        </li>
                                     </ul>
-                                </li> 
-                            @endif                      
+                                </li>
+                            @endif
                         @endif
 
                         <!-- End POS -->
@@ -135,7 +135,7 @@
                                     {{\App\CPU\translate('orders')}}
                                 </span>
                             </a>
-                            
+
                             <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
                                 style="display: {{Request::is('seller/order*')?'block':'none'}}">
 
@@ -257,10 +257,14 @@
                                         <span class="text-truncate">{{\App\CPU\translate('Products')}}</span>
                                     </a>
                                 </li>
+                                @php($stock_limit = \App\CPU\Helpers::get_business_settings('stock_limit'))
                                 <li class="nav-item {{Request::is('seller/product/stock-limit-list/in_house')?'active':''}}">
                                     <a class="nav-link " href="{{route('seller.product.stock-limit-list',['in_house', ''])}}">
                                         <span class="tio-circle nav-indicator-icon"></span>
                                         <span class="text-truncate">{{\App\CPU\translate('stock_limit_products')}}</span>
+                                        <span class="badge badge-soft-danger badge-pill ml-1">
+                                            {{\App\Model\Product::where(['added_by' => 'seller', 'user_id' => auth('seller')->id()])->where('request_status',1)->where('current_stock', '<', $stock_limit)->count()}}
+                                        </span>
                                     </a>
                                 </li>
 
@@ -313,7 +317,7 @@
                                         </span>
                                     </a>
                                 </li>
-                                
+
                                 <li class="nav-item {{Request::is('seller/refund/list/approved')?'active':''}}">
                                     <a class="nav-link"
                                        href="{{route('seller.refund.list',['approved'])}}">

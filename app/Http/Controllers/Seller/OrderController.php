@@ -20,6 +20,7 @@ use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use function App\CPU\translate;
+use Rap2hpoutre\FastExcel\FastExcel;
 use App\CPU\CustomerManager;
 use App\CPU\Convert;
 
@@ -28,35 +29,40 @@ class OrderController extends Controller
     public function list(Request $request, $status)
     {
         $sellerId = auth('seller')->id();
-        if ($status != 'all') {
-            $orders = Order::where(['seller_is' => 'seller'])->where(['seller_id' => $sellerId])->where(['order_status' => $status]);
-        } else {
-            $orders = Order::where(['seller_is' => 'seller'])->where(['seller_id' => $sellerId]);
-        }
-        
-        Order::where(['checked' => 0])->update(['checked' => 1]);
-
-        
 
         $search = $request['search'];
         $from = $request['from'];
         $to = $request['to'];
+        $status = $request['status'];
 
-        $key = explode(' ', $request['search']);
-        $orders = $orders->when($request->has('search') && $search!=null,function ($q) use ($key) {
-            $q->where(function($qq) use ($key){
-                foreach ($key as $value) {
-                    $qq->where('id', 'like', "%{$value}%")
-                        ->orWhere('order_status', 'like', "%{$value}%")
-                        ->orWhere('transaction_ref', 'like', "%{$value}%");
-                }});
-            })->when($from!=null , function($dateQuery) use($from, $to) {
-                $dateQuery->whereDate('created_at', '>=',$from)
-                                ->whereDate('created_at', '<=',$to);
+        $key = $request['search'] ? explode(' ', $request['search']) : '';
+
+        $orders = Order::with(['customer','shipping','shippingAddress','delivery_man','billingAddress'])
+            ->where('seller_is','seller')
+            ->where('order_type', 'default_type')
+            ->where(['seller_id'=>$sellerId])
+            ->when($status !='all', function($q) use($status){
+                $q->where(function($query) use ($status){
+                    $query->orWhere('order_status',$status)
+                        ->orWhere('payment_status',$status);
                 });
-        
-        $orders = $orders->where('order_type','default_type')->latest()->paginate(Helpers::pagination_limit())->appends(['search'=>$request['search'],'from'=>$request['from'],'to'=>$request['to']]);
-        return view('seller-views.order.list', compact('orders', 'search','from','to'));
+            })
+            ->when(!empty($from) && !empty($to),function($query) use($from,$to){
+                $query->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59']);
+            })
+            ->when($request->has('search') && $search!=null,function ($q) use ($key) {
+                $q->where(function($qq) use ($key){
+                    foreach ($key as $value) {
+                        $qq->where('id', 'like', "%{$value}%")
+                            ->orWhere('order_status', 'like', "%{$value}%")
+                            ->orWhere('transaction_ref', 'like', "%{$value}%");
+                    }
+                });
+            })
+            ->latest()->paginate(Helpers::pagination_limit())
+            ->appends(['search'=>$request['search'],'from'=>$request['from'],'to'=>$request['to']]);
+
+        return view('seller-views.order.list', compact('orders', 'search','from','to','status','sellerId'));
     }
 
     public function details($id)
@@ -126,13 +132,20 @@ class OrderController extends Controller
         $data["client_name"] = $order->customer !=null? $order->customer["f_name"] . ' ' . $order->customer["l_name"]:\App\CPU\translate('customer_not_found');
         $data["order"] = $order;
 
-        $mpdf_view = \View::make('seller-views.order.invoice')->with('order', $order)->with('seller', $seller);
+      $mpdf_view = \View::make('seller-views.order.invoice')->with('order', $order)->with('seller', $seller);
         Helpers::gen_mpdf($mpdf_view, 'order_invoice_', $order->id);
     }
 
     public function payment_status(Request $request)
     {
         if ($request->ajax()) {
+            $order = Order::find($request->id);
+
+            if(!isset($order->customer))
+            {
+                return response()->json(['customer_status'=>0],200);
+            }
+
             $order = Order::find($request->id);
             $order->payment_status = $request->payment_status;
             $order->save();
@@ -144,7 +157,12 @@ class OrderController extends Controller
     public function status(Request $request)
     {
         $order = Order::find($request->id);
-        
+
+        if(!isset($order->customer))
+        {
+            return response()->json(['customer_status'=>0],200);
+        }
+
         $wallet_status = Helpers::get_business_settings('wallet_status');
         $loyalty_point_status = Helpers::get_business_settings('loyalty_point_status');
 
@@ -158,7 +176,7 @@ class OrderController extends Controller
         if ($order->order_status == 'delivered') {
             return response()->json(['success' => 0, 'message' => 'order is already delivered.'], 200);
         }
-        
+
         try {
             if ($value) {
                 $data = [
@@ -187,7 +205,7 @@ class OrderController extends Controller
             }
         } catch (\Exception $e) {}
 
-        
+
         $order->order_status = $request->order_status;
         OrderManager::stock_update_on_order_status_change($order, $request->order_status);
 
@@ -221,5 +239,84 @@ class OrderController extends Controller
 
         Toastr::success(\App\CPU\translate('updated_successfully!'));
         return back();
+    }
+
+    public function bulk_export_data(Request $request, $status)
+    {
+        $sellerId = auth('seller')->id();
+        $from = $request['from'];
+        $to = $request['to'];
+
+        $orders = Order::with(['customer','shipping','shippingAddress','delivery_man','billingAddress'])
+                        ->where('seller_is','seller')
+                        ->where('order_type', 'default_type')
+                        ->where(['seller_id'=>$sellerId])
+                        ->when($from!=null && $to!=null,function($query) use($from,$to){
+                            $query->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59']);
+                        })
+                        ->when($status !='all', function($q) use($status){
+                            $q->where(function($query) use ($status){
+                                $query->orWhere('order_status',$status)
+                                    ->orWhere('payment_status',$status);
+                            });
+                        })
+                        ->latest()->get();
+
+        if ($orders->count()==0) {
+            Toastr::warning(\App\CPU\translate('Data is Not available !!!'));
+            return back();
+        }
+
+        $storage = [];
+
+        foreach ($orders as $item) {
+
+            $order_amount = $item->order_amount;
+            $discount_amount = $item->discount_amount;
+            $shipping_cost = $item->shipping_cost;
+            $extra_discount = $item->extra_discount;
+
+            $storage[] = [
+                'order_id'=>$item->id,
+                'Customer Id' => $item->customer_id,
+                'Customer Name'=> isset($item->customer) ? $item->customer->f_name. ' '.$item->customer->l_name:'not found',
+                'Order Group Id' => $item->order_group_id,
+                'Order Status' => $item->order_status,
+                'Order Amount' => Helpers::currency_converter($order_amount),
+                'Order Type' => $item->order_type,
+                'Coupon Code' => $item->coupon_code,
+                'Discount Amount' => Helpers::currency_converter($discount_amount),
+                'Discount Type' => $item->discount_type,
+                'Extra Discount' => Helpers::currency_converter($extra_discount),
+                'Extra Discount Type' => $item->extra_discount_type,
+                'Payment Status' => $item->payment_status,
+                'Payment Method' => $item->payment_method,
+                'Transaction_ref' => $item->transaction_ref,
+                'Verification Code' => $item->verification_code,
+                'Billing Address' => isset($item->billingAddress)? $item->billingAddress->address:'not found',
+                'Billing Address Data' => $item->billing_address_data,
+                'Shipping Type' => $item->shipping_type,
+                'Shipping Address' => isset($item->shippingAddress)? $item->shippingAddress->address:'not found',
+                'Shipping Method Id' => $item->shipping_method_id,
+                'Shipping Method Name' => isset($item->shipping)? $item->shipping->title:'not found',
+                'Shipping Cost' => Helpers::currency_converter($shipping_cost),
+                'Seller Id' => $item->seller_id,
+                'Seller Name' => isset($item->seller)? $item->seller->f_name. ' '.$item->seller->l_name:'not found',
+                'Seller Email'  => isset($item->seller)? $item->seller->email:'not found',
+                'Seller Phone'  => isset($item->seller)? $item->seller->phone:'not found',
+                'Seller Is' => $item->seller_is,
+                'Shipping Address Data' => $item->shipping_address_data,
+                'Delivery Type' => $item->delivery_type,
+                'Delivery Man Id' => $item->delivery_man_id,
+                'Delivery Service Name' => $item->delivery_service_name,
+                'Third Party Delivery Tracking Id' => $item->third_party_delivery_tracking_id,
+                'Checked' => $item->checked,
+
+            ];
+        }
+
+
+            return (new FastExcel($storage))->download('Order_All_details.xlsx');
+
     }
 }

@@ -17,7 +17,7 @@
     <div class="container py-4 py-lg-5 my-4"
          style="text-align: {{Session::get('direction') === "rtl" ? 'right' : 'left'}};">
         <div class="row justify-content-center">
-            <div class="col-md-6">
+            <div class="col-md-8">
                 <div class="card border-0 box-shadow">
                     <div class="card-body">
                         <h2 class="h4 mb-1">{{\App\CPU\translate('no_account')}}</h2>
@@ -124,7 +124,7 @@
                                 </div>
                                 <div class="mx-1">
                                     <a class="btn btn-outline-primary" href="{{route('customer.auth.login')}}">
-                                        <i class="fa fa-sign-in"></i> {{\App\CPU\translate('sing_in')}}
+                                        <i class="fa fa-sign-in"></i> {{\App\CPU\translate('sign_in')}}
                                     </a>
                                 </div>
                                 <div class="col-12 mt-3">

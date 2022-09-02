@@ -56,12 +56,12 @@
                                 </div>
                                 <div class="col-12 col-md-3">
                                     <div class="form-group">
-                                        <label class="input-label" for="priority">{{\App\CPU\translate('choose_priority_number')}} 
+                                        <label class="input-label" for="priority">{{\App\CPU\translate('choose_priority_number')}}
                                             <span>
                                             <i class="tio-info-outined" title="{{\App\CPU\translate('the_lowest_number_will_get_the_highest_priority')}}"></i>
                                             </span>
                                         </label>
-                                        
+
                                         <select class="form-control" name="priority" id="" required>
                                             @for ($i = 0; $i <= 10; $i++)
                                             <option
@@ -95,7 +95,7 @@
                                     </div>
                                 </div>
                             </div>
-                    
+
                             <button type="submit" class="btn btn-primary float-right">{{\App\CPU\translate('submit')}}</button>
                         </form>
                     </div>

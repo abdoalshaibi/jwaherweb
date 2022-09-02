@@ -223,3 +223,9 @@ function HSDemo() {
 }
 
 HSDemo();
+
+
+function formUrlChange(t){
+    let action = $(t).data('action');
+    $('#form-data').attr('action', action);
+}

@@ -25,7 +25,7 @@ class ChatController extends Controller
         }
 
         try {
-            $messages = Chatting::with(['seller_info', 'customer', 'shop'])->where('seller_id', $seller['id'])->latest()
+            $messages = Chatting::with(['seller_info', 'customer', 'shop'])->where('seller_id', $seller['id'])
             ->get();
             return response()->json($messages, 200);
         } catch (\Exception $e) {

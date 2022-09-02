@@ -79,6 +79,22 @@ class SellerController extends Controller
         return response()->json($reviews, 200);
     }
 
+    public function shop_product_reviews_status(Request $request)
+    {
+        $data = Helpers::get_seller_by_token($request);
+
+        if ($data['success'] == 1) {
+            $reviews = Review::find($request->id);
+            $reviews->status = $request->status;
+            $reviews->save();
+            return response()->json(['message'=>translate('status updated successfully!!')],200);
+        } else {
+            return response()->json([
+                'auth-001' => translate('Your existing session token does not authorize you any more')
+            ], 401);
+        }
+    }
+
     public function seller_info(Request $request)
     {
         $data = Helpers::get_seller_by_token($request);

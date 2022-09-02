@@ -21,7 +21,7 @@
         <!-- End Page Header -->
 
         <!-- Content Row -->
-        <div class="row gx-2 gx-lg-3">
+        <div class="row">
             <div class="col-sm-12 col-lg-12 mb-3 mb-lg-2">
                 <div class="card">
                     <div class="card-body">
@@ -29,91 +29,68 @@
                             @csrf
 
                             <div class="row">
-                                <div class="col-4">
-                                    <div class="form-group">
-                                        <label for="name">{{\App\CPU\translate('Type')}}</label>
-                                        <select class="form-control" name="coupon_type"
-                                                style="width: 100%" required>
-                                            {{--<option value="delivery_charge_free">Delivery Charge Free</option>--}}
-                                            <option value="discount_on_purchase">{{\App\CPU\translate('Discount_on_Purchase')}}</option>
-                                        </select>
-                                    </div>
+                                <div class="col-md-6 form-group">
+                                    <label for="name">{{\App\CPU\translate('Type')}}</label>
+                                    <select class="form-control" name="coupon_type"
+                                            style="width: 100%" required>
+                                        {{--<option value="delivery_charge_free">Delivery Charge Free</option>--}}
+                                        <option value="discount_on_purchase">{{\App\CPU\translate('Discount_on_Purchase')}}</option>
+                                    </select>
                                 </div>
-                                <div class="col-4">
-                                    <div class="form-group">
-                                        <label for="name">{{\App\CPU\translate('Title')}}</label>
-                                        <input type="text" name="title" class="form-control" id="title"
-                                               placeholder="{{\App\CPU\translate('Title')}}" required>
-                                    </div>
+                                <div class="col-md-6 form-group">
+                                    <label for="name">{{\App\CPU\translate('Code')}}</label>
+                                    <a href="javascript:void(0)" class="float-right" onclick="generateCode()">{{\App\CPU\translate('generate_code')}}</a>
+                                    <input type="text" name="code" value=""
+                                           class="form-control" id="code"
+                                           placeholder="" required>
                                 </div>
-                                <div class="col-4">
-                                    <div class="form-group">
-                                        <label for="name">{{\App\CPU\translate('Code')}}</label>
-                                        <input type="text" name="code" value="{{\Illuminate\Support\Str::random(10)}}"
-                                               class="form-control" id="code"
-                                               placeholder="" required>
-                                    </div>
+                                <div class="col-md-6 form-group">
+                                    <label for="name">{{\App\CPU\translate('Title')}}</label>
+                                    <input type="text" name="title" class="form-control" value="{{ old('title') }}" id="title"
+                                           placeholder="{{\App\CPU\translate('Title')}}" required>
                                 </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-3 col-6">
-                                    <div class="form-group">
-                                        <label for="name">{{\App\CPU\translate('start_date')}}</label>
-                                        <input id="start_date" type="date" name="start_date" class="form-control" 
-                                               placeholder="{{\App\CPU\translate('start date')}}" required>
-                                    </div>
+                                <div class="col-md-6 form-group">
+                                    <label for="name">{{\App\CPU\translate('discount_type')}}</label>
+                                    <select id="discount_type" class="form-control" name="discount_type"
+                                            onchange="checkDiscountType(this.value)"
+                                            style="width: 100%">
+                                        <option value="amount">{{\App\CPU\translate('Amount')}}</option>
+                                        <option value="percentage">{{\App\CPU\translate('percentage')}}</option>
+                                    </select>
                                 </div>
-                                <div class="col-md-3 col-6">
-                                    <div class="form-group">
-                                        <label for="name">{{\App\CPU\translate('expire_date')}}</label>
-                                        <input id="expire_date" type="date" name="expire_date" class="form-control" 
-                                               placeholder="{{\App\CPU\translate('expire date')}}" required>
-                                    </div>
+                                <div class="col-md-6 form-group">
+                                    <label for="name">{{\App\CPU\translate('start_date')}}</label>
+                                    <input id="start_date" type="date" name="start_date" value="{{ old('start_date') }}" class="form-control"
+                                           placeholder="{{\App\CPU\translate('start date')}}" required>
                                 </div>
-                                <div class="col-md-3 col-6">
-                                    <div class="form-group">
-                                        <label
-                                            for="exampleFormControlInput1">{{\App\CPU\translate('limit')}} {{\App\CPU\translate('for')}} {{\App\CPU\translate('same')}} {{\App\CPU\translate('user')}}</label>
-                                        <input type="number" name="limit" id="coupon_limit" class="form-control"
-                                               placeholder="{{\App\CPU\translate('EX')}}: {{\App\CPU\translate('10')}}">
-                                    </div>
+                                <div class="col-md-6 form-group">
+                                    <label for="name">{{\App\CPU\translate('expire_date')}}</label>
+                                    <input id="expire_date" type="date" name="expire_date" value="{{ old('expire_date') }}" class="form-control"
+                                           placeholder="{{\App\CPU\translate('expire date')}}" required>
                                 </div>
-                                <div class="col-md-3 col-6">
-                                    <div class="form-group">
-                                        <label for="name">{{\App\CPU\translate('discount_type')}}</label>
-                                        <select id="discount_type" class="form-control" name="discount_type"
-                                                onchange="checkDiscountType(this.value)"
-                                                style="width: 100%">
-                                            <option value="amount">{{\App\CPU\translate('Amount')}}</option>
-                                            <option value="percentage">{{\App\CPU\translate('percentage')}}</option>
-                                        </select>
-                                    </div>
+                                <div class="col-md-6 form-group">
+                                    <label for="name">{{\App\CPU\translate('Discount')}}</label>
+                                    <input type="number" min="1" max="1000000" name="discount" value="{{ old('discount') }}" class="form-control"
+                                           id="discount"
+                                           placeholder="{{\App\CPU\translate('discount')}}" required>
                                 </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-3 col-6">
-                                    <div class="form-group">
-                                        <label for="name">{{\App\CPU\translate('Discount')}}</label>
-                                        <input type="number" min="1" max="1000000" name="discount" class="form-control"
-                                               id="discount"
-                                               placeholder="{{\App\CPU\translate('discount')}}" required>
-                                    </div>
+                                <div class="col-md-6 form-group">
+                                    <label
+                                        for="exampleFormControlInput1">{{\App\CPU\translate('limit')}} {{\App\CPU\translate('for')}} {{\App\CPU\translate('same')}} {{\App\CPU\translate('user')}}</label>
+                                    <input type="number" name="limit" value="{{ old('limit') }}" min="0" id="coupon_limit" class="form-control"
+                                           placeholder="{{\App\CPU\translate('EX')}}: {{\App\CPU\translate('10')}}">
                                 </div>
-                                <div class="col-md-3 col-6">
+                                <div class="col-md-6 form-group">
                                     <label for="name">{{\App\CPU\translate('minimum_purchase')}}</label>
-                                    <input type="number" min="1" max="1000000" name="min_purchase" class="form-control"
+                                    <input type="number" min="1" max="1000000" name="min_purchase" value="{{ old('min_purchase') }}" class="form-control"
                                            id="minimum purchase"
                                            placeholder="{{\App\CPU\translate('minimum purchase')}}" required>
                                 </div>
-                                <div id="max-discount" class="col-md-3 col-6">
-                                    <div class="form-group">
-                                        <label for="name">{{\App\CPU\translate('maximum_discount')}}</label>
-                                        <input type="number" min="1" max="1000000" name="max_discount" 
-                                               class="form-control" id="maximum discount"
-                                               placeholder="{{\App\CPU\translate('maximum discount')}}" >
-                                    </div>
+                                <div class="col-md-6 form-group" id="max-discount">
+                                    <label for="name">{{\App\CPU\translate('maximum_discount')}}</label>
+                                    <input type="number" min="1" max="1000000" name="max_discount" value="{{ old('max_discount') }}"
+                                           class="form-control" id="maximum discount"
+                                           placeholder="{{\App\CPU\translate('maximum discount')}}" >
                                 </div>
                             </div>
 
@@ -165,11 +142,12 @@
                                     <th>{{\App\CPU\translate('coupon_type')}}</th>
                                     <th>{{\App\CPU\translate('Title')}}</th>
                                     <th>{{\App\CPU\translate('Code')}}</th>
-                                    <th>{{ \App\CPU\translate('user') }} {{ \App\CPU\translate('limit') }}</th>
-                                    <th>{{\App\CPU\translate('minimum_purchase')}}</th>
-                                    <th>{{\App\CPU\translate('maximum_discount')}}</th>
                                     <th>{{\App\CPU\translate('Discount')}}</th>
                                     <th>{{\App\CPU\translate('discount_type')}}</th>
+                                    <th>{{\App\CPU\translate('minimum_purchase')}}</th>
+                                    <th>{{\App\CPU\translate('maximum_discount')}}</th>
+                                    <th>{{ \App\CPU\translate('user') }} {{ \App\CPU\translate('limit') }}</th>
+                                    <th>{{ \App\CPU\translate('total_user_use') }}</th>
                                     <th>{{\App\CPU\translate('start_date')}}</th>
                                     <th>{{\App\CPU\translate('expire_date')}}</th>
                                     <th>{{\App\CPU\translate('Status')}}</th>
@@ -185,11 +163,12 @@
                                             {{substr($c['title'],0,20)}}
                                         </td>
                                         <td>{{$c['code']}}</td>
-                                        <td>{{ $c['limit'] }}</td>
-                                        <td>{{\App\CPU\BackEndHelper::set_symbol(\App\CPU\BackEndHelper::usd_to_currency($c['min_purchase']))}}</td>
-                                        <td>{{\App\CPU\BackEndHelper::set_symbol(\App\CPU\BackEndHelper::usd_to_currency($c['max_discount']))}}</td>
                                         <td>{{$c['discount_type']=='amount'?\App\CPU\BackEndHelper::set_symbol(\App\CPU\BackEndHelper::usd_to_currency($c['discount'])):$c['discount']}}</td>
                                         <td>{{$c['discount_type']}}</td>
+                                        <td>{{\App\CPU\BackEndHelper::set_symbol(\App\CPU\BackEndHelper::usd_to_currency($c['min_purchase']))}}</td>
+                                        <td>{{\App\CPU\BackEndHelper::set_symbol(\App\CPU\BackEndHelper::usd_to_currency($c['max_discount']))}}</td>
+                                        <td>{{ $c['limit'] }}</td>
+                                        <td>{{ $c['order_count'] }}</td>
                                         <td>{{date('d-M-y',strtotime($c['start_date']))}}</td>
                                         <td>{{date('d-M-y',strtotime($c['expire_date']))}}</td>
                                         <td>
@@ -213,7 +192,7 @@
                                             <a class="btn btn-danger btn-sm delete m-1"
                                                 href="javascript:"
                                                 onclick="form_alert('coupon-{{$c['id']}}','Want to delete this coupon ?')"
-                                                title="{{\App\CPU\translate('delete')}}"   
+                                                title="{{\App\CPU\translate('delete')}}"
                                                 >
                                                 <i class="tio-add-to-trash"></i>
                                             </a>
@@ -222,7 +201,7 @@
                                                 @csrf @method('delete')
                                             </form>
                                             </div>
-                                            
+
                                         </td>
                                     </tr>
                                 @endforeach
@@ -248,14 +227,17 @@
 
 @push('script')
 <script>
+
     $(document).ready(function() {
+            generateCode();
+
             let discount_type = $('#discount_type').val();
             if (discount_type == 'amount') {
                 $('#max-discount').hide()
             } else if (discount_type == 'percentage') {
                 $('#max-discount').show()
             }
-            //console.log(discount_type);
+
             $('#start_date').attr('min',(new Date()).toISOString().split('T')[0]);
             $('#expire_date').attr('min',(new Date()).toISOString().split('T')[0]);
         });
@@ -267,7 +249,7 @@
         $("#expire_date").on("change", function () {
             $('#start_date').attr('max',$(this).val());
         });
-        
+
         function checkDiscountType(val) {
             if (val == 'amount') {
                 $('#max-discount').hide()
@@ -276,9 +258,14 @@
             }
         }
 
-    
+        function  generateCode(){
+            let code = Math.random().toString(36).substring(2,12);
+            $('#code').val(code)
+        }
+
+
 </script>
-    
+
     <script src="{{asset('public/assets/back-end')}}/js/select2.min.js"></script>
     <script>
         $(".js-example-theme-single").select2({

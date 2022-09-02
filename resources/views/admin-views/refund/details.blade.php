@@ -36,13 +36,13 @@
                         </div>
                         <div class="col-6 col-md-4 mt-2 mt-md-0 text-capitalize">{{\App\CPU\translate('refund_status')}}:
                             @if ($refund->status == 'pending')
-                                <span  style="color: coral"> {{\App\CPU\translate($refund->status)}}}</span>
+                                <span  style="color: coral"> {{\App\CPU\translate($refund->status)}}</span>
                             @elseif($refund->status == 'approved')
-                                <span style="color: rgb(21, 115, 255)"> {{\App\CPU\translate($refund->status)}}}</span>
+                                <span style="color: rgb(21, 115, 255)"> {{\App\CPU\translate($refund->status)}}</span>
                             @elseif($refund->status == 'refunded')
-                                <span style="color: rgba(1, 255, 44, 0.979)"> {{\App\CPU\translate($refund->status)}}}</span>
+                                <span style="color: rgba(1, 255, 44, 0.979)"> {{\App\CPU\translate($refund->status)}}</span>
                             @elseif($refund->status == 'rejected')
-                                <span style="color: rgba(255, 42, 5, 0.979)"> {{\App\CPU\translate($refund->status)}}}</span>
+                                <span style="color: rgba(255, 42, 5, 0.979)"> {{\App\CPU\translate($refund->status)}}</span>
                             @endif
                         </div>
                         <div class="col-6 col-md-4 mt-2 mt-md-0 " >
@@ -303,7 +303,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="{{route('admin.business-settings.refund.refund-status-update')}}" id='order_place' method="post" class="row">
+                <form action="{{route('admin.refund-section.refund.refund-status-update')}}" id='order_place' method="post" class="row">
                     @csrf
                     <input type="hidden" name="id" value="{{$refund->id}}">
                     <div class="form-group col-12">
@@ -451,7 +451,7 @@ function refund_status_change(val)
                 }
             });
             $.post({
-                url: '{{route('admin.business-settings.refund.refund-status-update')}}',
+                url: '{{route('admin.refund-section.refund.refund-status-update')}}',
                 data: {
                     id:id,
                     status:val,

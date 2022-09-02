@@ -102,7 +102,7 @@
                                 {{$refund_list->firstItem()+$key}}
                             </td>
                             <td>
-                                <a href="{{route('admin.business-settings.refund.details',['id'=>$refund['id']])}}">
+                                <a href="{{route('admin.refund-section.refund.details',['id'=>$refund['id']])}}">
                                     {{$refund->id}}
                                 </a>
                             </td>
@@ -141,7 +141,7 @@
                             <td>
                                 <a  class="btn btn-info btn-sm"
                                     title="{{\App\CPU\translate('view')}}"
-                                    href="{{route('admin.business-settings.refund.details',['id'=>$refund['id']])}}">
+                                    href="{{route('admin.refund-section.refund.details',['id'=>$refund['id']])}}">
                                     <i class="tio-visible"></i> 
                                 </a>
                             </td>
@@ -183,7 +183,7 @@
     <script>
         function filter_order() {
             $.get({
-                url: '{{route('admin.business-settings.refund.inhouse-order-filter')}}',
+                url: '{{route('admin.refund-section.refund.inhouse-order-filter')}}',
                 contentType: false,
                 processData: false,
                 beforeSend: function () {

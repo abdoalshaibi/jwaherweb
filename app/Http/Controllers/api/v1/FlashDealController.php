@@ -27,8 +27,12 @@ class FlashDealController extends Controller
     public function get_products($deal_id)
     {
         $p_ids = FlashDealProduct::with(['product'])
-            ->where(['flash_deal_id' => $deal_id])
-            ->pluck('product_id')->toArray();
+                                    ->whereHas('product',function($q){
+                                        $q->active();
+                                    })
+                                    ->where(['flash_deal_id' => $deal_id])
+                                    ->pluck('product_id')->toArray();
+
         if (count($p_ids) > 0) {
             return response()->json(Helpers::product_data_formatting(Product::with(['rating'])->whereIn('id', $p_ids)->get(), true), 200);
         }

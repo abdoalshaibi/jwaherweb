@@ -116,6 +116,7 @@
                             <tr>
                                 <th scope="col">{{ \App\CPU\translate('sl')}}</th>
                                 <th scope="col">{{ \App\CPU\translate('title')}}</th>
+                                <th scope="col">{{ \App\CPU\translate('product')}} {{ \App\CPU\translate('info')}}</th>
                                 <th scope="col">{{ \App\CPU\translate('status')}}</th>
                                 <th scope="col" style="width: 100px">{{ \App\CPU\translate('action')}}</th>
                             </tr>
@@ -125,6 +126,9 @@
                                 <tr>
                                     <th scope="row">{{$deals->firstItem()+ $k}}</th>
                                     <td>{{$deal['title']}}</td>
+
+                                    <td>{{isset($deal->product)==true?$deal->product->name:'\App\CPU\translate("not selected")'}}</td>
+                                    
                                     <td>
                                         <label class="switch">
                                             <input type="checkbox" class="status"

@@ -31,9 +31,9 @@
             margin-right: 0px !important;
             display: flex;
 	        flex-direction: column;
-            -ms-flex: .4;  /* IE 10 */  
+            -ms-flex: .4;  /* IE 10 */
             flex: 1;
-            
+
         }
 
         .cz-countdown-hours {
@@ -45,7 +45,7 @@
             margin-right: 0px !important;
             display: flex;
 	        flex-direction: column;
-            -ms-flex: .4;  /* IE 10 */  
+            -ms-flex: .4;  /* IE 10 */
             flex: 1;
         }
 
@@ -58,7 +58,7 @@
             margin-right: 0px !important;
             display: flex;
 	        flex-direction: column;
-            -ms-flex: .4;  /* IE 10 */  
+            -ms-flex: .4;  /* IE 10 */
             flex: 1;
         }
         .cz-countdown-seconds {
@@ -70,12 +70,12 @@
             display: flex;
             justify-content: center;
 	        flex-direction: column;
-            -ms-flex: .4;  /* IE 10 */  
+            -ms-flex: .4;  /* IE 10 */
             flex: 1;
 
-            
+
         }
-        
+
 
         .flash_deal_title {
             font-weight: 700;
@@ -88,12 +88,12 @@
             font-size: 18px;
         }
 
-        
+
         .flex-center{
                 display: flex;
                 justify-content: space-between !important;
             }
-       
+
 
         .flash_deal_product_details .flash-product-price {
             font-weight: 700;
@@ -105,7 +105,7 @@
             width: 100%;
             height: 200px;
         }
-        
+
 
         @media (max-width: 600px) {
             .flash_deal_title {
@@ -132,7 +132,7 @@
                 justify-content: center !important;
             }
         }
-        
+
     </style>
 @endpush
 
@@ -157,7 +157,7 @@
                         <span class="flash_deal_title ">
                             {{ \App\CPU\translate('flash_deal')}}
                         </span>
-                        
+
                     </div>
                 </div>
                 <div class=" {{Session::get('direction') === "rtl" ? 'ml-2' : 'mr-2'}} ">
@@ -203,10 +203,10 @@
                         @foreach($deal->products as $dp)
                             @if (isset($dp->product))
                                 <div class="col-xl-2 col-sm-3 col-6" style="margin-bottom: 10px">
-                                    
+
                                     @include('web-views.partials._single-product',['product'=>$dp->product,'decimal_point_settings'=>$decimal_point_settings])
-                                    
-                                    
+
+
                                 </div>
                             @endif
                         @endforeach

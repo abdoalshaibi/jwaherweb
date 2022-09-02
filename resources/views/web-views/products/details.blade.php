@@ -179,7 +179,7 @@
             color: white;
         }
         .product-details-shipping-details{
-            background: #ffffff; 
+            background: #ffffff;
             border-radius: 5px;
             font-size: 14;
             font-weight: 400;
@@ -291,7 +291,7 @@
                                 </span>
                             </div>
 
-                    
+
 
                             <form id="add-to-cart-form" class="mb-2">
                                 @csrf
@@ -375,7 +375,7 @@
                                                 </span>
                                                 <input type="text" name="quantity"
                                                     class="form-control input-number text-center cart-qty-field"
-                                                    placeholder="1" value="1" min="1" max="100"
+                                                    placeholder="1" value="{{ $product->minimum_order_qty ?? 1 }}" min="{{ $product->minimum_order_qty ?? 1 }}" max="100"
                                                     style="padding: 0px !important;width: 40%;height: 25px;">
                                                 <span class="input-group-btn">
                                                     <button class="btn btn-number" type="button" data-type="plus"
@@ -387,17 +387,17 @@
                                             <div class="float-right"  id="chosen_price_div">
                                                 <div class="d-flex justify-content-center align-items-center {{Session::get('direction') === "rtl" ? 'ml-2' : 'mr-2'}}">
                                                     <div class="product-description-label"><strong>{{\App\CPU\translate('total_price')}}</strong> : </div>
-                                                    <strong id="chosen_price"></strong>
+                                                    &nbsp; <strong id="chosen_price"></strong>
                                                 </div>
-                                            
+
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
 
                                 <div class="row flex-start no-gutters d-none mt-2">
-                                    
+
 
                                     <div class="col-12">
                                         @if($product['current_stock']<=0)
@@ -430,7 +430,7 @@
                                     </button>
                                 </div>
                             </form>
-                            
+
                             <div style="text-align:{{Session::get('direction') === "rtl" ? 'right' : 'left'}};"
                                 class="sharethis-inline-share-buttons"></div>
                         </div>
@@ -482,7 +482,7 @@
                                                         <div class=" row d-flex justify-content-center align-items-center">
                                                             <div class="col-12 d-flex justify-content-center align-items-center">
                                                                 <h2 class="overall_review mb-2" style="font-weight: 500;font-size: 50px;">
-                                                                    {{$overallRating[1]}} 
+                                                                    {{$overallRating[1]}}
                                                                 </h2>
                                                             </div>
                                                             <div
@@ -652,13 +652,15 @@
                                                                 </div>
                                                             </div>
                                                         @endif
-                                                        
+
                                                     </div>
+                                                    @if(count($product->reviews) > 0)
                                                     <div class="col-12">
                                                         <div class="card-footer d-flex justify-content-center align-items-center">
                                                             <button class="btn" style="background: {{$web_config['primary_color']}}; color: #ffffff" onclick="load_review()">{{\App\CPU\translate('view more')}}</button>
                                                         </div>
                                                     </div>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
@@ -668,7 +670,7 @@
                         </div>
                     </div>
                 </div>
-                
+
             </div>
             <div class="col-md-3 ">
                 <div class="product-details-shipping-details">
@@ -681,7 +683,7 @@
                     </div>
                     <div  class="shipping-details-bottom-border">
                         <div style="padding: 25px;">
-                            <img class="{{Session::get('direction') === "rtl" ? 'float-right ml-2' : 'mr-2'}}" style="height: 20px;width:20px;" 
+                            <img class="{{Session::get('direction') === "rtl" ? 'float-right ml-2' : 'mr-2'}}" style="height: 20px;width:20px;"
                                 src="{{asset("public/assets/front-end/png/money.png")}}"
                                     alt="">
                             <span>{{ \App\CPU\translate('7 Days Return Policy')}}</span>
@@ -689,8 +691,8 @@
                     </div>
                     <div class="shipping-details-bottom-border">
                        <div style="padding: 25px;">
-                            <img class="{{Session::get('direction') === "rtl" ? 'float-right ml-2' : 'mr-2'}}" 
-                                style="height: 20px;width:20px;" 
+                            <img class="{{Session::get('direction') === "rtl" ? 'float-right ml-2' : 'mr-2'}}"
+                                style="height: 20px;width:20px;"
                                 src="{{asset("public/assets/front-end/png/Genuine.png")}}"
                                 alt="">
                             <span>{{ \App\CPU\translate('100% Authentic Products')}}</span>
@@ -718,7 +720,7 @@
                                             <span>{{\App\CPU\translate('Seller_info')}}</span>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
                                 <div class="col-4">
                                     @if (auth('customer')->id() == '')
@@ -737,13 +739,13 @@
 
                                 </div>
                                 <div class="col-12 msg-option mt-2" id="msg-option">
-                                    
+
                                         <form action="">
                                         <input type="text" class="seller_id" hidden seller-id="{{$product->seller->id }}">
                                         <textarea shop-id="{{$product->seller->shop->id}}" class="chatInputBox"
                                                 id="chatInputBox" rows="5"> </textarea>
 
-                                        
+
                                         <div class="row">
                                             <button class="btn btn-secondary" style="color: white;display: block;width: 47%;margin: 3px;"
                                                 id="cancelBtn">{{\App\CPU\translate('cancel')}}
@@ -751,13 +753,13 @@
                                             <button class="btn btn-success " style="color: white;display: block;width: 47%;margin: 3px;"
                                                 id="sendBtn">{{\App\CPU\translate('send')}}</button>
                                         </div>
-                                        
+
                                     </form>
-                                    
+
                                 </div>
-                            
+
                                 @php($products_for_review = App\Model\Product::where('added_by',$product->added_by)->where('user_id',$product->user_id)->withCount('reviews')->get())
-                                
+
                                 <?php
                                 $total_reviews = 0;
                                     foreach ($products_for_review as $item)
@@ -784,7 +786,7 @@
                                                 <div class="text-center">
                                                     <span style="color: {{$web_config['primary_color']}};font-weight: 700;
                                                     font-size: 26px;">
-                                                        {{$products_for_review->count()}}   
+                                                        {{$products_for_review->count()}}
                                                     </span><br>
                                                     <span style="font-size: 12px;">
                                                         {{\App\CPU\translate('products')}}
@@ -822,17 +824,17 @@
                                         </span><br>
                                     </div>
                                 </div>
-                                
+
                             </div>
-                            
+
                             @php($products_for_review = App\Model\Product::where('added_by','admin')->where('user_id',$product->user_id)->withCount('reviews')->get())
-                                
+
                             <?php
                             $total_reviews = 0;
                                 foreach ($products_for_review as $item)
                                    { $total_reviews += $item->reviews_count;
                                    }
-                            ?>   
+                            ?>
                             <div class="col-12 mt-2">
                                 <div class="row d-flex justify-content-between">
                                     <div class="col-6 ">
@@ -840,7 +842,7 @@
                                             <div class="text-center">
                                                 <span style="color: {{$web_config['primary_color']}};font-weight: 700;
                                                 font-size: 26px;">
-                                                    {{$total_reviews}}   
+                                                    {{$total_reviews}}
                                                 </span><br>
                                                 <span style="font-size: 12px;">
                                                     {{\App\CPU\translate('reviews')}}
@@ -853,7 +855,7 @@
                                             <div class="text-center">
                                                 <span style="color: {{$web_config['primary_color']}};font-weight: 700;
                                                 font-size: 26px;">
-                                                    {{$products_for_review->count()}}   
+                                                    {{$products_for_review->count()}}
                                                 </span><br>
                                                 <span style="font-size: 12px;">
                                                     {{\App\CPU\translate('products')}}
@@ -876,7 +878,7 @@
                         </div>
                     @endif
                 </div>
-                @php($more_product_from_seller = App\Model\Product::where('added_by',$product->added_by)->where('user_id',$product->user_id)->latest()->take(5)->get())
+                @php($more_product_from_seller = App\Model\Product::active()->where('added_by',$product->added_by)->where('user_id',$product->user_id)->latest()->take(5)->get())
                 <div style="padding: 25px;">
                     <div class="row d-flex justify-content-center">
                         <span style="text-align: center;font-weight: 700;
@@ -886,16 +888,16 @@
                     </div>
                 </div>
                 <div style="">
-                   
+
                     @foreach($more_product_from_seller as $item)
-                        
+
                             @include('web-views.partials.seller-products-product-details',['product'=>$item,'decimal_point_settings'=>$decimal_point_settings])
-                        
+
                     @endforeach
-                    
+
                 </div>
             </div>
-            
+
 
         </div>
     </div>
@@ -918,7 +920,7 @@
             </div>
         </div>
         <!-- Grid-->
-        
+
         <!-- Product-->
         <div class="row mt-4">
             @if (count($relatedProducts)>0)
@@ -977,7 +979,7 @@
         let load_review_count = 1;
         function load_review()
         {
-            
+
             $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -1004,7 +1006,7 @@
                 load_review_count++
         }
     </script>
-    
+
     {{-- Messaging with shop seller --}}
     <script>
         $('#contact-seller').on('click', function (e) {

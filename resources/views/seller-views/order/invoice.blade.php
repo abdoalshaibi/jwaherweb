@@ -351,7 +351,7 @@
             </th>
             <th style="text-align: right">
                 <h1 style="color: #030303; margin-bottom: 0px; font-size: 30px;text-transform: capitalize">{{\App\CPU\translate('invoice')}}</h1>
-                @if($order['seller_is']!='admin' && $order['seller']->gst != null)
+                @if($order['seller_is']!='admin' && isset($order['seller']) && $order['seller']->gst != null)
                     <h5 style="color: #030303; margin-bottom: 0px;text-transform: capitalize">{{\App\CPU\translate('GST')}}
                         : {{ $order['seller']->gst }}</h5>
                 @endif
@@ -401,7 +401,7 @@
                     <td valign="top">
                         <span class="h2" style="margin: 0px;">{{\App\CPU\translate('customer_info')}}: </span>
                         <div class="h4 montserrat-normal-600">
-                            <p style=" margin-top: 6px; margin-bottom:0px;">{{$order->customer['f_name'].' '.$order->customer['l_name']}}</p>
+                            <p style=" margin-top: 6px; margin-bottom:0px;">{{$order->customer !=null?$order->customer['f_name'].' '.$order->customer['l_name']:\App\CPU\translate('customer_name_not_found')}}</p>
                             @if (isset($order->customer) && $order->customer['id']!=0)
                             <p style=" margin-top: 6px; margin-bottom:0px;">{{$order->customer !=null? $order->customer['email']:\App\CPU\translate('email_not_found')}}</p>
                             <p style=" margin-top: 6px; margin-bottom:0px;">{{$order->customer !=null? $order->customer['phone']:\App\CPU\translate('phone_not_found')}}</p>

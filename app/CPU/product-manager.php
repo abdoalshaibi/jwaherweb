@@ -2,12 +2,13 @@
 
 namespace App\CPU;
 
-use App\Model\OrderDetail;
-use App\Model\Product;
 use App\Model\Review;
-use App\Model\ShippingMethod;
+use App\Model\Product;
+use App\Model\OrderDetail;
 use App\Model\Translation;
+use App\Model\ShippingMethod;
 use Illuminate\Support\Facades\DB;
+use Brian2694\Toastr\Facades\Toastr;
 
 class ProductManager
 {
@@ -22,8 +23,8 @@ class ProductManager
         /*$paginator->count();*/
         return [
             'total_size' => $paginator->total(),
-            'limit' => (integer)$limit,
-            'offset' => (integer)$offset,
+            'limit' => (int)$limit,
+            'offset' => (int)$offset,
             'products' => $paginator->items()
         ];
     }
@@ -38,8 +39,8 @@ class ProductManager
 
         return [
             'total_size' => $paginator->total(),
-            'limit' => (integer)$limit,
-            'offset' => (integer)$offset,
+            'limit' => (int)$limit,
+            'offset' => (int)$offset,
             'products' => $paginator->items()
         ];
     }
@@ -61,13 +62,13 @@ class ProductManager
         // }
         //change review to ratting
         $reviews = Product::with(['rating'])->active()
-        ->withCount(['reviews'])->orderBy('reviews_count', 'DESC')
-        ->paginate($limit, ['*'], 'page', $offset);
+            ->withCount(['reviews'])->orderBy('reviews_count', 'DESC')
+            ->paginate($limit, ['*'], 'page', $offset);
 
         return [
             'total_size' => $reviews->total(),
-            'limit' => (integer)$limit,
-            'offset' => (integer)$offset,
+            'limit' => (int)$limit,
+            'offset' => (int)$offset,
             'products' => $reviews
         ];
     }
@@ -91,8 +92,8 @@ class ProductManager
 
         return [
             'total_size' => $paginator->total(),
-            'limit' => (integer)$limit,
-            'offset' => (integer)$offset,
+            'limit' => (int)$limit,
+            'offset' => (int)$offset,
             'products' => $data
         ];
     }
@@ -119,8 +120,8 @@ class ProductManager
 
         return [
             'total_size' => $paginator->total(),
-            'limit' => (integer)$limit,
-            'offset' => (integer)$offset,
+            'limit' => (int)$limit,
+            'offset' => (int)$offset,
             'products' => $paginator->items()
         ];
     }
@@ -137,8 +138,8 @@ class ProductManager
 
         return [
             'total_size' => $paginator->total(),
-            'limit' => (integer)$limit,
-            'offset' => (integer)$offset,
+            'limit' => (int)$limit,
+            'offset' => (int)$offset,
             'products' => $paginator->items()
         ];
     }
@@ -155,26 +156,30 @@ class ProductManager
 
         return [
             'total_size' => $paginator->total(),
-            'limit' => (integer)$limit,
-            'offset' => (integer)$offset,
+            'limit' => (int)$limit,
+            'offset' => (int)$offset,
             'products' => $paginator->items()
         ];
     }
 
     public static function translated_product_search_web($name, $limit = 10, $offset = 1)
     {
-        $name = explode(' ', $name);
+        $key = explode(' ', $name);
         $product_ids = Translation::where('translationable_type', 'App\Model\Product')
             ->where('key', 'name')
-            ->where('value', 'like', "%{$name}%")
+            ->where(function ($q) use ($key) {
+                foreach ($key as $value) {
+                    $q->orWhere('value', 'like', "%{$value}%");
+                }
+            })
             ->pluck('translationable_id');
 
         $paginator = Product::WhereIn('id', $product_ids)->paginate($limit, ['*'], 'page', $offset);
 
         return [
             'total_size' => $paginator->total(),
-            'limit' => (integer)$limit,
-            'offset' => (integer)$offset,
+            'limit' => (int)$limit,
+            'offset' => (int)$offset,
             'products' => $paginator->items()
         ];
     }
@@ -263,8 +268,23 @@ class ProductManager
         /*$paginator->count();*/
         return [
             'total_size' => $paginator->total(),
-            'limit' => (integer)$limit,
-            'offset' => (integer)$offset,
+            'limit' => (int)$limit,
+            'offset' => (int)$offset,
+            'products' => $paginator->items()
+        ];
+    }
+
+    public static function get_seller_all_products($seller_id, $limit = 10, $offset = 1)
+    {
+        $paginator = Product::with(['rating'])
+            ->where(['user_id' => $seller_id, 'added_by' => 'seller'])
+            ->latest()
+            ->paginate($limit, ['*'], 'page', $offset);
+        /*$paginator->count();*/
+        return [
+            'total_size' => $paginator->total(),
+            'limit' => (int)$limit,
+            'offset' => (int)$offset,
             'products' => $paginator->items()
         ];
     }
@@ -275,9 +295,22 @@ class ProductManager
         $paginator = Product::with(['rating'])->active()->where('discount', '!=', 0)->latest()->paginate($limit, ['*'], 'page', $offset);
         return [
             'total_size' => $paginator->total(),
-            'limit' => (integer)$limit,
-            'offset' => (integer)$offset,
+            'limit' => (int)$limit,
+            'offset' => (int)$offset,
             'products' => $paginator->items()
         ];
+    }
+    public static function export_product_reviews($data)
+    {
+        $storage = [];
+        foreach ($data as $item) {
+            $storage[] = [
+                'product' => $item->product['name'] ?? '',
+                'customer' => isset($item->customer) ? $item->customer->f_name .' '. $item->customer->l_name : '' ,
+                'comment' => $item->comment,
+                'rating' => $item->rating
+            ];
+        }
+        return $storage;
     }
 }

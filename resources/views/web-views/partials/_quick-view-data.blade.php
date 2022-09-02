@@ -281,7 +281,7 @@
                                     </span>
                                     <input type="text" name="quantity"
                                            class="form-control input-number text-center cart-qty-field"
-                                           placeholder="1" value="1" min="1" max="100">
+                                           placeholder="1" value="{{ $product->minimum_order_qty ?? 1 }}" min="{{ $product->minimum_order_qty ?? 1 }}" max="100">
                                     <span class="input-group-btn">
                                         <button class="btn btn-number" type="button" data-type="plus"
                                                 data-field="quantity" style="padding: 10px">

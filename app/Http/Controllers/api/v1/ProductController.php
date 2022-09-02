@@ -73,6 +73,7 @@ class ProductController extends Controller
     {
         $products = ProductManager::get_best_selling_products($request['limit'], $request['offset']);
         $products['products'] = Helpers::product_data_formatting($products['products'], true);
+        
         return response()->json($products, 200);
     }
 

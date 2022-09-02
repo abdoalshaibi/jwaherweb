@@ -202,11 +202,11 @@
 @php($decimal_point_settings = \App\CPU\Helpers::get_business_settings('decimal_point_settings'))
     <!-- Page Title-->
     <div class="d-flex justify-content-center align-items-center mb-3" style="min-height: 70px;background:{{$web_config['primary_color']}}10;width:100%;">
-        
+
             <div class="row text-capitalize">
                 <span style="font-weight: 600;font-size: 18px;">{{str_replace("_"," ",$data['data_from'])}} {{\App\CPU\translate('products')}} {{ isset($brand_name) ? '('.$brand_name.')' : ''}}</span>
             </div>
-        
+
     </div>
     <div class="container rtl" style="text-align: {{Session::get('direction') === "rtl" ? 'right' : 'left'}};">
         <div class="row">
@@ -218,7 +218,7 @@
                     </div>
                 </a>
             </div>
-            
+
         </div>
     </div>
 
@@ -274,13 +274,13 @@
                             <div style="border-bottom: 1px solid #F3F5F9;padding:17px;border-top: 1px solid #F3F5F9;">
                                 <span class="widget-title" style="font-weight: 600;">{{\App\CPU\translate('Price')}} </span>
                             </div>
-                        
+
                             <div class="d-flex justify-content-between" style="width: 100%;padding: 14px;padding-top: 30px; ">
                                 <div style="width: 35%">
                                     <input style="background: #ffffff;"
                                            class="cz-filter-search form-control form-control-sm appended-form-control"
                                            type="number" value="0" min="0" max="1000000" id="min_price">
-                                    
+
                                 </div>
                                 <div style="width: 10%">
                                     <p style="margin-top:6px;">{{\App\CPU\translate('to')}}</p>
@@ -289,16 +289,16 @@
                                     <input style="background: #ffffff;" value="100" min="100" max="1000000"
                                            class="cz-filter-search form-control form-control-sm appended-form-control"
                                            type="number" id="max_price">
-                                
+
                                 </div>
-    
+
                                 <div style="width: 20%;background:#1B7FED;width:30px;height:35px;border-radius:3px;" class="d-flex justify-content-center align-items-center">
-                                    
-                                    <a class="" 
+
+                                    <a class=""
                                         onclick="searchByPrice()">
                                         <i style="font-size:10px;color:#ffffff" class="czi-arrow-{{Session::get('direction') === "rtl" ? 'left' : 'right'}}"></i>
                                     </a>
-                                    
+
                                 </div>
                             </div>
 
@@ -309,7 +309,7 @@
                             <div style="border-bottom: 1px solid #F3F5F9;padding:17px;border-top: 1px solid #F3F5F9;">
                                 <span class="widget-title" style="font-weight: 700;">{{\App\CPU\translate('brands')}}</span>
                             </div>
-                            
+
                             <div class="input-group-overlay input-group-sm" style="width: 100%;padding: 14px;padding-top: 30px; ">
                                 <input style="background: #ffffff;padding: 22px;font-size: 13px;border-radius: 5px !important;{{Session::get('direction') === "rtl" ? 'padding-right: 32px;' : ''}}" placeholder="Search brand"
                                        class="cz-filter-search form-control form-control-sm appended-form-control"
@@ -321,15 +321,15 @@
                                     </span>
                                 </div>
                             </div>
-                            <ul id="lista1" 
+                            <ul id="lista1"
                                 style="max-height: 12rem;width: 100%;padding: 0px 0px 14px 14px;"
                                 data-simplebar data-simplebar-auto-hide="false">
-                                @foreach(\App\CPU\BrandManager::get_brands() as $brand)
+                                @foreach(\App\CPU\BrandManager::get_active_brands() as $brand)
                                     <div class="brand mt-2 for-brand-hover {{Session::get('direction') === "rtl" ? 'mr-2' : ''}}" id="brand">
                                         <li style="cursor: pointer;padding: 2px;padding-right:15px;" class="flex-between"
                                             onclick="location.href='{{route('products',['id'=> $brand['id'],'data_from'=>'brand','page'=>1])}}'">
                                             <div >
-                                                {{ $brand['name'] }} 
+                                                {{ $brand['name'] }}
                                             </div>
                                             @if($brand['brand_products_count'] > 0 )
                                                 <div style="background: #F3F5F9;
@@ -407,9 +407,9 @@
                     </div>
                 </div>
 
-                
-                
-                
+
+
+
             </aside>
             <div id="mySidepanel" class="sidepanel">
                 <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
@@ -608,19 +608,19 @@
                             {{-- if need data from also --}}
                             {{-- <h1 class="h3 text-dark mb-0 headerTitle text-uppercase">{{\App\CPU\translate('product_by')}} {{$data['data_from']}} ({{ isset($brand_name) ? $brand_name : $data_from}})</h1> --}}
                             <h1 class="{{Session::get('direction') === "rtl" ? 'mr-3' : 'ml-3'}}">
-                            
+
                                 <label id="price-filter-count"> {{$products->total()}} {{\App\CPU\translate('items found')}} </label>
                             </h1>
                         </div>
                         <div class="col-md-6 m-2 m-md-0 d-flex  align-items-center ">
-    
+
                             <button class="openbtn text-{{Session::get('direction') === "rtl" ? 'right' : 'left'}}" onclick="openNav()">
                                 <div >
                                     <i class="fa fa-filter"></i>
                                     {{\App\CPU\translate('filter')}}
                                 </div>
                             </button>
-    
+
                             <div class="" style="width: 100%">
                                 <form id="search-form" action="{{ route('products') }}" method="GET">
                                     <input hidden name="data_from" value="{{$data['data_from']}}">

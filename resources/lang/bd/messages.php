@@ -2028,4 +2028,11 @@
   'phone_not_found' => 'Phone not found',
   'fund_added_successfully' => 'Fund added successfully',
   'Rewared by company admin' => 'Rewared by company admin',
+  'delete_account' => 'Delete account',
+  'order_settings' => 'Order settings',
+  'refund_management' => 'Refund management',
+  'cart_empty_warning' => 'Cart empty warning',
+  'product_code_sku' => 'Product code sku',
+  'generate' => 'Generate',
+  'code' => 'Code',
 );

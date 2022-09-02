@@ -12,7 +12,7 @@
         <div class="card-body">
              @php($refund_day_limit=\App\CPU\Helpers::get_business_settings('refund_day_limit'))
             
-            <form action="{{route('admin.business-settings.web-config.refund-update')}}" method="post">
+            <form action="{{route('admin.refund-section.refund-update')}}" method="post">
             @csrf
             <div class="row">
                 <div class="col-12">

@@ -83,6 +83,7 @@ class ConfigController extends Controller
             'decimal_point_settings'=>Helpers::get_business_settings('decimal_point_settings'),
             'inhouse_selected_shipping_type'=>$shipping_type,
             'billing_input_by_customer'=>Helpers::get_business_settings('billing_input_by_customer'),
+            'minimum_order_limit'=>Helpers::get_business_settings('minimum_order_limit'),
             'wallet_status'=>Helpers::get_business_settings('wallet_status'),
             'loyalty_point_status'=>Helpers::get_business_settings('loyalty_point_status'),
             'loyalty_point_exchange_rate'=>Helpers::get_business_settings('loyalty_point_exchange_rate'),

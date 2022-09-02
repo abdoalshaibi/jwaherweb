@@ -344,38 +344,7 @@
                                    required>
                         </div>
                     </div>
-                    <div class="col-md-4 col-12">
-                        @php($billing_input_by_customer=\App\CPU\Helpers::get_business_settings('billing_input_by_customer'))
-                        <div class="form-group">
-                            <label>{{\App\CPU\translate('billing_input_by_customer')}}</label><small
-                                style="color: red">*</small>
-                            <div class="input-group input-group-md-down-break">
-                                <!-- Custom Radio -->
-                                <div class="form-control">
-                                    <div class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input" value="1"
-                                               name="billing_input_by_customer"
-                                               id="billing_input_by_customer1" {{$billing_input_by_customer==1?'checked':''}}>
-                                        <label class="custom-control-label"
-                                               for="billing_input_by_customer1">{{\App\CPU\translate('active')}}</label>
-                                    </div>
-                                </div>
-                                <!-- End Custom Radio -->
-
-                                <!-- Custom Radio -->
-                                <div class="form-control">
-                                    <div class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input" value="0"
-                                               name="billing_input_by_customer"
-                                               id="billing_input_by_customer2" {{$billing_input_by_customer==0?'checked':''}}>
-                                        <label class="custom-control-label"
-                                               for="billing_input_by_customer2">{{\App\CPU\translate('deactive')}}</label>
-                                    </div>
-                                </div>
-                                <!-- End Custom Radio -->
-                            </div>
-                        </div>
-                    </div>
+                    
                 </div>
 
                 @php($tz=\App\Model\BusinessSetting::where('type','timezone')->first())

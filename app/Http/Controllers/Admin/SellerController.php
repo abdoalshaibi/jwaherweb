@@ -47,7 +47,12 @@ class SellerController extends Controller
 
     public function view(Request $request, $id, $tab = null)
     {
-        $seller = Seller::findOrFail($id);
+        $seller = Seller::find($id);
+        if(!isset($seller))
+        {
+            Toastr::error('Seller not found,It may be deleted!');
+            return back();
+        }
         if ($tab == 'order') {
             $id = $seller->id;
             $orders = Order::where(['seller_is'=>'seller'])->where(['seller_id'=>$id])->where('order_type','default_type')->latest()->paginate(Helpers::pagination_limit());

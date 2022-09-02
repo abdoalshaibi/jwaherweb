@@ -57,8 +57,8 @@ class FileManagerController extends Controller
             // Storage::disk('local')->put($request->path.'/'. $name, file_get_contents($file));
 
         }
-        Toastr::success(trans('messages.image_uploaded_successfully'));
-        return back()->with('success', trans('messages.image_uploaded_successfully'));
+        Toastr::success(\App\CPU\translate('image_uploaded_successfully'));
+        return back()->with('success', \App\CPU\translate('image_uploaded_successfully'));
     }
 
 

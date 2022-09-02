@@ -27,34 +27,40 @@
                               style="text-align: {{Session::get('direction') === "rtl" ? 'right' : 'left'}};"
                               enctype="multipart/form-data">
                             @csrf
-                            <div class="form-group">
-                                <label class="input-label"
-                                       for="exampleFormControlInput1">{{\App\CPU\translate('Title')}} </label>
-                                <input type="text" name="title" class="form-control" placeholder="{{\App\CPU\translate('New notification')}}"
-                                       required>
-                            </div>
-                            <div class="form-group">
-                                <label class="input-label"
-                                       for="exampleFormControlInput1">{{\App\CPU\translate('Description')}} </label>
-                                <textarea name="description" class="form-control" required></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label>{{\App\CPU\translate('Image')}} </label><small style="color: red"> ( {{\App\CPU\translate('Ratio_1:1')}}  )</small>
-                                <div class="custom-file" style="text-align: left">
-                                    <input type="file" name="image" id="customFileEg1" class="custom-file-input"
-                                           accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*">
-                                    <label class="custom-file-label" for="customFileEg1">{{\App\CPU\translate('Choose file')}}</label>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="input-label"
+                                               for="exampleFormControlInput1">{{\App\CPU\translate('Title')}} </label>
+                                        <input type="text" name="title" class="form-control" placeholder="{{\App\CPU\translate('New notification')}}"
+                                               required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="input-label"
+                                               for="exampleFormControlInput1">{{\App\CPU\translate('Description')}} </label>
+                                        <textarea name="description" class="form-control" required></textarea>
+                                    </div>
                                 </div>
-                                <hr>
-                                <center>
-                                    <img style="width: 20%; border: 1px solid; border-radius: 10px;" id="viewer"
-                                         onerror="this.src='{{asset('public/assets/front-end/img/image-place-holder.png')}}'"
-                                         src="{{asset('public/assets/admin/img/900x400/img1.jpg')}}" alt="image"/>
-                                </center>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>{{\App\CPU\translate('Image')}} </label><small style="color: red"> ( {{\App\CPU\translate('Ratio_1:1')}}  )</small>
+                                        <div class="custom-file" style="text-align: left">
+                                            <input type="file" name="image" id="customFileEg1" class="custom-file-input"
+                                                   accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*">
+                                            <label class="custom-file-label" for="customFileEg1">{{\App\CPU\translate('Choose file')}}</label>
+                                        </div>
+                                        <hr>
+                                        <center>
+                                            <img style="width: 20%; border: 1px solid; border-radius: 10px;" id="viewer"
+                                                 onerror="this.src='{{asset('public/assets/front-end/img/image-place-holder.png')}}'"
+                                                 src="{{asset('public/assets/admin/img/900x400/img1.jpg')}}" alt="image"/>
+                                        </center>
+                                    </div>
+                                </div>
                             </div>
-                            
-                            <button type="submit"
-                                    class="btn btn-primary float-right">{{\App\CPU\translate('Send')}}  {{\App\CPU\translate('Notification')}}  </button>
+
+                            <button type="submit" class="btn btn-primary float-right">{{\App\CPU\translate('Send')}}  {{\App\CPU\translate('Notification')}}  </button>
                         </form>
                     </div>
                 </div>
@@ -63,28 +69,23 @@
             <div class="col-sm-12 col-lg-12 mb-3 mb-lg-2">
                 <hr>
                 <div class="card">
-                    <div class="card-header">
-                        <div class="row justify-content-between align-items-center flex-grow-1 mx-1">
-                            <div class="flex-between">
-                                <div>{{ \App\CPU\translate('Notification_Table')}}</div>
-                                <div class="mx-1"><h5 style="color: red;">({{ $notifications->total() }})</h5></div>
-                            </div>
-                            <div style="width: 40vw;">
-                                <!-- Search -->
-                                <form action="{{ url()->current() }}" method="GET">
-                                    <div class="input-group input-group-merge input-group-flush">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text">
-                                                <i class="tio-search"></i>
-                                            </div>
+                    <div class="row card-header">
+                        <div class="col-md-6">
+                            {{ \App\CPU\translate('Notification_Table')}} <span class="text-danger bold">({{ $notifications->total() }})</span>
+                        </div>
+                        <div class="col-md-6">
+                            <form action="{{ url()->current() }}" method="GET">
+                                <div class="input-group input-group-merge input-group-flush">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            <i class="tio-search"></i>
                                         </div>
-                                        <input id="datatableSearch_" type="search" name="search" class="form-control"
-                                            placeholder="{{\App\CPU\translate('Search by Title')}}" aria-label="Search orders" value="{{ $search }}" required>
-                                        <button type="submit" class="btn btn-primary">{{\App\CPU\translate('search')}}</button>
                                     </div>
-                                </form>
-                                <!-- End Search -->
-                            </div>
+                                    <input id="datatableSearch_" type="search" name="search" class="form-control"
+                                           placeholder="{{\App\CPU\translate('Search by Title')}}" aria-label="Search orders" value="{{ $search }}" required>
+                                    <button type="submit" class="btn btn-primary">{{\App\CPU\translate('search')}}</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                     <!-- Table -->
@@ -97,7 +98,9 @@
                                 <th style="width: 40%">{{\App\CPU\translate('Title')}} </th>
                                 <th>{{\App\CPU\translate('Description')}} </th>
                                 <th>{{\App\CPU\translate('Image')}} </th>
+                                <th>{{\App\CPU\translate('Notification_Count')}} </th>
                                 <th>{{\App\CPU\translate('Status')}} </th>
+                                <th>{{\App\CPU\translate('Resend')}} </th>
                                 <th style="width: 10%">{{\App\CPU\translate('Action')}} </th>
                             </tr>
 
@@ -117,16 +120,22 @@
                                     </td>
                                     <td>
                                         <img style="height: 75px"
-                                             onerror="this.src='{{asset('public/assets/front-end/img/image-place-holder.png')}}'"
+                                            onerror="this.src='{{asset('public/assets/back-end/img/160x160/img2.jpg')}}'"
                                              src="{{asset('storage/app/public/notification')}}/{{$notification['image']}}">
                                         {{--<span class="d-block font-size-sm">{{$banner['image']}}</span>--}}
                                     </td>
+                                    <td>{{ $notification['notification_count'] }}</td>
                                     <td>
                                         <label class="switch">
                                             <input type="checkbox" class="status"
                                                    id="{{$notification['id']}}" {{$notification->status == 1?'checked':''}}>
                                             <span class="slider round"></span>
                                         </label>
+                                    </td>
+                                    <td>
+                                        <a href="javascript:void(0)" class="btn btn-success btn-sm" onclick="resendNotification(this)" data-id="{{ $notification->id }}">
+                                            <i class="tio-refresh"></i>
+                                        </a>
                                     </td>
                                     <td>
                                         <a class="btn btn-primary btn-sm edit"
@@ -265,5 +274,47 @@
         $("#customFileEg1").change(function () {
             readURL(this);
         });
+
+        function resendNotification(t) {
+            let id = $(t).data('id');
+
+            Swal.fire({
+                title: '{{\App\CPU\translate('Are_you_sure?')}}',
+                text: '{{\App\CPU\translate('Resend_notification')}}',
+                type: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: 'default',
+                confirmButtonColor: '#161853',
+                cancelButtonText: '{{\App\CPU\translate("No")}}',
+                confirmButtonText: '{{\App\CPU\translate("Yes")}}',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        url: '{{ route("admin.notification.resend-notification") }}',
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            id: id
+                        },
+                        beforeSend: function() {
+                            $('#loading').show();
+                        },
+                        success: function(res) {
+                            let toasterMessage = res.success ? toastr.success : toastr.info;
+
+                            toasterMessage(res.message, {
+                                CloseButton: true,
+                                ProgressBar: true
+                            });
+                            location.reload();
+                        },
+                        complete: function() {
+                            $('#loading').hide();
+                        }
+                    });
+                }
+            })
+        }
     </script>
 @endpush

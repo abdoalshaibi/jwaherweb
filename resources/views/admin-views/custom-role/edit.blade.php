@@ -139,6 +139,15 @@
                                                for="pos_management">{{\App\CPU\translate('pos_management')}}</label>
                                     </div>
                                 </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group form-check">
+                                        <input type="checkbox" name="modules[]" value="refund_management" class="form-check-input"
+                                               id="refund_management" {{in_array('refund_management',(array)json_decode($role['module_access']))?'checked':''}}>
+                                        <label class="form-check-label" style="{{Session::get('direction') === "rtl" ? 'margin-right: 1.25rem;' : ''}};"
+                                               for="refund_management">{{\App\CPU\translate('refund_management')}}</label>
+                                    </div>
+                                </div>
                             </div>
 
                             <button type="submit" class="btn btn-primary float-right">{{\App\CPU\translate('update')}}</button>

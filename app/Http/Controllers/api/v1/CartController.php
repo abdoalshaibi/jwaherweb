@@ -16,12 +16,39 @@ class CartController extends Controller
     public function cart(Request $request)
     {
         $user = Helpers::get_customer($request);
-        $cart = Cart::where(['customer_id' => $user->id])->get();
-        $cart->map(function ($data) {
-            $data['choices'] = json_decode($data['choices']);
-            $data['variations'] = json_decode($data['variations']);
-            return $data;
-        });
+        $cart = Cart::with('product:id,current_stock,minimum_order_qty,variation')
+            ->where(['customer_id' => $user->id])
+            ->get();
+
+        if($cart) {
+            foreach($cart as $key => $value){
+                if(!isset($value['product'])){
+                    $cart_data = Cart::find($value['id']);
+                    $cart_data->delete();
+
+                    unset($cart[$key]);
+                }
+            }
+
+            $cart->map(function ($data) {
+                $data['choices'] = json_decode($data['choices']);
+                $data['variations'] = json_decode($data['variations']);
+
+                $data['product']['total_current_stock'] = isset($data['product']['current_stock']) ? $data['product']['current_stock'] : 0;
+                if (isset($data['product']['variation']) && !empty($data['product']['variation'])) {
+                    $variants = json_decode($data['product']['variation']);
+                    foreach ($variants as $var) {
+                        if ($data['variant'] == $var->type) {
+                            $data['product']['total_current_stock'] = $var->qty;
+                        }
+                    }
+                }
+                unset($data['product']['variation']);
+
+                return $data;
+            });
+        }
+
         return response()->json($cart, 200);
     }
 

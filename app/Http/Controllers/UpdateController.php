@@ -23,7 +23,7 @@ class UpdateController extends Controller
         Helpers::setEnvironmentValue('SOFTWARE_ID', 'MzE0NDg1OTc=');
         Helpers::setEnvironmentValue('BUYER_USERNAME', $request['username']);
         Helpers::setEnvironmentValue('PURCHASE_CODE', $request['purchase_key']);
-        Helpers::setEnvironmentValue('SOFTWARE_VERSION', '10.0');
+        Helpers::setEnvironmentValue('SOFTWARE_VERSION', '11.0');
         Helpers::setEnvironmentValue('APP_MODE', 'live');
         Helpers::setEnvironmentValue('APP_NAME', '6valley' . time());
         Helpers::setEnvironmentValue('SESSION_LIFETIME', '60');
@@ -312,6 +312,13 @@ class UpdateController extends Controller
         {
             DB::table('business_settings')->updateOrInsert(['type' => 'shop_address'], [
                 'value' => ''
+            ]);
+        }
+
+        if(BusinessSetting::where(['type' => 'minimum_order_limit'])->first() == false)
+        {
+            DB::table('business_settings')->updateOrInsert(['type' => 'minimum_order_limit'], [
+                'value' => 1
             ]);
         }
 

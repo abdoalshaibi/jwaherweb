@@ -120,7 +120,7 @@
                                 <div><h5>{{\App\CPU\translate('address')}} : </h5></div>
                                 <div class="mx-1"><h5>{{$seller->seller->shop->address}}</h5></div>
                             </div>
-                           
+
                         </div>
                     </div>
                 </div>

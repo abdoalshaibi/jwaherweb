@@ -16,41 +16,71 @@ use App\Model\OrderDetail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\CPU\BackEndHelper;
+use Rap2hpoutre\FastExcel\FastExcel;
 
 class POSController extends Controller
 {
     public function order_list(Request $request)
     {
-        
         $search = $request['search'];
-        $from = $request['from'];
-        $to = $request['to'];
-        
-            
-        $orders = Order::with(['customer'])->where(['seller_is'=>'admin'])->where('order_status','delivered');
-            
-        
+        $from   = $request['from'];
+        $to     = $request['to'];
 
-        
-            $key = explode(' ', $request['search']);
-            
-            $orders = $orders->when($request->has('search') && $search!=null,function ($q) use ($key) {
-                $q->where(function($qq) use ($key){
-                    foreach ($key as $value) {
-                        $qq->where('id', 'like', "%{$value}%")
-                            ->orWhere('order_status', 'like', "%{$value}%")
-                            ->orWhere('transaction_ref', 'like', "%{$value}%");
-                    }});
-                })->when($from!=null , function($dateQuery) use($from, $to) {
-                    $dateQuery->whereDate('created_at', '>=',$from)
+        $key = $request['search'] ? explode(' ', $request['search']) : '';
+
+        $orders = Order::with(['customer'])
+                        ->where('order_type','POS')
+                        ->where(['seller_is'=>'admin'])
+                        ->where('order_status','delivered')
+                        ->when($request->has('search') && $search!=null,function ($q) use ($key) {
+                            $q->where(function($qq) use ($key){
+                                foreach ($key as $value) {
+                                    $qq->where('id', 'like', "%{$value}%")
+                                        ->orWhere('order_status', 'like', "%{$value}%")
+                                        ->orWhere('transaction_ref', 'like', "%{$value}%");
+                                }});
+                        })
+                        ->when(!empty($from) && !empty($to) , function($dateQuery) use($from, $to) {
+                            $dateQuery->whereDate('created_at', '>=',$from)
                                 ->whereDate('created_at', '<=',$to);
-                    });
-        
-        
+                        })
+                        ->latest()
+                        ->paginate(Helpers::pagination_limit())
+                        ->appends(['search'=>$request['search'],'from'=>$request['from'],'to'=>$request['to']]);
 
-        $orders = $orders->where('order_type','POS')->orderBy('id','desc')->paginate(Helpers::pagination_limit())->appends(['search'=>$request['search'],'from'=>$request['from'],'to'=>$request['to']]);
         return view('admin-views.pos.order.list', compact('orders', 'search','from','to'));
     }
+
+    public function bulk_export_data(Request $request)
+    {
+        $from   = $request['from'];
+        $to     = $request['to'];
+
+        $orders = Order::with(['customer'])
+            ->where('order_type','POS')
+            ->where(['seller_is'=>'admin'])
+            ->where('order_status','delivered')
+            ->when(!empty($from) && !empty($to) , function($query) use($from, $to) {
+                $query->whereDate('created_at', '>=',$from)
+                    ->whereDate('created_at', '<=',$to);
+            })->latest()->get();
+
+
+        $posData = array();
+        foreach($orders as $order){
+            $posData[] = array(
+                'Order ID'      => $order->id,
+                'Date'          => date('d M Y',strtotime($order->created_at)),
+                'Customer Name' => $order->customer ? $order->customer['f_name'].' '.$order->customer['l_name'] : \App\CPU\translate('invalid_customer_data'),
+                'Status'        => $order->payment_status == 'paid' ? 'paid' : 'unpaid',
+                'Total'         => \App\CPU\BackEndHelper::set_symbol(\App\CPU\BackEndHelper::usd_to_currency($order->order_amount)),
+                'Order Status'  => $order->order_status ?? '',
+            );
+        }
+
+        return (new FastExcel($posData))->download('POS_Order_All_data.xlsx');
+    }
+
     public function order_details($id)
     {
         $order = Order::with('details', 'shipping', 'seller')->where(['id' => $id])->first();
@@ -76,9 +106,9 @@ class POSController extends Controller
                 });
             })
             ->latest()->paginate(Helpers::pagination_limit());
-      
+
         $cart_id = 'wc-'.rand(10,1000);
-        
+
         if(!session()->has('current_user')){
             session()->put('current_user',$cart_id);
         }
@@ -145,11 +175,11 @@ class POSController extends Controller
         $str = '';
         $quantity = 0;
         $price = 0;
-        
+
         if ($request->has('color')) {
             $str = Color::where('code', $request['color'])->first()->name;
         }
-        
+
         foreach (json_decode(Product::find($request->id)->choice_options) as $key => $choice) {
             if ($str != null) {
                 $str .= '-' . str_replace(' ', '', $request[$choice->name]);
@@ -195,7 +225,7 @@ class POSController extends Controller
         }
 
         $product = Product::find($request->id);
-        
+
         $data = array();
         $data['id'] = $product->id;
         $str = '';
@@ -203,7 +233,7 @@ class POSController extends Controller
         $price = 0;
         $p_qty = 0;
         $current_qty = 0;
-        
+
         //check the color enabled or disabled for the product
         if ($request->has('color')) {
             $str = Color::where('code', $request['color'])->first()->name;
@@ -219,12 +249,12 @@ class POSController extends Controller
                 $str .= str_replace(' ', '', $request[$choice->name]);
             }
         }
-        
+
         $data['variations'] = $variations;
         $data['variant'] = $str;
         $cart = session($cart_id);
         if (session()->has($cart_id) && count($cart) > 0) {
-            
+
             foreach ($cart as $key => $cartItem) {
                 if (is_array($cartItem) && $cartItem['id'] == $request['id'] && $cartItem['variant'] == $str) {
                     return response()->json([
@@ -234,15 +264,15 @@ class POSController extends Controller
                 }
             }
 
-            
+
         }
-        
+
         //Check the string and decreases quantity for the stock
         if ($str != null) {
-            
+
             $count = count(json_decode($product->variation));
             for ($i = 0; $i < $count; $i++) {
-                
+
                 if (json_decode($product->variation)[$i]->type == $str) {
                     $p_qty = json_decode($product->variation)[$i]->qty;
                     $current_qty = $p_qty - $request['quantity'];
@@ -255,7 +285,7 @@ class POSController extends Controller
                     }
 
                     $price = json_decode($product->variation)[$i]->price;
-                    
+
                 }
             }
         } else {
@@ -268,7 +298,7 @@ class POSController extends Controller
                     'view' => view('admin-views.pos._cart',compact('cart_id'))->render()
                 ]);
             }
-            $price = $product->unit_price; 
+            $price = $product->unit_price;
         }
 
         $data['quantity'] = $request['quantity'];
@@ -350,22 +380,22 @@ class POSController extends Controller
             $user_id = explode('-',session('current_user'))[1];
             $user_type = 'sc';
         }
-        
+
         if($request->quantity>0){
-            
+
             $product = Product::find($request->key);
             $product_qty =0;
             $cart = session($cart_id);
             $keeper=[];
-            
+
             foreach ($cart as $item){
-                
+
                 if (is_array($item)) {
-                    
+
                     if ($item['id'] == $request->key) {
                         $str = '';
                         if($item['variations'])
-                        {   
+                        {
                             foreach($item['variations'] as $v)
                             {
                                 if($str!=null)
@@ -373,28 +403,28 @@ class POSController extends Controller
                                     $str .= '-' . str_replace(' ', '', $v);
                                 }else{
                                     $str .= str_replace(' ', '', $v);
-                                }                
+                                }
                             }
                         }
 
                         if ($str != null) {
-            
+
                             $count = count(json_decode($product->variation));
                             for ($i = 0; $i < $count; $i++) {
-                                
+
                                 if (json_decode($product->variation)[$i]->type == $str) {
-                                    
+
                                     $product_qty = json_decode($product->variation)[$i]->qty;
-                                    
+
                                 }
                             }
-                        } else 
+                        } else
                         {
                             $product_qty = $product->current_stock;
                         }
-                        
+
                         $qty = $product_qty - $request->quantity ;
-                        
+
                         if($qty < 0)
                         {
                             return response()->json([
@@ -548,7 +578,7 @@ class POSController extends Controller
             ]);
         }
 
-        
+
         $user_id = 0;
         $user_type = 'wc';
         if(Str::contains(session('current_user'), 'sc'))
@@ -569,14 +599,14 @@ class POSController extends Controller
             foreach($cart as $ct)
             {
                 if(is_array($ct))
-                { 
+                {
                     $product = Product::find($ct['id']);
                     $total_product_price += $ct['price'] * $ct['quantity'];
                     $product_discount += $ct['discount'] * $ct['quantity'];
                     $product_tax += Helpers::tax_calculation($ct['price'], $product['tax'], $product['tax_type'])*$ct['quantity'];
                 }
             }
-            
+
             if ($request->type == 'percent') {
                 $ext_discount = ($total_product_price / 100) * $request->discount;
             } else {
@@ -638,7 +668,7 @@ class POSController extends Controller
         }
         if (session()->has($cart_id)) {
             if (count(session()->get($cart_id)) < 1) {
-                Toastr::error('cart_empty_warning');
+                Toastr::error(\App\CPU\translate('cart_empty_warning'));
                 return back();
             }
         } else {
@@ -650,7 +680,7 @@ class POSController extends Controller
         $total_tax_amount = 0;
         $product_price = 0;
         $order_details = [];
-        
+
         $order_id = 100000 + Order::all()->count() + 1;
         if (Order::find($order_id)) {
             $order_id = Order::orderBy('id', 'DESC')->first()->id + 1;
@@ -696,7 +726,7 @@ class POSController extends Controller
                     if ($c['variant'] != null) {
                         $type = $c['variant'];
                         $var_store = [];
-                        
+
                         foreach (json_decode($product['variation'],true) as $var) {
                             if ($type == $var['type']) {
                                 $var['qty'] -= $c['quantity'];
@@ -707,13 +737,13 @@ class POSController extends Controller
                             'variation' => json_encode($var_store),
                         ]);
                     }
-        
+
                     Product::where(['id' => $product['id']])->update([
                         'current_stock' => $product['current_stock'] - $c['quantity']
                     ]);
 
                     DB::table('order_details')->insert($or_d);
-                } 
+                }
             }
         }
 

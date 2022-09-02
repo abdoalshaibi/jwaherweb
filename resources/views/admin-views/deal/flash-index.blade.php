@@ -81,7 +81,7 @@
                                 <div class="col-md-12">
                                     <div style="text-align:center;">
                                         <img style="width:70%;border: 1px solid; border-radius: 10px; max-height:200px;" id="viewer"
-                                            src="{{asset('public\assets\back-end\img\1920x400\img2.jpg')}}" alt="banner image"/>
+                                            src="{{asset('public\assets\back-end\img\1920x400\img1.jpg')}}" alt="banner image"/>
                                     </div>
                                 </div>
                             </div>
@@ -136,9 +136,12 @@
                                 <th>{{ \App\CPU\translate('Title')}}</th>
                                 <th>{{ \App\CPU\translate('Start')}}</th>
                                 <th>{{ \App\CPU\translate('end')}}</th>
+                                <th>{{ \App\CPU\translate('active')}} / {{ \App\CPU\translate('expired')}}</th>
                                 <th></th>
                                 <th>{{ \App\CPU\translate('status')}}</th>
                                 <th style="width: 50px">{{ \App\CPU\translate('action')}}</th>
+
+
                             </tr>
                             </thead>
                             <tbody>
@@ -148,6 +151,19 @@
                                     <td>{{$deal['title']}}</td>
                                     <td>{{date('d-M-y',strtotime($deal['start_date']))}}</td>
                                     <td>{{date('d-M-y',strtotime($deal['end_date']))}}</td>
+                                    <td>
+                                        @if(\Carbon\Carbon::parse($deal['end_date'])->isPast())
+
+                                            <span class="badge badge-danger">{{ \App\CPU\translate('expired')}} </span>
+
+                                        @else
+
+                                        <span class="badge badge-success"> {{ \App\CPU\translate('active')}} </span>
+
+                                        @endif
+
+
+                                    </td>
                                     <td>
                                         <a href="{{route('admin.deal.add-product',[$deal['id']])}}"
                                            class="btn btn-primary btn-sm">

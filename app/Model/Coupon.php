@@ -16,4 +16,8 @@ class Coupon extends Model
         'created_at'   => 'datetime',
         'updated_at'   => 'datetime',
     ];
+
+    public function order(){
+        return $this->hasMany(Order::class, 'coupon_code', 'code');
+    }
 }

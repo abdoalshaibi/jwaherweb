@@ -57,7 +57,7 @@
                                     </td>
                                     <td>
                                         @if ($refund_transaction->refund_id)
-                                        <a href="{{route('admin.business-settings.refund.details',['id'=>$refund_transaction['refund_id']])}}">
+                                        <a href="{{route('admin.refund-section.refund.details',['id'=>$refund_transaction['refund_id']])}}">
                                             {{$refund_transaction->refund_id}}
                                         </a>
                                         @else

@@ -29,6 +29,16 @@ class ProfileController extends Controller
 
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'f_name' => 'required',
+            'l_name' => 'required',
+            'phone' => 'required'
+        ], [
+            'f_name.required' => 'First name is required!',
+            'l_name.required' => 'Last name is required!',
+            'phone.required' => 'Phone number is required!',
+        ]);
+
         $seller = Seller::find(auth('seller')->id());
         $seller->f_name = $request->f_name;
         $seller->l_name = $request->l_name;

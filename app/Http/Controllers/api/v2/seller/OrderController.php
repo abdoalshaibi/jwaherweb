@@ -127,6 +127,10 @@ class OrderController extends Controller
         }
 
         $order = Order::find($request->id);
+        if(empty($order->customer))
+        {
+            return response()->json(['success' => 0, 'message' => translate("Customer account has been deleted. you can't update status!")], 202);
+        }
 
         $wallet_status = Helpers::get_business_settings('wallet_status');
         $loyalty_point_status = Helpers::get_business_settings('loyalty_point_status');
@@ -193,7 +197,7 @@ class OrderController extends Controller
     }
     public function refund_list(Request $request)
     {
-        
+
     }
 
     public function assign_third_party_delivery(Request $request)
@@ -251,7 +255,11 @@ class OrderController extends Controller
 
         $order = Order::find($request['order_id']);
         if (isset($order)) {
-            
+            if(empty($order->customer))
+            {
+                return response()->json(['success' => 0, 'message' => translate("Customer account has been deleted. you can't update status!")], 202);
+            }
+
             $order->payment_status = $request['payment_status'];
             $order->save();
             return response()->json(['message' => translate('Payment status updated')], 200);

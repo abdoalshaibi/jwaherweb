@@ -270,9 +270,6 @@ class BusinessSettingsController extends Controller
             'value' => $request['shop_address']
         ]);
 
-        DB::table('business_settings')->updateOrInsert(['type' => 'billing_input_by_customer'], [
-            'value' => $request['billing_input_by_customer']
-        ]);
 
         //web logo
         $webLogo = BusinessSetting::where(['type' => 'company_web_logo'])->first();

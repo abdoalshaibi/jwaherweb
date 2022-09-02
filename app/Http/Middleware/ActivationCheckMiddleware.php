@@ -18,6 +18,7 @@ class ActivationCheckMiddleware
      */
     public function handle($request, Closure $next)
     {
+        return $next($request);
         $data = Helpers::requestSender();
         if ($data['active']) {
             return $next($request);

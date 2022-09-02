@@ -57,8 +57,14 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h5>{{ \App\CPU\translate('Product')}} {{ \App\CPU\translate('Table')}}</h5>
+
+                    <div class="flex-between">
+                        <div><h5>{{ \App\CPU\translate('Product')}} {{ \App\CPU\translate('Table')}}</h5></div>
+                        <div class="mx-1"><h5 style="color: red;">({{ $products->total() }})</h5></div>
+                    </div>
                 </div>
+                
+
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-bordered" width="100%" cellspacing="0">

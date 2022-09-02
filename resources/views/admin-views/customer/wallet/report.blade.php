@@ -217,7 +217,7 @@
                                         {{\App\CPU\translate(''.$wt->transaction_type)}}
                                     </span>
                                 </td>
-                                <td>{{$wt->reference}}</td>
+                                <td>{{str_replace('_',' ',$wt->reference)}}</td>
                                 <!-- <td>{{$wt->admin_bonus}}</td> -->
                                 <td>{{date('Y/m/d '.config('timeformat'), strtotime($wt->created_at))}}</td>
                             </tr>

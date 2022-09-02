@@ -40,7 +40,7 @@
                                           required>{{$notification['description']}}</textarea>
                             </div>
                             <div class="form-group" style="text-align: left">
-                                <label>{{\App\CPU\translate('Image')}}</label><small style="color: red">* ( {{\App\CPU\translate('Ratio_1:1')}}  )</small>
+                                <label>{{\App\CPU\translate('Image')}}</label><small style="color: red"> ( {{\App\CPU\translate('Ratio_1:1')}}  )</small>
                                 <div class="custom-file">
                                     <input type="file" name="image" id="customFileEg1" class="custom-file-input"
                                            accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*">
@@ -48,8 +48,10 @@
                                 </div>
                                 <hr>
                                 <center>
-                                    <img style="width: 20%;max-height:200px;border: 1px solid; border-radius: 10px;" id="viewer"
-                                         src="{{asset('storage/app/public/notification')}}/{{$notification['image']}}"
+                                    <img style="width: 20%;max-height:200px;border: 1px solid; border-radius: 10px;" 
+                                        id="viewer"
+                                        onerror="this.src='{{asset('public/assets/back-end/img/160x160/img2.jpg')}}'"
+                                        src="{{asset('storage/app/public/notification')}}/{{$notification['image']}}"
                                          alt="image"/>
                                 </center>
                             </div>

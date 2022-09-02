@@ -54,6 +54,12 @@ class RefundController extends Controller
                 })->find($request->id);
 
         $user = User::find($refund->customer_id);
+        
+        if(!isset($user))
+        {
+            Toastr::warning(translate('This account has been deleted, you can not modify the status!!'));
+            return back();
+        }
 
         $wallet_status = Helpers::get_business_settings('wallet_status');
         $loyalty_point_status = Helpers::get_business_settings('loyalty_point_status');

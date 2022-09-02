@@ -32,14 +32,15 @@ class CouponController extends Controller
             $cou = new Coupon();
         }
 
-        $cou = $cou->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
+        $cou = $cou->withCount('order')->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
+
         return view('admin-views.coupon.add-new', compact('cou', 'search'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'code' => 'required',
+            'code' => 'required|unique:coupons',
             'title' => 'required',
             'start_date' => 'required',
             'expire_date' => 'required',
@@ -75,7 +76,7 @@ class CouponController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'code' => 'required',
+            'code' => 'required|unique:coupons,code,'.$id,
             'title' => 'required',
             'start_date' => 'required',
             'expire_date' => 'required',

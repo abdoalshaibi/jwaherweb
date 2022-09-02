@@ -58,6 +58,12 @@ class RefundController extends Controller
         $refund = RefundRequest::find($request->id);
         $user = User::find($refund->customer_id);
 
+        if(!isset($user))
+        {
+            Toastr::warning(translate('This account has been deleted, you can not modify the status!!'));
+            return back();
+        }
+
         $wallet_status = Helpers::get_business_settings('wallet_status');
         $loyalty_point_status = Helpers::get_business_settings('loyalty_point_status');
         $loyalty_point = CustomerManager::count_loyalty_point_for_amount($refund->order_details_id);
@@ -77,7 +83,7 @@ class RefundController extends Controller
             $order = Order::find($refund->order_id);
             if($order->seller_is == 'admin')
             {
-                $admin_wallet = AdminWallet::find($order->seller_id);
+                $admin_wallet = AdminWallet::where('admin_id',$order->seller_id)->first();
                 $admin_wallet->inhouse_earning = $admin_wallet->inhouse_earning - $refund->amount;
                 $admin_wallet->save();
 
@@ -97,7 +103,7 @@ class RefundController extends Controller
                 $transaction->save();
 
             }else{
-                $seller_wallet = SellerWallet::find($order->seller_id);
+                $seller_wallet = SellerWallet::where('seller_id',$order->seller_id)->first();
                 $seller_wallet->total_earning = $seller_wallet->total_earning - $refund->amount;
                 $seller_wallet->save();
 

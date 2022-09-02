@@ -128,7 +128,17 @@
 
                             <div class="form-group">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
+                                        <label for="code">{{ \App\CPU\translate('product_code_sku') }}
+                                            <span class="text-danger">*</span>
+                                            <a class="style-one-pro" style="cursor: pointer;"
+                                                onclick="document.getElementById('generate_number').value = getRndInteger()">{{ \App\CPU\translate('generate') }}
+                                                {{ \App\CPU\translate('code') }}</a></label>
+                                        <input type="number" minlength="5" id="generate_number" name="code"
+                                            class="form-control" value="{{ $product->code ? $product->code : '' }}"
+                                            placeholder="{{ \App\CPU\translate('code') }}" required>
+                                    </div>
+                                    <div class="col-md-4">
                                         <label for="name">{{\App\CPU\translate('Brand')}}</label>
                                         <select
                                             class="js-example-basic-multiple js-states js-example-responsive form-control"
@@ -141,7 +151,7 @@
                                         </select>
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <label for="name">{{\App\CPU\translate('Unit')}}</label>
                                         <select
                                             class="js-example-basic-multiple js-states js-example-responsive form-control"
@@ -243,7 +253,7 @@
                                     </div>
                                 </div>
                                 <div class="row pt-4">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <label class="control-label">{{\App\CPU\translate('Tax')}}</label>
                                         <label class="badge badge-info">{{\App\CPU\translate('Percent')}} ( % )</label>
                                         <input type="number" min="0" value={{ $product->tax }} step="0.01"
@@ -259,7 +269,7 @@
                                                placeholder="{{\App\CPU\translate('Discount') }}" name="discount"
                                                class="form-control" required>
                                     </div>
-                                    <div class="col-md-2" style="padding-top: 30px;">
+                                    <div class="col-md-4" style="padding-top: 30px;">
                                         <select
                                             class="form-control js-select2-custom"
                                             name="discount_type">
@@ -273,25 +283,31 @@
                                     @include('seller-views.product.partials._edit_sku_combinations',['combinations'=>json_decode($product['variation'],true)])
                                 </div>
                                 <div class="row">
-                                    <div class="col-sm-6 col-md-6 col-lg-4" id="quantity">
+                                    <div class="col-md-3" id="quantity">
                                         <label
                                             class="control-label">{{\App\CPU\translate('total')}} {{\App\CPU\translate('Quantity')}} </label>
                                         <input type="number" min="0" value={{ $product->current_stock }} step="1"
                                                placeholder="{{\App\CPU\translate('Quantity') }}"
                                                name="current_stock" class="form-control" required>
                                     </div>
-                                    <div class="col-sm-6 col-md-6 col-lg-4" id="shipping_cost">
+                                    <div class="col-md-3" id="minimum_order_qty">
+                                        <label class="control-label">{{\App\CPU\translate('minimum_order_quantity')}}</label>
+                                        <input type="number" min="1" value={{ $product->minimum_order_qty }} step="1"
+                                               placeholder="{{\App\CPU\translate('minimum_order_quantity') }}"
+                                               name="minimum_order_qty" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-3" id="shipping_cost">
                                         <label
                                             class="control-label">{{\App\CPU\translate('shipping_cost')}} </label>
                                         <input type="number" min="0" value="{{\App\CPU\BackEndHelper::usd_to_currency($product->shipping_cost)}}" step="1"
                                                placeholder="{{\App\CPU\translate('shipping_cost')}}"
                                                name="shipping_cost" class="form-control" required>
                                     </div>
-                                    <div class="col-md-6 col-lg-4 mt-sm-1" id="shipping_cost_multy">
+                                    <div class="col-md-3" id="shipping_cost_multy">
                                         <div>
                                             <label
                                             class="control-label">{{\App\CPU\translate('shipping_cost_multiply_with_quantity')}} </label>
-                                        
+
                                         </div>
                                         <div>
                                             <label class="switch">
@@ -394,13 +410,13 @@
                         </div>
                     </div>
 
-                    <div class="card ">
+                    <div class="card card-footer">
                         <div class="row">
                             <div class="col-md-12" style="padding-top: 20px">
                                 @if($product['request_status'] == 2)
-                                    <button type="button" onclick="check()" class="btn btn-primary">{{ \App\CPU\translate('resubmit') }}</button>
+                                    <button type="button" onclick="check()" class="btn btn-primary float-right">{{ \App\CPU\translate('resubmit') }}</button>
                                 @else
-                                    <button type="button" onclick="check()" class="btn btn-primary">{{ \App\CPU\translate('update') }}</button>
+                                    <button type="button" onclick="check()" class="btn btn-primary float-right">{{ \App\CPU\translate('update') }}</button>
                                 @endif
                             </div>
                         </div>

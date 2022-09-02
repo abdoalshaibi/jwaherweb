@@ -116,7 +116,7 @@
                                         </div>
                                         
                                     </div>
-                                    <button type="submit" class="btn btn-primary btn-user btn-block">{{\App\CPU\translate('Apply')}} {{\App\CPU\translate('Shop')}} </button>
+                                    <button type="submit" class="btn btn-primary btn-user btn-block" id="apply">{{\App\CPU\translate('Apply')}} {{\App\CPU\translate('Shop')}} </button>
                                 </form>
                                 <hr>
                                 

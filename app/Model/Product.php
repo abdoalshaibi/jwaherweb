@@ -29,10 +29,10 @@ class Product extends Model
         'purchase_price' => 'float',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
-        'shipping_cost'=>'float',
-        'multiply_qty'=> 'integer',
-        'temp_shipping_cost'=>'float',
-        'is_shipping_cost_updated'=>'integer'
+        'shipping_cost' => 'float',
+        'multiply_qty' => 'integer',
+        'temp_shipping_cost' => 'float',
+        'is_shipping_cost_updated' => 'integer'
     ];
 
     public function translations()
@@ -42,10 +42,20 @@ class Product extends Model
 
     public function scopeActive($query)
     {
-        return $query->whereHas('seller', function ($query) {
+        return $query->whereHas('brand', function ($query) {
+            $query->where(['status' => 1]);
+        })->where(['status' => 1])->sellerApproved();
+    }
+
+    public function scopeSellerApproved($query)
+    {
+        $query->whereHas('seller', function ($query) {
             $query->where(['status' => 'approved']);
-        })->where(['status' => 1])->orWhere(function ($query) {
-            $query->where(['added_by' => 'admin', 'status' => 1]);
+        })->orWhere(function ($query) {
+            $query->where(['added_by' => 'admin', 'status' => 1])
+                ->whereHas('brand', function ($query) {
+                    $query->where(['status' => 1]);
+                });
         });
     }
 
@@ -56,7 +66,7 @@ class Product extends Model
 
     public function reviews()
     {
-        return $this->hasMany(Review::class,'product_id');
+        return $this->hasMany(Review::class, 'product_id');
     }
 
     public function brand()
@@ -91,11 +101,12 @@ class Product extends Model
         return $this->hasMany(OrderDetail::class, 'product_id');
     }
 
+
     public function order_delivered()
     {
         return $this->hasMany(OrderDetail::class, 'product_id')
-                        ->where('delivery_status','delivered');
-                    
+            ->where('delivery_status', 'delivered');
+
     }
 
     public function wish_list()
@@ -124,12 +135,12 @@ class Product extends Model
         parent::boot();
         static::addGlobalScope('translate', function (Builder $builder) {
             $builder->with(['translations' => function ($query) {
-                if (strpos(url()->current(), '/api')){
+                if (strpos(url()->current(), '/api')) {
                     return $query->where('locale', App::getLocale());
-                }else{
+                } else {
                     return $query->where('locale', Helpers::default_lang());
                 }
-            },'reviews'])->withCount('reviews');
+            }, 'reviews'])->withCount('reviews');
         });
     }
 }

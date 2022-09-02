@@ -58,7 +58,6 @@
                                 <option value="order_desc" {{ $sort_oqrderQty== "order_desc"?'selected':''}}>{{\App\CPU\translate('order_sort_by_(high_to_low)')}}</option>
                                 </select>
                             </div>
-
                         </div>
                     </div>
                     <div class="card-body" style="padding: 0">
@@ -185,5 +184,45 @@
                 $('input[name="current_stock"]').attr("readonly", false);
             }
         }
+    </script>
+     <script>
+        // Call the dataTables jQuery plugin
+        $(document).ready(function () {
+            $('#dataTable').DataTable();
+        });
+
+        $(document).on('change', '.status', function () {
+            var id = $(this).attr("id");
+            if ($(this).prop("checked") == true) {
+                var status = 1;
+            } else if ($(this).prop("checked") == false) {
+                var status = 0;
+            }
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{route('seller.product.status-update')}}",
+                method: 'POST',
+                data: {
+                    id: id,
+                    status: status
+                },
+                success: function (data) {
+                    if(data.success == true) {
+                        toastr.success('{{\App\CPU\translate('Status updated successfully')}}');
+                    }
+                    else if(data.success == false) {
+                        toastr.error('{{\App\CPU\translate('Status updated failed. Product must be approved')}}');
+                        setTimeout(function(){
+                            location.reload();
+                        }, 2000);
+                    }
+                }
+            });
+        });
+
     </script>
 @endpush

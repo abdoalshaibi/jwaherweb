@@ -26,7 +26,7 @@
             <span class="step-count"><i class="czi-user-circle"></i></span>
         </div>
         <div class="step-label">
-            {{\App\CPU\translate('sing_in')}} / {{\App\CPU\translate('sing_up')}}
+            {{\App\CPU\translate('sign_in')}} / {{\App\CPU\translate('sign_up')}}
         </div>
     </a>
     <a class="step-item {{$step>=2?'active':''}} {{$step==2?'current':''}}" href="{{route('checkout-details')}}">

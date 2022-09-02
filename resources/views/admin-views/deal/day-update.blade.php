@@ -70,7 +70,7 @@
                                     $translate = [];
                                     foreach ($deal['translations'] as $t) {
                                         if ($t->locale == $lang && $t->key == "title") {
-                                            $translate[$lang]['title'] = $t->value;
+                                            $translate[$lang]['title'] = $t->value;      
                                         }
                                     }
                                 }

@@ -53,7 +53,8 @@ class NotificationController extends Controller
             $notification->image = 'null';
         }
 
-        $notification->status = 1;
+        $notification->status             = 1;
+        $notification->notification_count = 1;
         $notification->save();
 
         try {
@@ -100,6 +101,25 @@ class NotificationController extends Controller
             $data = $request->status;
             return response()->json($data);
         }
+    }
+
+    public function resendNotification(Request $request){
+        $notification = Notification::find($request->id);
+
+        $data = array();
+        try {
+            Helpers::send_push_notif_to_topic($notification);
+            $notification->notification_count += 1;
+            $notification->save();
+
+            $data['success'] = true;
+            $data['message'] = \App\CPU\translate("Push notification successfully!");
+        } catch (\Exception $e) {
+            $data['success'] = false;
+            $data['message'] = \App\CPU\translate("Push notification failed!");
+        }
+
+        return $data;
     }
 
     public function delete(Request $request)

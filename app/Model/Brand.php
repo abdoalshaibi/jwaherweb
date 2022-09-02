@@ -18,9 +18,17 @@ class Brand extends Model
         'updated_at' => 'datetime',
     ];
 
+    public function scopeActive(){
+        return $this->where('status',1);
+    }
+
     public function brandProducts()
     {
         return $this->hasMany(Product::class)->active();
+    }
+
+    public function brandAllProducts(){
+        return $this->hasMany(Product::class);
     }
 
     public function translations()

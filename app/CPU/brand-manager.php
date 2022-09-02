@@ -16,4 +16,8 @@ class BrandManager
     {
         return Helpers::product_data_formatting(Product::active()->where(['brand_id' => $brand_id])->get(), true);
     }
+
+    public static function get_active_brands(){
+        return Brand::active()->withCount('brandProducts')->latest()->get();
+    }
 }

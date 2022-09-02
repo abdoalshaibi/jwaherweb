@@ -93,7 +93,7 @@ Route::group(['namespace' => 'Web','middleware'=>['maintenance_mode']], function
     Route::get('account-tickets', 'UserProfileController@account_tickets')->name('account-tickets');
     Route::get('order-cancel/{id}', 'UserProfileController@order_cancel')->name('order-cancel');
     Route::post('ticket-submit', 'UserProfileController@ticket_submit')->name('ticket-submit');
-
+    Route::get('account-delete/{id}','UserProfileController@account_delete')->name('account-delete');
     // Chatting start
     Route::get('chat-with-seller', 'ChattingController@chat_with_seller')->name('chat-with-seller');
     Route::get('messages', 'ChattingController@messages')->name('messages');
@@ -257,5 +257,7 @@ Route::get('liqpay-payment', 'LiqPayController@payment')->name('liqpay-payment')
 Route::any('liqpay-callback', 'LiqPayController@callback')->name('liqpay-callback');
 
 Route::get('/test', function (){
-    return view('welcome');
+    $product = \App\Model\Product::find(116);
+    $quantity = 6;
+    return view('seller-views.product.barcode-pdf', compact('product', 'quantity'));
 });

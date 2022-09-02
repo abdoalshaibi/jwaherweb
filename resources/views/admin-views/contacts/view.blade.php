@@ -130,12 +130,12 @@
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <h6>{{\App\CPU\translate('Subject')}}</h6>
-                                                    <input class="form-control" name="subject">
+                                                    <input class="form-control" name="subject" required>
                                                 </div>
                                                 <div class="col-md-12 mt-3">
                                                     <h6>{{\App\CPU\translate('Mail_Body')}}</h6>
                                                     <textarea class="form-control " name="mail_body" id="" rows="5"
-                                                              placeholder="{{\App\CPU\translate('Please_send_a_Feedback')}}"></textarea>
+                                                              placeholder="{{\App\CPU\translate('Please_send_a_Feedback')}}" required></textarea>
                                                 </div>
                                             </div>
                                         </div>

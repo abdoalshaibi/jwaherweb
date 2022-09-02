@@ -8,12 +8,12 @@
 
             </h3>
         </div>
-        
+
         <div class="card">
             <div class="card-header">
-                <div class="row d-flex justify-content-between align-items-center flex-grow-1">
-                    <div class="col-md-4 col-12">
-                        <form action="{{ url()->current() }}" method="GET">
+                <div class="row flex-between justify-content-between flex-grow-1">
+                    <div class="col-md-3 mt-2">
+                        <form action="" method="GET">
                             <!-- Search -->
                             <div class="input-group input-group-merge input-group-flush">
                                 <div class="input-group-prepend">
@@ -30,35 +30,59 @@
                             <!-- End Search -->
                         </form>
                     </div>
-                    <div class="col-md-3 col-12 mt-3">
-                        
-                                <form action="{{ url()->current() }}" method="GET">
-                                    
-            
-                                    <div class="row d-flex">
-                                        <div class="ml-2">
-                                            <select class="form-control" name="status">
-            
-                                                <option class="text-center" value="0" selected disabled>
-                                                    ---{{\App\CPU\translate('select_status')}}---
+                    <div class="col-md-9 mt-2 mt-sm-0">
+                        <form action="" id="form-data" method="GET">
+                            <div class="row text-{{Session::get('direction') === "rtl" ? 'right' : 'left'}}">
+                                <div class="col-md-3 mt-2">
+                                    <div class="form-group">
+                                        <select class="js-select2-custom form-control" name="customer_id">
+                                            <option class="text-center" value="0" >
+                                                ---{{\App\CPU\translate('select_customer')}}---
+                                            </option>
+                                            @foreach($customers as $customer)
+                                                <option class="text-left text-capitalize" value="{{ $customer->id }}" {{ $customer->id == $customer_id ? 'selected' : '' }}>
+                                                    {{ $customer->f_name.' '.$customer->l_name }}
                                                 </option>
-                                                <option class="text-left text-capitalize"
-                                                                    value="all" {{ $status == 'all'? 'selected' : '' }} >{{\App\CPU\translate('all')}} </option>
-                                                <option class="text-left text-capitalize"
-                                                        value="disburse" {{ $status == 'disburse'? 'selected' : '' }} >{{\App\CPU\translate('disburse')}} </option>
-                                                <option class="text-left text-capitalize"
-                                                        value="hold" {{ $status == 'hold'? 'selected' : '' }}>{{\App\CPU\translate('hold')}}</option>
-                                            </select>
-                                        </div>
-                                        
-                                        <div class="ml-2">
-                                            <button type="submit" class="btn btn-success">{{\App\CPU\translate('filter')}}</button>
-                                        </div>
-                                    </div> 
-            
-                                        
-                                </form>
-                            
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mt-2">
+                                    <div class="form-group">
+                                        <select class="form-control" name="status">
+                                            <option class="text-center" value="0" disabled>
+                                                ---{{\App\CPU\translate('select_status')}}---
+                                            </option>
+                                            <option class="text-left text-capitalize"
+                                                                value="all" {{ $status == 'all'? 'selected' : '' }} >{{\App\CPU\translate('all')}} </option>
+                                            <option class="text-left text-capitalize"
+                                                    value="disburse" {{ $status == 'disburse'? 'selected' : '' }} >{{\App\CPU\translate('disburse')}} </option>
+                                            <option class="text-left text-capitalize"
+                                                    value="hold" {{ $status == 'hold'? 'selected' : '' }}>{{\App\CPU\translate('hold')}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mt-2">
+                                    <div class="form-group">
+                                        <input type="date" name="from" value="{{$from}}" id="from_date" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mt-2">
+                                    <div class="form-group">
+                                        <input type="date" value="{{$to}}" name="to" id="to_date" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-12 text-right">
+                                    <button type="submit" class="btn btn-primary" onclick="formUrlChange(this)" data-action="{{ url()->current() }}">
+                                        {{\App\CPU\translate('filter')}}
+                                    </button>
+                                    &nbsp;
+                                    <button type="submit" class="btn btn-success" onclick="formUrlChange(this)" data-action="{{ route('admin.transaction.transaction-export') }}">
+                                        {{\App\CPU\translate('export')}}
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -82,6 +106,7 @@
                             <th>{{\App\CPU\translate('delivery_charge')}}</th>
                             <th>{{\App\CPU\translate('payment_method')}}</th>
                             <th>{{\App\CPU\translate('tax')}}</th>
+                            <th>{{\App\CPU\translate('date')}}</th>
                             <th>{{\App\CPU\translate('status')}}</th>
                         </tr>
                         </thead>
@@ -118,6 +143,7 @@
                                 <td>{{\App\CPU\BackEndHelper::set_symbol(\App\CPU\BackEndHelper::usd_to_currency($transaction['delivery_charge']))}}</td>
                                 <td>{{str_replace('_',' ',$transaction['payment_method'])}}</td>
                                 <td>{{\App\CPU\BackEndHelper::set_symbol(\App\CPU\BackEndHelper::usd_to_currency($transaction['tax']))}}</td>
+                                <td>{{ date('d M Y',strtotime($transaction['created_at'])) }}</td>
                                 <td>
                                     @if($transaction['status'] == 'disburse')
                                         <span class="badge badge-soft-success  ">
@@ -146,10 +172,42 @@
                 </div>
             </div>
             <div class="card-footer">
-                {{$transactions->links()}}
+                <div class="row table-responsive">
+                    {{$transactions->links()}}
+                </div>
             </div>
 
         </div>
-        
+
     </div>
 @endsection
+
+@push('script')
+    <script>
+        $(document).ready(function() {
+            $('.js-select2-custom').select2();
+        });
+
+        $('#from_date,#to_date').change(function () {
+            let fr = $('#from_date').val();
+            let to = $('#to_date').val();
+            if(fr != ''){
+                $('#to_date').attr('required','required');
+            }
+            if(to != ''){
+                $('#from_date').attr('required','required');
+            }
+            if (fr != '' && to != '') {
+                if (fr > to) {
+                    $('#from_date').val('');
+                    $('#to_date').val('');
+                    toastr.error('{{\App\CPU\translate('Invalid date range')}}!', Error, {
+                        CloseButton: true,
+                        ProgressBar: true
+                    });
+                }
+            }
+
+        })
+    </script>
+@endpush

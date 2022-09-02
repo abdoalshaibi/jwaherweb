@@ -11,6 +11,7 @@ use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Model\Translation;
+use Rap2hpoutre\FastExcel\FastExcel;
 
 class BrandController extends Controller
 {
@@ -22,6 +23,13 @@ class BrandController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'name.0' => 'required|unique:brands,name',
+        ], [
+            'name.0.required'   => 'Brand name is required!',
+            'name.0.unique'     => 'The brand has already been taken.',
+        ]);
+
         $brand = new Brand;
         $brand->name = $request->name[array_search('en', $request->lang)];
         $brand->image = ImageManager::upload('brand/', 'png', $request->file('image'));
@@ -45,24 +53,55 @@ class BrandController extends Controller
         return back();
     }
 
+    /**
+     * Brand list show, search
+     * @param Request $request
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     function list(Request $request)
     {
-        $query_param = [];
-        $search = $request['search'];
-        if ($request->has('search'))
-        {
-            $key = explode(' ', $request['search']);
-            $br = Brand::where(function ($q) use ($key) {
+        $search      = $request['search'];
+        $query_param = $search ? ['search' => $request['search']] : '';
+
+        $br = Brand::withCount('brandAllProducts')
+            ->with(['brandAllProducts'=> function($query){
+                $query->withCount('order_details');
+            }])
+            ->when($request['search'], function ($q) use($request){
+                $key = explode(' ', $request['search']);
                 foreach ($key as $value) {
                     $q->Where('name', 'like', "%{$value}%");
                 }
-            });
-            $query_param = ['search' => $request['search']];
-        }else{
-            $br = new Brand();
-        }
-        $br = $br->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
+            })
+            ->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
+
         return view('admin-views.brand.list', compact('br','search'));
+    }
+
+    /**
+     * Export brand list by excel
+     * @return string|\Symfony\Component\HttpFoundation\StreamedResponse
+     * @throws \Box\Spout\Common\Exception\IOException
+     * @throws \Box\Spout\Common\Exception\InvalidArgumentException
+     * @throws \Box\Spout\Common\Exception\UnsupportedTypeException
+     * @throws \Box\Spout\Writer\Exception\WriterNotOpenedException
+     */
+    public function export(){
+        $brands = Brand::withCount('brandAllProducts')
+            ->with(['brandAllProducts'=> function($query){
+                $query->withCount('order_details');
+            }])->orderBy('id', 'DESC')->get();
+
+        $data = array();
+        foreach($brands as $brand){
+            $data[] = array(
+                'Brand Name'      => $brand->name,
+                'Total Product'   => $brand->brand_all_products_count,
+                'Total Order' => $brand->brandAllProducts->sum('order_details_count'),
+            );
+        }
+
+        return (new FastExcel($data))->download('brand_list.xlsx');
     }
 
     public function edit($id)
@@ -73,6 +112,12 @@ class BrandController extends Controller
 
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'name.0' => 'required|unique:brands,name,'.$id,
+        ], [
+            'name.0.required'   => 'Brand name is required!',
+            'name.0.unique'     => 'The brand has already been taken.',
+        ]);
 
         $brand = Brand::find($id);
         $brand->name = $request->name[array_search('en', $request->lang)];
@@ -94,6 +139,21 @@ class BrandController extends Controller
 
         Toastr::success('Brand updated successfully!');
         return back();
+    }
+
+    public function status_update(Request $request)
+    {
+        $brand = Brand::find($request['id']);
+        $brand->status = $request['status'];
+
+        if($brand->save()){
+            $success = 1;
+        }else{
+            $success = 0;
+        }
+        return response()->json([
+            'success' => $success,
+        ], 200);
     }
 
     public function delete(Request $request)

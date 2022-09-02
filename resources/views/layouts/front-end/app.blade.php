@@ -38,7 +38,7 @@
     <link rel="stylesheet" href="{{asset('public/assets/front-end')}}/css/home.css"/>
     <link rel="stylesheet" href="{{asset('public/assets/front-end')}}/css/responsive1.css"/>
 
-    
+
     {{--dont touch this--}}
     <meta name="_token" content="{{csrf_token()}}">
     {{--dont touch this--}}
@@ -640,7 +640,7 @@
             border-top-right-radius: 0px;
         }
     </style>
-    
+
     @php($google_tag_manager_id = \App\CPU\Helpers::get_business_settings('google_tag_manager_id'))
     @if($google_tag_manager_id )
     <!-- Google Tag Manager -->
@@ -650,7 +650,7 @@
         'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
         })(window,document,'script','dataLayer','{{$google_tag_manager_id}}');</script>
     <!-- End Google Tag Manager -->
-        
+
     @endif
 
     @php($pixel_analytices_user_code =\App\CPU\Helpers::get_business_settings('pixel_analytics'))
@@ -669,7 +669,7 @@
             fbq('track', 'PageView');
             </script>
             <noscript>
-            <img height="1" width="1" style="display:none" 
+            <img height="1" width="1" style="display:none"
                 src="https://www.facebook.com/tr?id={your-pixel-id-goes-here}&ev=PageView&noscript=1"/>
             </noscript>
         <!-- End Facebook Pixel Code -->
@@ -989,7 +989,7 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'Cart',
-                    text: '{{\App\CPU\translate('Sorry, the minimum value was reached')}}'
+                    text: '{{\App\CPU\translate('Sorry, the minimum order quantity does not match')}}'
                 });
                 $(this).val($(this).data('oldValue'));
             }
@@ -1034,8 +1034,15 @@
         });
     }
 
-    function updateCartQuantity(key) {
-        var quantity = $("#cartQuantity" + key).children("option:selected").val();
+    function updateCartQuantity(minimum_order_qty, key) {
+        /* var quantity = $("#cartQuantity" + key).children("option:selected").val(); */
+        var quantity = $("#cartQuantity" + key).val();
+        if(minimum_order_qty > quantity ) {
+            toastr.error('{{\App\CPU\translate("minimum_order_quantity_cannot_be_less_than_")}}' + minimum_order_qty);
+            $("#cartQuantity" + key).val(minimum_order_qty);
+            return false;
+        }
+
         $.post('{{route('cart.updateQuantity')}}', {
             _token: '{{csrf_token()}}',
             key: key,

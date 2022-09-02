@@ -250,7 +250,7 @@
                             <li class="navbar-vertical-aside-has-menu {{Request::is('admin/brand*')?'active':''}}">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle"
                                    href="javascript:">
-                                    <i class="tio-apple-outlined nav-icon"></i>
+                                    <i class="tio-star nav-icon"></i>
                                     <span
                                         class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{\App\CPU\translate('brands')}}</span>
                                 </a>
@@ -326,10 +326,14 @@
                                             <span class="text-truncate">{{\App\CPU\translate('Products')}}</span>
                                         </a>
                                     </li>
+                                    @php($stock_limit = \App\CPU\Helpers::get_business_settings('stock_limit'))
                                     <li class="nav-item {{Request::is('admin/product/stock-limit-list/in_house')?'active':''}}">
                                         <a class="nav-link " href="{{route('admin.product.stock-limit-list',['in_house', ''])}}">
                                             <span class="tio-circle nav-indicator-icon"></span>
                                             <span class="text-truncate">{{\App\CPU\translate('stock_limit_products')}}</span>
+                                            <span class="badge badge-soft-danger badge-pill ml-1">
+                                                {{\App\Model\Product::where(['added_by' => 'admin'])->where('current_stock', '<', $stock_limit)->count()}}
+                                            </span>
                                         </a>
                                     </li>
                                     <li class="nav-item {{Request::is('admin/product/bulk-import')?'active':''}}">
@@ -498,15 +502,7 @@
                                 </span>
                                 </a>
                             </li>
-                            <li class="navbar-vertical-aside-has-menu {{Request::is('admin/transaction/refund-list')?'active':''}}">
-                                <a class="js-navbar-vertical-aside-menu-link nav-link"
-                                   href="{{route('admin.transaction.refund-list')}}">
-                                    <i class="tio-money nav-icon"></i>
-                                    <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
-                                 {{\App\CPU\translate('refund_Transactions')}}
-                                </span>
-                                </a>
-                            </li>
+
                         @endif
                     <!--business section ends here-->
 
@@ -631,6 +627,93 @@
                         @endif
                     <!--user section ends here-->
 
+                    <!-- refund section -->
+                        @if(\App\CPU\Helpers::module_permission_check('refund_management'))
+                            <li class="nav-item">
+                                <small class="nav-subtitle" title="">{{\App\CPU\translate('refund_management')}}</small>
+                                <small class="tio-more-horizontal nav-subtitle-replacer"></small>
+                            </li>
+                            <li class="navbar-vertical-aside-has-menu {{Request::is('admin/refund-section/refund-list')?'active':''}}">
+                                <a class="js-navbar-vertical-aside-menu-link nav-link"
+                                   href="{{route('admin.refund-section.refund-list')}}">
+                                    <i class="tio-money nav-icon"></i>
+                                    <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
+                                 {{\App\CPU\translate('refund_Transactions')}}
+                                </span>
+                                </a>
+                            </li>
+                            <li class="navbar-vertical-aside-has-menu {{Request::is('admin/refund-section/refund/*')?'active':''}}">
+                                <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle"
+                                   href="javascript:">
+                                    <i class="tio-receipt-outlined nav-icon"></i>
+                                    <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
+                                        {{\App\CPU\translate('refund_request_list')}}
+                                    </span>
+                                </a>
+                                <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
+                                    style="display: {{Request::is('admin/refund-section/refund*')?'block':'none'}}">
+                                    <li class="nav-item {{Request::is('admin/refund-section/refund/list/pending')?'active':''}}">
+                                        <a class="nav-link"
+                                           href="{{route('admin.refund-section.refund.list',['pending'])}}">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate">
+                                              {{\App\CPU\translate('pending')}}
+                                                <span class="badge badge-soft-danger badge-pill ml-1">
+                                                    {{\App\Model\RefundRequest::where('status','pending')->count()}}
+                                                </span>
+                                            </span>
+                                        </a>
+                                    </li>
+
+                                    <li class="nav-item {{Request::is('admin/refund-section/refund/list/approved')?'active':''}}">
+                                        <a class="nav-link"
+                                           href="{{route('admin.refund-section.refund.list',['approved'])}}">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate">
+                                               {{\App\CPU\translate('approved')}}
+                                                <span class="badge badge-soft-info badge-pill ml-1">
+                                                    {{\App\Model\RefundRequest::where('status','approved')->count()}}
+                                                </span>
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item {{Request::is('admin/refund-section/refund/list/refunded')?'active':''}}">
+                                        <a class="nav-link"
+                                           href="{{route('admin.refund-section.refund.list',['refunded'])}}">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate">
+                                               {{\App\CPU\translate('refunded')}}
+                                                <span class="badge badge-success badge-pill ml-1">
+                                                    {{\App\Model\RefundRequest::where('status','refunded')->count()}}
+                                                </span>
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item {{Request::is('admin/refund-section/refund/list/rejected')?'active':''}}">
+                                        <a class="nav-link"
+                                           href="{{route('admin.refund-section.refund.list',['rejected'])}}">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate">
+                                               {{\App\CPU\translate('rejected')}}
+                                                <span class="badge badge-danger badge-pill ml-1">
+                                                    {{\App\Model\RefundRequest::where('status','rejected')->count()}}
+                                                </span>
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="navbar-vertical-aside-has-menu {{Request::is('admin/refund-section/refund-index')?'active':''}}">
+                                <a class="js-navbar-vertical-aside-menu-link nav-link"
+                                   href="{{route('admin.refund-section.refund-index')}}">
+                                    <i class="tio-money nav-icon"></i>
+                                    <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
+                                        {{\App\CPU\translate('refund_settings')}}
+                                    </span>
+                                </a>
+                            </li>
+                        @endif
+                        <!-- end refund section -->
                         @if(\App\CPU\Helpers::module_permission_check('support_section'))
                             <li class="nav-item {{(Request::is('admin/support-ticket*') || Request::is('admin/contact*'))?'scroll-here':''}}">
                                 <small class="nav-subtitle" title="">{{\App\CPU\translate('support_section')}}</small>
@@ -659,71 +742,11 @@
                     <!--support section ends here-->
 
                         @if(\App\CPU\Helpers::module_permission_check('business_settings'))
-                            <li class="nav-item {{(Request::is('admin/currency/view') ||Request::is('admin/business-settings/refund*') || Request::is('admin/business-settings/language*') || Request::is('admin/business-settings/shipping-method*') || Request::is('admin/business-settings/payment-method') || Request::is('admin/business-settings/seller-settings*'))?'scroll-here':''}}">
+                            <li class="nav-item {{(Request::is('admin/currency/view') || Request::is('admin/business-settings/language*') || Request::is('admin/business-settings/shipping-method*') || Request::is('admin/business-settings/payment-method') || Request::is('admin/business-settings/seller-settings*'))?'scroll-here':''}}">
                                 <small class="nav-subtitle" title="">{{\App\CPU\translate('business_settings')}}</small>
                                 <small class="tio-more-horizontal nav-subtitle-replacer"></small>
                             </li>
-                            <li class="navbar-vertical-aside-has-menu {{Request::is('admin/business-settings/refund*')?'active':''}}">
-                                <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle"
-                                   href="javascript:">
-                                    <i class="tio-receipt-outlined nav-icon"></i>
-                                    <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
-                                        {{\App\CPU\translate('refund_request_list')}}
-                                    </span>
-                                </a>
-                                <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
-                                    style="display: {{Request::is('admin/business-settings/refund*')?'block':'none'}}">
-                                    <li class="nav-item {{Request::is('admin/business-settings/refund/list/pending')?'active':''}}">
-                                        <a class="nav-link"
-                                           href="{{route('admin.business-settings.refund.list',['pending'])}}">
-                                            <span class="tio-circle nav-indicator-icon"></span>
-                                            <span class="text-truncate">
-                                              {{\App\CPU\translate('pending')}}
-                                                <span class="badge badge-soft-danger badge-pill ml-1">
-                                                    {{\App\Model\RefundRequest::where('status','pending')->count()}}
-                                                </span>
-                                            </span>
-                                        </a>
-                                    </li>
 
-                                    <li class="nav-item {{Request::is('admin/business-settings/refund/list/approved')?'active':''}}">
-                                        <a class="nav-link"
-                                           href="{{route('admin.business-settings.refund.list',['approved'])}}">
-                                            <span class="tio-circle nav-indicator-icon"></span>
-                                            <span class="text-truncate">
-                                               {{\App\CPU\translate('approved')}}
-                                                <span class="badge badge-soft-info badge-pill ml-1">
-                                                    {{\App\Model\RefundRequest::where('status','approved')->count()}}
-                                                </span>
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item {{Request::is('admin/business-settings/refund/list/refunded')?'active':''}}">
-                                        <a class="nav-link"
-                                           href="{{route('admin.business-settings.refund.list',['refunded'])}}">
-                                            <span class="tio-circle nav-indicator-icon"></span>
-                                            <span class="text-truncate">
-                                               {{\App\CPU\translate('refunded')}}
-                                                <span class="badge badge-success badge-pill ml-1">
-                                                    {{\App\Model\RefundRequest::where('status','refunded')->count()}}
-                                                </span>
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item {{Request::is('admin/business-settings/refund/list/rejected')?'active':''}}">
-                                        <a class="nav-link"
-                                           href="{{route('admin.business-settings.refund.list',['rejected'])}}">
-                                            <span class="tio-circle nav-indicator-icon"></span>
-                                            <span class="text-truncate">
-                                               {{\App\CPU\translate('rejected')}}
-                                                <span class="badge badge-danger badge-pill ml-1">
-                                                    {{\App\Model\RefundRequest::where('status','rejected')->count()}}
-                                                </span>
-                                            </span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
                             <li class="navbar-vertical-aside-has-menu {{Request::is('admin/business-settings/seller-settings*')?'active':''}}">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link"
                                    href="{{route('admin.business-settings.seller-settings.index')}}">
@@ -791,7 +814,7 @@
                     <!--business settings ends here-->
 
                         @if(\App\CPU\Helpers::module_permission_check('web_&_app_settings'))
-                            <li class="nav-item {{(Request::is('admin/business-settings/social-media') || Request::is('admin/business-settings/terms-condition') || Request::is('admin/business-settings/web-config/refund-index') || Request::is('admin/business-settings/privacy-policy') || Request::is('admin/business-settings/about-us') || Request::is('admin/helpTopic/list') || Request::is('admin/business-settings/fcm-index') || Request::is('admin/business-settings/mail')|| Request::is('admin/business-settings/web-config/db-index')||Request::is('admin/business-settings/web-config/environment-setup') || Request::is('admin/business-settings/web-config'))?'scroll-here':''}}">
+                            <li class="nav-item {{(Request::is('admin/business-settings/social-media') || Request::is('admin/business-settings/terms-condition') || Request::is('admin/business-settings/privacy-policy') || Request::is('admin/business-settings/about-us') || Request::is('admin/helpTopic/list') || Request::is('admin/business-settings/fcm-index') || Request::is('admin/business-settings/mail')|| Request::is('admin/business-settings/web-config/db-index')||Request::is('admin/business-settings/web-config/environment-setup') || Request::is('admin/business-settings/web-config'))?'scroll-here':''}}">
                                 <small class="nav-subtitle"
                                        title="">{{\App\CPU\translate('web_&_app_settings')}}</small>
                                 <small class="tio-more-horizontal nav-subtitle-replacer"></small>
@@ -806,6 +829,17 @@
                                     </span>
                                 </a>
                             </li>
+
+                            <li class="navbar-vertical-aside-has-menu {{Request::is('admin/business-settings/order-settings*')?'active':''}}">
+                                <a class="js-navbar-vertical-aside-menu-link nav-link"
+                                   href="{{route('admin.business-settings.order-settings.index')}}">
+                                    <i class="tio-shopping-cart-outlined nav-icon"></i>
+                                    <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
+                                        {{\App\CPU\translate('order_settings')}}
+                                    </span>
+                                </a>
+                            </li>
+
                             <li class="navbar-vertical-aside-has-menu {{Request::is('admin/business-settings/web-config/db-index')?'active':''}}">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link"
                                    href="{{route('admin.business-settings.web-config.db-index')}}">
@@ -824,15 +858,7 @@
                                     </span>
                                 </a>
                             </li>
-                            <li class="navbar-vertical-aside-has-menu {{Request::is('admin/business-settings/web-config/refund-index')?'active':''}}">
-                                <a class="js-navbar-vertical-aside-menu-link nav-link"
-                                   href="{{route('admin.business-settings.web-config.refund-index')}}">
-                                    <i class="tio-money nav-icon"></i>
-                                    <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
-                                        {{\App\CPU\translate('refund_settings')}}
-                                    </span>
-                                </a>
-                            </li>
+
                             <li class="navbar-vertical-aside-has-menu {{Request::is('admin/business-settings/captcha')?'active':''}}">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link"
                                    href="{{route('admin.business-settings.captcha')}}">
