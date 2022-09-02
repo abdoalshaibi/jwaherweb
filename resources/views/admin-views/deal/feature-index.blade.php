@@ -60,7 +60,20 @@
                                     </div>
                                 </div>
                             </div>
-
+                            <div class="col-12 col-md-12">
+                                        <div class="form-group">
+                                            <label
+                                                class="input-label">{{\App\CPU\translate('main')}} {{\App\CPU\translate('category')}}
+                                                <span class="input-label-secondary">*</span></label>
+                                            <select class="form-control" id="cat_id" required>
+                                                {{-- <option value="0">---{{\App\CPU\translate('select')}}---</option> --}}
+                                                @foreach(\App\Model\Category::where(['position'=>0])->get() as $category)
+                                                    <option
+                                                        value="{{$category['id']}}">{{$category['name']}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
                             <div class="">
                                 <button type="submit"
                                         class="btn btn-primary float-right">{{ \App\CPU\translate('submit')}}</button>
@@ -112,6 +125,7 @@
                                     <th>{{ \App\CPU\translate('Title')}}</th>
                                     <th>{{ \App\CPU\translate('Start')}}</th>
                                     <th>{{ \App\CPU\translate('end')}}</th>
+                                    <th>{{ \App\CPU\translate('active')}} / {{ \App\CPU\translate('expired')}}</th>
                                     <th></th>
                                     <th>{{ \App\CPU\translate('status')}}</th>
                                     <th style="width: 50px">{{ \App\CPU\translate('action')}}</th>
@@ -124,6 +138,19 @@
                                         <td>{{$deal['title']}}</td>
                                         <td>{{date('d-M-y',strtotime($deal['start_date']))}}</td>
                                         <td>{{date('d-M-y',strtotime($deal['end_date']))}}</td>
+                                        <td>
+                                            @if(\Carbon\Carbon::parse($deal['end_date'])->isPast())
+
+                                            <span class="badge badge-danger"> {{ \App\CPU\translate('expired')}} </span>
+
+                                            @else
+
+                                            <span class="badge badge-success"> {{ \App\CPU\translate('active')}} </span>
+
+                                            @endif
+
+
+                                        </td>
                                         <td>
                                             <a href="{{route('admin.deal.add-product',[$deal['id']])}}"
                                                class="btn btn-primary btn-sm">
