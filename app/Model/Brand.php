@@ -16,10 +16,15 @@ class Brand extends Model
         'brand_products_count' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'category_id'=>'integer'
     ];
 
     public function scopeActive(){
         return $this->where('status',1);
+    }
+
+    public function category(){
+        return $this->belongsTo(Category::class,'category_id');
     }
 
     public function brandProducts()

@@ -32,6 +32,7 @@ class BrandController extends Controller
 
         $brand = new Brand;
         $brand->name = $request->name[array_search('en', $request->lang)];
+        $brand->category_id=$request->cate_id;
         $brand->image = ImageManager::upload('brand/', 'png', $request->file('image'));
         $brand->status = 1;
         $brand->save();
@@ -121,6 +122,7 @@ class BrandController extends Controller
 
         $brand = Brand::find($id);
         $brand->name = $request->name[array_search('en', $request->lang)];
+        $brand->category_id=$request->cate_id;
         if ($request->has('image')) {
             $brand->image = ImageManager::update('brand/', $brand['image'], 'png', $request->file('image'));
          }

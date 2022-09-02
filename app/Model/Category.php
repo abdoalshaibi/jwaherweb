@@ -24,6 +24,11 @@ class Category extends Model
         return $this->morphMany('App\Model\Translation', 'translationable');
     }
 
+    public function brands()
+    {
+        return $this->hasMany(Brand::class,'category_id');
+    }
+
     public function parent()
     {
         return $this->belongsTo(Category::class, 'parent_id')->orderBy('priority','desc');
