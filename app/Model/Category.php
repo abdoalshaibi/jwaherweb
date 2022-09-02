@@ -29,6 +29,11 @@ class Category extends Model
         return $this->hasMany(Brand::class,'category_id');
     }
 
+    public function flashdeal()
+    {
+        return $this->hasMany(FlashDeal::class,'category_id');
+    }
+
     public function parent()
     {
         return $this->belongsTo(Category::class, 'parent_id')->orderBy('priority','desc');

@@ -19,10 +19,17 @@ class FlashDeal extends Model
         'end_date'   => 'date',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'category_id'=>'integer'
     ];
+
     public function products()
     {
         return $this->hasMany(FlashDealProduct::class, 'flash_deal_id');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class,'category_id');
     }
 
     public function translations()

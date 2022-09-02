@@ -44,6 +44,7 @@ class DealController extends Controller
         $flash_deal_id = DB::table('flash_deals')->insertGetId([
             'title' => $request['title'][array_search('en', $request->lang)],
             'start_date' => $request['start_date'],
+            'category_id'=>$request['cate_id'],
             'end_date' => $request['end_date'],
             'background_color' => $request['background_color'],
             'text_color' => $request['text_color'],
@@ -95,6 +96,7 @@ class DealController extends Controller
 
         DB::table('flash_deals')->where(['id' => $deal_id])->update([
             'title' => $request['title'][array_search('en', $request->lang)],
+            'category_id'=>$request['cate_id'],
             'start_date' => $request['start_date'],
             'end_date' => $request['end_date'],
             'background_color' => $request['background_color'],

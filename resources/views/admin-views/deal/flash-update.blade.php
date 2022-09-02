@@ -79,8 +79,22 @@
                             </div>
 
                             <div class="row">
-                                
-                                <div class="col-md-12 pt-3">
+                            <div class="col-md-6 col-md-4" style="padding-top: 20px;">
+                                    <div class="form-group">
+                                        <label class="input-label"
+                                               for="name">{{\App\CPU\translate('main')}} {{\App\CPU\translate('category')}}
+                                            </label>
+                                        <select id="exampleFormControlSelect1" name="cate_id"
+                                                class="form-control" required>
+                                            @foreach(\App\Model\Category::where(['position'=>0])->get() as $category)
+                                                <option
+                                                    value="{{$category['id']}}">{{$category['name']}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 col-md-4 pt-3">
                                     <label for="name">{{\App\CPU\translate('Upload')}} {{\App\CPU\translate('Image')}}</label><span class="badge badge-soft-danger">( {{\App\CPU\translate('ratio')}} 5:1 )</span>
                                     <div class="custom-file" style="text-align: left">
                                         <input type="file" name="image" id="customFileUpload" class="custom-file-input"
