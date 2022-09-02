@@ -56,6 +56,8 @@
                                                 <option value="category" {{$banner['resource_type']=='category'?'selected':''}}>Category</option>
                                                 <option value="shop" {{$banner['resource_type']=='shop'?'selected':''}}>Shop</option>
                                                 <option value="brand" {{$banner['resource_type']=='brand'?'selected':''}}>Brand</option>
+                                                <option value="attribute" {{$banner['resource_type']=='attribute'?'selected':''}}>Attribute</option>
+
                                             </select>
                                         </div>
 
@@ -93,6 +95,18 @@
                                                 @endforeach
                                             </select>
                                         </div>
+
+                                        <div class="form-group" id="resource-shop" style="display: {{$banner['resource_type']=='attribute'?'block':'none'}}">
+                                            <label for="shop_id">{{\App\CPU\translate('attribute')}}</label>
+                                            <select style="width: 100%"
+                                                    class="js-example-responsive form-control"
+                                                    name="shop_id">
+                                                @foreach(\App\Model\Attribute::all() as $attribute)
+                                                    <option value="{{$attribute['id']}}" {{$banner['resource_id']==$attribute['id']?'selected':''}}>{{$attribute['name']}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        
 
                                         <div class="form-group" id="resource-brand" style="display: {{$banner['resource_type']=='brand'?'block':'none'}}">
                                             <label for="brand_id">{{\App\CPU\translate('brand')}}</label>
@@ -156,6 +170,8 @@
             $('#resource-brand').hide()
             $('#resource-category').hide()
             $('#resource-shop').hide()
+            $('#resource-attribute').hide()
+
 
             if (data === 'product') {
                 $('#resource-product').show()
@@ -165,7 +181,8 @@
                 $('#resource-category').show()
             } else if (data === 'shop') {
                 $('#resource-shop').show()
-            }
+            }else if(data === 'attribute'){
+                $('#resource-attribute').show()
         }
     </script>
 

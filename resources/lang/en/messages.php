@@ -1527,4 +1527,7 @@
   'No_data_to_show<' => 'No data to show ',
   'no_data_found' => 'No data found',
   'generate_barcode' => 'Generate barcode',
+  'attribute' => 'Attribute',
+  'Try after sometime' => 'Try after sometime',
+  'We are sorry, server is not responding' => 'We are sorry  server is not responding',
 );

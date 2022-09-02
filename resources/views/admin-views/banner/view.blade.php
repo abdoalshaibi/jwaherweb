@@ -63,6 +63,7 @@
                                                 <option value="category">{{ \App\CPU\translate('Category')}}</option>
                                                 <option value="shop">{{ \App\CPU\translate('Shop')}}</option>
                                                 <option value="brand">{{ \App\CPU\translate('Brand')}}</option>
+                                                <option value="attribute">{{ \App\CPU\translate('Attribute')}}</option>
                                             </select>
                                         </div>
 
@@ -101,6 +102,17 @@
                                             </select>
                                         </div>
 
+                                        <div class="form-group" id="resource-attribute" style="display: none">
+                                            <label for="shop_id">{{\App\CPU\translate('attribute')}}</label>
+                                            <select style="width: 100%"
+                                                    class="js-example-responsive form-control"
+                                                    name="shop_id">
+                                                    @foreach (\App\Model\Attribute::all() as  $attribute)
+                                                    <option value="{{$attribute['id']}}">{{$attribute['name']}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        
                                         <div class="form-group" id="resource-brand" style="display: none">
                                             <label for="brand_id">{{\App\CPU\translate('brand')}}</label>
                                             <select style="width: 100%"
@@ -259,6 +271,7 @@
             $('#resource-brand').hide()
             $('#resource-category').hide()
             $('#resource-shop').hide()
+            $('#resource-attribute').hide()
 
             if (data === 'product') {
                 $('#resource-product').show()
@@ -268,6 +281,8 @@
                 $('#resource-category').show()
             } else if (data === 'shop') {
                 $('#resource-shop').show()
+            }else if(data === 'attribute'){
+                $('#resource-attribute').show()
             }
         }
     </script>
