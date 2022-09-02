@@ -24,7 +24,7 @@
                         {{ \App\CPU\translate('sub_sub_category_form')}}
                     </div>
                     <div class="card-body" style="text-align: {{Session::get('direction') === "rtl" ? 'right' : 'left'}};">
-                        <form action="{{route('admin.sub-sub-category.store')}}" method="POST">
+                        <form action="{{route('admin.sub-sub-category.store')}}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @php($language=\App\Model\BusinessSetting::where('type','pnc_language')->first())
                             @php($language = $language->value ?? null)
@@ -104,7 +104,31 @@
                                             </select>
                                         </div>
                                     </div>
-
+                                    <div class="col-12 col-md-4 from_part_2">
+                                    <label>{{\App\CPU\translate('image')}}</label><small style="color: red">*
+                                        ( {{\App\CPU\translate('ratio')}} 1:1 )</small>
+                                    <div class="custom-file" style="text-align: left">
+                                        <input type="file" name="image" id="customFileEg1"
+                                               class="custom-file-input"
+                                               accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*"
+                                               required>
+                                        <label class="custom-file-label"
+                                               for="customFileEg1">{{\App\CPU\translate('choose')}} {{\App\CPU\translate('file')}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-12 from_part_2">
+                                    <div class="form-group">
+                                        <hr>
+                                        <center>
+                                            <img
+                                                style="width: 200px;height:200px;border: 1px solid; border-radius: 10px;"
+                                                id="viewer"
+                                                src="{{asset('public/assets/back-end/img/900x400/img1.jpg')}}"
+                                                alt="image"/>
+                                        </center>
+                                    </div>
+                                </div>
+                            </div>
                                     <div class="col-12 mt-2">
                                         <button type="submit"
                                                 class="btn btn-primary float-right">{{\App\CPU\translate('submit')}}</button>
@@ -152,6 +176,7 @@
                                     <th scope="col" style="width: 120px">{{ \App\CPU\translate('category')}} {{ \App\CPU\translate('ID')}}</th>
                                     <th scope="col">{{ \App\CPU\translate('sub_sub_category_name')}}</th>
                                     <th scope="col">{{ \App\CPU\translate('slug')}}</th>
+                                    <th scope="col">{{ \App\CPU\translate('icon')}}</th>
                                     <th scope="col">{{ \App\CPU\translate('priority')}}</th>
                                     <th scope="col" class="text-center"
                                         style="width: 120px">{{ \App\CPU\translate('action')}}</th>
@@ -163,6 +188,11 @@
                                         <td class="text-center">{{$category['id']}}</td>
                                         <td>{{$category['name']}}</td>
                                         <td>{{$category['slug']}}</td>
+                                        <td>
+                                            <img class="rounded" width="64"
+                                                 onerror="this.src='{{asset('public/assets/front-end/img/image-place-holder.png')}}'"
+                                                 src="{{asset('storage/app/public/category')}}/{{$category['icon']}}">
+                                        </td>
                                         <td>{{$category['priority']}}</td>
                                         <td>
                                             <a class="btn btn-primary btn-sm edit" style="cursor: pointer;"
@@ -300,6 +330,23 @@
                     });
                 }
             })
+        });
+    </script>
+    <script>
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#viewer').attr('src', e.target.result);
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $("#customFileEg1").change(function () {
+            readURL(this);
         });
     </script>
 @endpush

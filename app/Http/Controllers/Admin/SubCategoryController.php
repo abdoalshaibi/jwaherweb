@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\CPU\Helpers;
 use App\Http\Controllers\Controller;
 use App\Model\Category;
+use App\CPU\ImageManager;
 use App\Model\Translation;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
@@ -37,24 +38,37 @@ class SubCategoryController extends Controller
         $category = new Category;
         $category->name = $request->name[array_search('en', $request->lang)];
         $category->slug = Str::slug($request->name[array_search('en', $request->lang)]);
+        $category->icon = ImageManager::upload('category/', 'png', $request->file('image'));
         $category->parent_id = $request->parent_id;
         $category->position = 1;
         $category->priority = $request->priority;
         $category->save();
 
+        $data = [];
         foreach($request->lang as $index=>$key)
         {
             if($request->name[$index] && $key != 'en')
             {
-                Translation::updateOrInsert(
+                array_push($data,array(
+                    'translationable_type'  => 'App\Model\Category',
+                        'translationable_id'    => $category->id,
+                        'locale'                => $key,
+                        'key'                   => 'name',
+                        'value'                 => $request->name[$index],
+                ));
+              /*  Translation::updateOrInsert(
                     ['translationable_type'  => 'App\Model\Category',
                         'translationable_id'    => $category->id,
                         'locale'                => $key,
                         'key'                   => 'name'],
                     ['value'                 => $request->name[$index]]
-                );
+                );*/
             }
         }
+
+        if(count($data))
+        ranslation::updateOrInsert($data);
+
         Toastr::success('Category updated successfully!');
         return back();
     }
@@ -73,6 +87,9 @@ class SubCategoryController extends Controller
         $category->slug = Str::slug($request->name);
         $category->parent_id = $request->parent_id;
         $category->position = 1;
+        if ($request->image) {
+            $category->icon = ImageManager::update('category/', $category->icon, 'png', $request->file('image'));
+        }
         $category->priority = $request->priority;
         $category->save();
         return response()->json();

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\CPU\Helpers;
 use App\Http\Controllers\Controller;
+use App\CPU\ImageManager;
 use App\Model\Category;
 use App\Model\Translation;
 use Brian2694\Toastr\Facades\Toastr;
@@ -45,11 +46,13 @@ class SubSubCategoryController extends Controller
         $category = new Category;
         $category->name = $request->name[array_search('en', $request->lang)];
         $category->slug = Str::slug($request->name[array_search('en', $request->lang)]);
+        $category->icon = ImageManager::upload('category/', 'png', $request->file('image'));
         $category->parent_id = $request->parent_id;
         $category->position = 2;
         $category->priority = $request->priority;
         $category->save();
-        foreach($request->lang as $index=>$key)
+       
+        /*foreach($request->lang as $index=>$key)
         {
             if($request->name[$index] && $key != 'en')
             {
@@ -61,7 +64,33 @@ class SubSubCategoryController extends Controller
                     ['value'                 => $request->name[$index]]
                 );
             }
+        }*/
+
+        $data = [];
+        foreach($request->lang as $index=>$key)
+        {
+            if($request->name[$index] && $key != 'en')
+            {
+                array_push($data,array(
+                    'translationable_type'  => 'App\Model\Category',
+                        'translationable_id'    => $category->id,
+                        'locale'                => $key,
+                        'key'                   => 'name',
+                        'value'                 => $request->name[$index],
+                ));
+              /*  Translation::updateOrInsert(
+                    ['translationable_type'  => 'App\Model\Category',
+                        'translationable_id'    => $category->id,
+                        'locale'                => $key,
+                        'key'                   => 'name'],
+                    ['value'                 => $request->name[$index]]
+                );*/
+            }
         }
+
+        if(count($data))
+        ranslation::updateOrInsert($data);
+
         Toastr::success('Sub Sub Category updated successfully!');
         return back();
     }
@@ -86,6 +115,9 @@ class SubSubCategoryController extends Controller
         $category->slug = Str::slug($request->name);
         $category->parent_id = $request->parent_id;
         $category->position = 2;
+        if ($request->image) {
+            $category->icon = ImageManager::update('category/', $category->icon, 'png', $request->file('image'));
+        }
         $category->priority = $request->priority;
         $category->save();
         return response()->json();

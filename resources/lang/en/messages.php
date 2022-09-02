@@ -2034,4 +2034,7 @@
   'how_much_point' => 'How much point',
   'percentage_of_loyalty_point_on_order_amount' => 'Percentage of loyalty point on order amount',
   'how_much_point_?' => 'How much point  ',
+  'Seller_list' => 'Seller list',
+  'No_data_to_show<' => 'No data to show ',
+  'no_data_found' => 'No data found',
 );
