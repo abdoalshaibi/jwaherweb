@@ -60,7 +60,19 @@
                                     </div>
                                 </div>
                             </div>
-
+                            <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="name">{{\App\CPU\translate('main')}} {{\App\CPU\translate('category')}}
+                                            </label>
+                                        <select id="exampleFormControlSelect1" name="cate_id"
+                                                class="form-control" required>
+                                            @foreach(\App\Model\Category::where(['position'=>0])->get() as $category)
+                                                <option
+                                                    value="{{$category['id']}}">{{$category['name']}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
                             <div class="">
                                 <button type="submit"
                                         class="btn btn-primary float-right">{{ \App\CPU\translate('submit')}}</button>

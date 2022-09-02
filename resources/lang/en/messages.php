@@ -1536,4 +1536,5 @@
   'direction' => 'Direction',
   'text_updated_successfully' => 'Text updated successfully',
   'value' => 'Value',
+  'Feature Deal Update' => 'Feature Deal Update',
 );
