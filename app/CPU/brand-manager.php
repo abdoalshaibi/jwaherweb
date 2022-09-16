@@ -20,4 +20,8 @@ class BrandManager
     public static function get_active_brands(){
         return Brand::active()->withCount('brandProducts')->latest()->get();
     }
+
+    public static function get_active_brands0($CategoryId){
+        return Brand::active()->where(['category_id' => $CategoryId])->withCount('brandProducts')->latest()->get();
+    }
 }

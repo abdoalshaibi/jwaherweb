@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\api\v1;
 
 use App\CPU\BrandManager;
-use App\CPU\Helpers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class BrandController extends Controller
 {
-    public function get_brands()
+    public function get_brands(Request $request)
     {
         try {
-            $brands = BrandManager::get_active_brands();
+
+            $brands = BrandManager::get_active_brands0($request->category_id);
         } catch (\Exception $e) {
         }
 

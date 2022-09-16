@@ -10,10 +10,11 @@ use App\Model\Product;
 
 class FlashDealController extends Controller
 {
-    public function get_flash_deal()
+    public function get_flash_deal($CategoryId)
     {
         try {
             $flash_deals = FlashDeal::where('deal_type','flash_deal')
+                ->where(['category_id'=>$CategoryId])
                 ->where(['status' => 1])
                 ->whereDate('start_date', '<=', date('Y-m-d'))
                 ->whereDate('end_date', '>=', date('Y-m-d'))->first();
