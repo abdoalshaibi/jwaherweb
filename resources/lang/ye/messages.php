@@ -1534,4 +1534,7 @@
   'Key removed successfully' => 'Key removed successfully',
   'text_updated_successfully' => 'Text updated successfully',
   'value' => 'Value',
+  'sub_attribute' => 'Sub attribute',
+  'sub_Attribute' => 'Sub Attribute',
+  'Sub Attribute' => 'Sub Attribute',
 );

@@ -104,18 +104,18 @@
                                     <td>{{$attributes->firstItem()+$key}}</td>
                                     <td style="width: 40%;text-align:center;">{{$attribute['name']}}</td>
                                     <td style="width: 40%;text-align:center;">
-                                        
+
                                         <a class="btn btn-primary btn-sm edit" style="cursor: pointer;"
                                             title="{{ \App\CPU\translate('Edit')}}"
-                                            href="{{route('admin.attribute.edit',[$attribute['id']])}}"> 
+                                            href="{{route('admin.attribute.edit',[$attribute['id']])}}">
                                             <i class="tio-edit"></i>
                                         </a>
                                         <a class="btn btn-danger btn-sm delete"style="cursor: pointer;"
                                             title="{{ \App\CPU\translate('Delete')}}"
-                                            id="{{$attribute['id']}}">  
+                                            id="{{$attribute['id']}}">
                                             <i class="tio-add-to-trash"></i>
                                         </a>
-                                            
+
                                     </td>
                                 </tr>
                             @endforeach

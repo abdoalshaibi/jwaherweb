@@ -61,7 +61,7 @@
                 </div>
 
                 <!-- Content -->
-                <div class="navbar-vertical-content mt-2">
+                <li class="navbar-vertical-content mt-2">
                     <ul class="navbar-nav navbar-nav-lg nav-tabs">
                         <!-- Dashboards -->
 
@@ -302,14 +302,34 @@
                                     </li>
                                 </ul>
                             </li>
+
                             <li class="navbar-vertical-aside-has-menu {{Request::is('admin/attribute*')?'active':''}}">
-                                <a class="js-navbar-vertical-aside-menu-link nav-link"
-                                   href="{{route('admin.attribute.view')}}">
-                                    <i class="tio-category-outlined nav-icon"></i>
-                                    <span
-                                        class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{\App\CPU\translate('Attribute')}}</span>
+                                <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle"
+                                   href="javascript:">
+                                    {{--                                    <i class="tio-category-outlined nav-icon"></i>--}}
+                                    <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
+                                        {{\App\CPU\translate('attribute')}}
+                                    </span>
+                                </a>
+
+                                <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
+                                style="display: {{(Request::is('admin/attribute*') ||Request::is('admin/sub*'))?'block':''}}">
+                            <li class="nav-item {{Request::is('admin/attribute/view')?'active':''}}">
+                                <a class="nav-link " href="{{route('admin.attribute.view')}}">
+                                    <span class="tio-circle nav-indicator-icon"></span>
+                                    <span class="text-truncate">{{\App\CPU\translate('attribute')}}</span>
+                                </a>
+
+                            </li>
+                            <li class="nav-item {{Request::is('admin/sub-attribute/view')?'active':''}}">
+                                <a class="nav-link " href="{{route('admin.sub-attribute.view')}}">
+                                    <span class="tio-circle nav-indicator-icon"></span>
+                                    <span class="text-truncate">{{\App\CPU\translate('sub_attribute')}}</span>
                                 </a>
                             </li>
+
+                    </ul>
+                </li>
                             <li class="navbar-vertical-aside-has-menu {{(Request::is('admin/product/list/in_house') || Request::is('admin/product/bulk-import'))?'active':''}}">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle"
                                    href="javascript:">
@@ -1116,7 +1136,6 @@
                 </div>
                 <!-- End Content -->
             </div>
-        </div>
     </aside>
 </div>
 

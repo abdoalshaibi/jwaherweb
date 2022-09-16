@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use App\Model\Translation;
 use Brian2694\Toastr\Facades\Toastr;
 
-class AttributeController extends Controller
+class SubAttributeController extends Controller
 {
     public function index(Request $request)
     {
@@ -27,17 +27,17 @@ class AttributeController extends Controller
 
             $query_param = ['search' => $request['search']];
         }else{
-            $attributes = new Attribute();
+            $attributes =Attribute::whereNotNull(['Parent_Id']);
         }
         $attributes = $attributes->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
-        return view('admin-views.attribute.view',compact('attributes','search'));
+        return view('admin-views.attribute.sub-attribute-view',compact('attributes','search'));
     }
 
     public function store(Request $request)
     {
         $attribute = new Attribute;
         $attribute->name = $request->name[array_search('en', $request->lang)];
-        $attribute->Parent_id = null;
+        $attribute->Parent_Id = $request->Parent_Id;
         $attribute->save();
         foreach ($request->lang as $index => $key) {
             if ($request->name[$index] && $key != 'en') {

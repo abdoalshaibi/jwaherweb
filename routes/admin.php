@@ -148,6 +148,15 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'as' => 'admin.'], fu
             Route::post('delete', 'AttributeController@delete')->name('delete');
         });
 
+        Route::group(['prefix' => 'sub-attribute', 'as' => 'sub-attribute.','middleware'=>['module:product_management']], function () {
+            Route::get('view', 'SubAttributeController@index')->name('view');
+            Route::get('fetch', 'SubAttributeController@fetch')->name('fetch');
+            Route::post('store', 'SubAttributeController@store')->name('store');
+            Route::get('edit/{id}', 'SubAttributeController@edit')->name('edit');
+            Route::post('update/{id}', 'SubAttributeController@update')->name('update');
+            Route::post('delete', 'SubAttributeController@delete')->name('delete');
+        });
+
         Route::group(['prefix' => 'coupon', 'as' => 'coupon.','middleware'=>['module:marketing_section']], function () {
             Route::get('add-new', 'CouponController@add_new')->name('add-new')->middleware('actch');;
             Route::post('store-coupon', 'CouponController@store')->name('store-coupon');
