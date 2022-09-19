@@ -1537,4 +1537,7 @@
   'sub_attribute' => 'Sub attribute',
   'sub_Attribute' => 'Sub Attribute',
   'Sub Attribute' => 'Sub Attribute',
+  'product_removed_successfully' => 'Product removed successfully',
+  'Are_you_sure_remove_this_product' => 'Are you sure remove this product',
+  'Deal Product' => 'Deal Product',
 );

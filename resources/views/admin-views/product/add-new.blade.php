@@ -58,6 +58,12 @@
                                         </label>
                                         <input type="text" {{ $lang == $default_lang ? 'required' : '' }} name="name[]"
                                             id="{{ $lang }}_name" class="form-control" placeholder="New Product">
+                                        <label class="input-label"
+                                               for="{{ $lang }}_name">{{ \App\CPU\translate('description') }}
+                                            ({{ strtoupper($lang) }})
+                                        </label>
+                                        <input type="text" {{ $lang == $default_lang ? 'required' : '' }} name="desc[]"
+                                               id="{{ $lang }}_name" class="form-control" placeholder="description">
                                     </div>
                                     <input type="hidden" name="lang[]" value="{{ $lang }}">
                                     <div class="form-group pt-4">

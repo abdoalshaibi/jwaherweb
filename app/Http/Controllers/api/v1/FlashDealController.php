@@ -7,14 +7,15 @@ use App\Http\Controllers\Controller;
 use App\Model\FlashDeal;
 use App\Model\FlashDealProduct;
 use App\Model\Product;
+use Illuminate\Http\Request;
 
 class FlashDealController extends Controller
 {
-    public function get_flash_deal($CategoryId)
+    public function get_flash_deal(Request $request)
     {
         try {
             $flash_deals = FlashDeal::where('deal_type','flash_deal')
-                ->where(['category_id'=>$CategoryId])
+                ->where(['category_id'=>$request->category_id])
                 ->where(['status' => 1])
                 ->whereDate('start_date', '<=', date('Y-m-d'))
                 ->whereDate('end_date', '>=', date('Y-m-d'))->first();

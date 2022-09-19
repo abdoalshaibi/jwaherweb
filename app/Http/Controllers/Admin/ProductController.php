@@ -72,6 +72,7 @@ class ProductController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'name'              => 'required',
+            'desc'              =>'required',
             'category_id'       => 'required',
             'brand_id'          => 'required',
             'unit'              => 'required',
@@ -126,11 +127,20 @@ class ProductController extends BaseController
             });
         }
 
+        if (is_null($request->desc[array_search('en', $request->lang)])) {
+            $validator->after(function ($validator) {
+                $validator->errors()->add(
+                    'desc', 'desc field is required!'
+                );
+            });
+        }
+
 
         $p = new Product();
         $p->user_id = auth('admin')->id();
         $p->added_by = "admin";
         $p->name = $request->name[array_search('en', $request->lang)];
+        $p->desc = $request->desc[array_search('en', $request->lang)];
         $p->code = $request->code;
         $p->slug = Str::slug($request->name[array_search('en', $request->lang)], '-') . '-' . Str::random(6);
 
