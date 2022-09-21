@@ -18,7 +18,7 @@ class FlashDealController extends Controller
                 ->where(['category_id'=>$request->category_id])
                 ->where(['status' => 1])
                 ->whereDate('start_date', '<=', date('Y-m-d'))
-                ->whereDate('end_date', '>=', date('Y-m-d'))->first();
+                ->whereDate('end_date', '>=', date('Y-m-d'))->get();
             return response()->json($flash_deals, 200);
         } catch (\Exception $e) {
             return response()->json(['errors' => $e], 403);

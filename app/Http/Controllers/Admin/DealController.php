@@ -129,7 +129,7 @@ class DealController extends Controller
     public function status_update(Request $request)
     {
 
-        FlashDeal::where(['status' => 1])->where(['deal_type' => 'flash_deal'])->update(['status' => 0]);
+        FlashDeal::where(['status' => 1])->where(['deal_type' => 'flash_deal'])->where(['category_id'=>$request['category_id']])->update(['status' => 0]);
         FlashDeal::where(['id' => $request['id']])->update([
             'status' => $request['status'],
         ]);
@@ -198,7 +198,7 @@ class DealController extends Controller
     {
 
         $flash_deal_products = FlashDealProduct::where('flash_deal_id', $deal_id)->where('product_id',$request['product_id'])->first();
-        
+
         if(!isset($flash_deal_products))
         {
             DB::table('flash_deal_products')->insertOrIgnore([
@@ -209,20 +209,20 @@ class DealController extends Controller
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
-    
+
             Toastr::success('Product added successfully!');
             return back();
         }else{
             Toastr::info('Product already added!');
             return back();
         }
-        
+
     }
 
     public function delete_product(Request $request)
     {
         FlashDealProduct::where('product_id', $request->id)->delete();
-        
+
         return response()->json();
     }
 
@@ -240,7 +240,7 @@ class DealController extends Controller
             $query_param = ['search' => $request['search']];
         } else {
             $deals = new DealOfTheDay();
-        }  
+        }
 
         $deals = $deals->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
         return view('admin-views.deal.day-index', compact('deals', 'search'));
@@ -325,7 +325,7 @@ class DealController extends Controller
     public function day_delete(Request $request)
     {
         DealOfTheDay::destroy($request->id);
-    
+
         return response()->json();
     }
 }

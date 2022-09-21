@@ -102,7 +102,7 @@
                             </div>
                         </div>
 
-                        
+
 
                         <div class=" pl-0">
                             <button type="submit"
@@ -190,7 +190,7 @@
                                     <td>
                                         <label class="switch">
                                             <input type="checkbox" class="status"
-                                                   id="{{$deal['id']}}" {{$deal->status == 1?'checked':''}}>
+                                                   id="{{$deal}}" {{$deal->status == 1?'checked':''}} >
                                             <span class="slider round"></span>
                                         </label>
                                     </td>
@@ -261,10 +261,15 @@
         });
 
         $(document).on('change', '.status', function () {
-            var id = $(this).attr("id");
-            if ($(this).prop("checked") == true) {
+            //var id = ;
+            //var category_id = $(this).attr("id");
+            var obj=jQuery.parseJSON($(this).attr("id"));
+
+            //alert(obj.category_id);
+
+            if ($(this).prop("checked") === true) {
                 var status = 1;
-            } else if ($(this).prop("checked") == false) {
+            } else if ($(this).prop("checked") === false) {
                 var status = 0;
             }
             $.ajaxSetup({
@@ -276,8 +281,9 @@
                 url: "{{route('admin.deal.status-update')}}",
                 method: 'POST',
                 data: {
-                    id: id,
-                    status: status
+                    id: obj.id,
+                    status: status,
+                    category_id:obj.category_id
                 },
                 success: function () {
                     toastr.success('{{\App\CPU\translate('Status updated successfully')}}');
