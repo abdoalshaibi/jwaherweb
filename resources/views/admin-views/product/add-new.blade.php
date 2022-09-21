@@ -584,7 +584,7 @@
                 '<div class="col-md-8">'+
                 '<select class="js-example-basic-multiple js-states js-example-responsive form-control"' +
                 'id="sub_Attribute_choice'+i+'" ' +
-                 //'name="choice_options_'+i+'[]'+
+                'name="choice_attributes[]"'+
                 'multiple="multiple"> '+''+
                 '</select>'+
             '</div>'+'</div>'
