@@ -133,7 +133,7 @@
                                         <button type="submit"
                                                 class="btn btn-primary float-right">{{\App\CPU\translate('submit')}}</button>
                                     </div>
-                                </div>
+
                         </form>
                     </div>
                 </div>
@@ -258,7 +258,7 @@
 
     <script>
         $( document ).ready(function() {
-            
+
             var id = $("#cat_id").val();
             if (id) {
                 $.ajaxSetup({

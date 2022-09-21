@@ -90,6 +90,17 @@ class SubAttributeController extends Controller
         return response()->json();
     }
 
+    public function getSubAttribute(Request $request)
+    {
+        $data = Attribute::where("Parent_Id",$request->Id)->get();
+        $output="";
+        foreach($data as $row)
+        {
+            $output .= '<option value="'.$row->id.'">'.$row->name.'</option>';
+        }
+        echo $output;
+    }
+
     public function fetch(Request $request)
     {
         if ($request->ajax()) {

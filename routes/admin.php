@@ -151,6 +151,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'as' => 'admin.'], fu
         Route::group(['prefix' => 'sub-attribute', 'as' => 'sub-attribute.','middleware'=>['module:product_management']], function () {
             Route::get('view', 'SubAttributeController@index')->name('view');
             Route::get('fetch', 'SubAttributeController@fetch')->name('fetch');
+            Route::get('get-sub-attribute', 'SubAttributeController@getSubAttribute')->name('getSubAttribute');
             Route::post('store', 'SubAttributeController@store')->name('store');
             Route::get('edit/{id}', 'SubAttributeController@edit')->name('edit');
             Route::post('update/{id}', 'SubAttributeController@update')->name('update');
