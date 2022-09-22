@@ -51,7 +51,7 @@ class SubSubCategoryController extends Controller
         $category->position = 2;
         $category->priority = $request->priority;
         $category->save();
-       
+
         /*foreach($request->lang as $index=>$key)
         {
             if($request->name[$index] && $key != 'en')
@@ -71,13 +71,13 @@ class SubSubCategoryController extends Controller
         {
             if($request->name[$index] && $key != 'en')
             {
-                array_push($data,array(
-                    'translationable_type'  => 'App\Model\Category',
-                        'translationable_id'    => $category->id,
-                        'locale'                => $key,
-                        'key'                   => 'name',
-                        'value'                 => $request->name[$index],
-                ));
+                $data[] = array(
+                    'translationable_type' => 'App\Model\Category',
+                    'translationable_id' => $category->id,
+                    'locale' => $key,
+                    'key' => 'name',
+                    'value' => $request->name[$index],
+                );
               /*  Translation::updateOrInsert(
                     ['translationable_type'  => 'App\Model\Category',
                         'translationable_id'    => $category->id,
@@ -109,7 +109,7 @@ class SubSubCategoryController extends Controller
             'name.required' => 'Category name is required!',
             'parent_id.required' => 'Sub Category field is required!',
         ]);
-        
+
         $category = Category::find($request->id);
         $category->name = $request->name;
         $category->slug = Str::slug($request->name);

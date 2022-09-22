@@ -49,13 +49,13 @@ class SubCategoryController extends Controller
         {
             if($request->name[$index] && $key != 'en')
             {
-                array_push($data,array(
-                    'translationable_type'  => 'App\Model\Category',
-                        'translationable_id'    => $category->id,
-                        'locale'                => $key,
-                        'key'                   => 'name',
-                        'value'                 => $request->name[$index],
-                ));
+                $data[] = array(
+                    'translationable_type' => 'App\Model\Category',
+                    'translationable_id' => $category->id,
+                    'locale' => $key,
+                    'key' => 'name',
+                    'value' => $request->name[$index],
+                );
               /*  Translation::updateOrInsert(
                     ['translationable_type'  => 'App\Model\Category',
                         'translationable_id'    => $category->id,

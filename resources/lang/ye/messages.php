@@ -2058,4 +2058,8 @@
   'minimum_order_quantity' => 'Minimum order quantity',
   'generate' => 'Generate',
   'product_code_sku' => 'Product code sku',
+  'minimum_order_quantity_cannot_be_less_than_' => 'Minimum order quantity cannot be less than ',
+  'Sorry, the minimum order quantity does not match' => 'Sorry  the minimum order quantity does not match',
+  'sign_up' => 'Sign up',
+  'Download Generate Sitemap' => 'Download Generate Sitemap',
 );

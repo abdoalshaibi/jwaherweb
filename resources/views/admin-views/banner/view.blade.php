@@ -42,6 +42,19 @@
                                             <input type="text" name="url" class="form-control" id="url" required>
                                         </div>
 
+                                            <div class="form-group">
+                                                <label >{{\App\CPU\translate('main')}} {{\App\CPU\translate('category')}}
+                                                    <span class="input-label-secondary">*</span></label>
+                                                <select id="exampleFormControlSelect1" name="category_id"
+                                                        class="form-control" required>
+                                                    @foreach(\App\Model\Category::where(['position'=>0])->get() as $category)
+                                                        <option
+                                                            value="{{$category['id']}}">{{$category['name']}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
+
                                         <div class="form-group">
                                             <label for="name">{{\App\CPU\translate('banner_type')}}</label>
                                             <select style="width: 100%"
@@ -73,23 +86,43 @@
                                                     class="js-example-responsive form-control"
                                                     name="product_id">
                                                 @foreach(\App\Model\Product::active()->get() as $product)
-                                                    
                                                         <option value="{{$product['id']}}">{{$product['name']}}</option>
-                                                    
                                                 @endforeach
                                             </select>
                                         </div>
 
                                         <div class="form-group" id="resource-category" style="display: none">
-                                            <label for="name">{{\App\CPU\translate('category')}}</label>
-                                            <select style="width: 100%"
-                                                    class="js-example-responsive form-control"
-                                                    name="category_id">
-                                                @foreach(\App\CPU\CategoryManager::parents() as $category)
-                                                    <option value="{{$category['id']}}">{{$category['name']}}</option>
-                                                @endforeach
-                                            </select>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label for="name">{{ \App\CPU\translate('Category') }}</label>
+                                                <select class="js-example-basic-multiple form-control" name="category_id"
+                                                        onchange="getRequest('{{ url('/') }}/admin/product/get-categories?parent_id='+this.value,'sub-category-select','select')"
+                                                        required>
+                                                    <option value="{{ old('category_id') }}" selected disabled>---Select---
+                                                    </option>
+                                                    @foreach (\App\CPU\CategoryManager::parents() as $c)
+                                                        <option value="{{ $c['id'] }}"
+                                                            {{ old('name') == $c['id'] ? 'selected' : '' }}>
+                                                            {{ $c['name'] }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label for="name">{{ \App\CPU\translate('Sub Category') }}</label>
+                                                <select class="js-example-basic-multiple form-control" name="sub_category_id"
+                                                        id="sub-category-select"
+                                                        onchange="getRequest('{{ url('/') }}/admin/product/get-categories?parent_id='+this.value,'sub-sub-category-select','select')">
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label for="name">{{ \App\CPU\translate('Sub Sub Category') }}</label>
+                                                <select class="js-example-basic-multiple form-control" name="sub_sub_category_id"
+                                                        id="sub-sub-category-select">
+                                                </select>
+                                            </div>
                                         </div>
+                                    </div>
 
                                         <div class="form-group" id="resource-shop" style="display: none">
                                             <label for="shop_id">{{\App\CPU\translate('shop')}}</label>
@@ -112,7 +145,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        
+
                                         <div class="form-group" id="resource-brand" style="display: none">
                                             <label for="brand_id">{{\App\CPU\translate('brand')}}</label>
                                             <select style="width: 100%"
@@ -221,7 +254,7 @@
                                         <td>
                                             <a class="btn btn-primary btn-sm edit"
                                                 title="{{ \App\CPU\translate('Edit')}}"
-                                                href="{{route('admin.banner.edit',[$banner['id']])}}" style="cursor: pointer;"> 
+                                                href="{{route('admin.banner.edit',[$banner['id']])}}" style="cursor: pointer;">
                                                 <i class="tio-edit"></i>
                                             </a>
                                             <a class="btn btn-danger btn-sm delete"
@@ -284,6 +317,20 @@
             }else if(data === 'attribute'){
                 $('#resource-attribute').show()
             }
+        }
+    </script>
+
+    <script>
+        function getRequest(route, id, type) {
+            $.get({
+                url: route,
+                dataType: 'json',
+                success: function(data) {
+                    if (type == 'select') {
+                        $('#' + id).empty().append(data.select_tag);
+                    }
+                },
+            });
         }
     </script>
     <script>

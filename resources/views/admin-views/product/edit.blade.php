@@ -458,6 +458,7 @@
                     maxCount: imageCount,
                     rowHeight: 'auto',
                     groupClassName: 'col-6',
+                    allowedExt:'',
                     maxFileSize: '',
                     placeholderImage: {
                         image: '{{asset('public/assets/back-end/img/400x400/img2.jpg')}}',
@@ -492,6 +493,7 @@
                 fieldName: 'image',
                 maxCount: 1,
                 rowHeight: 'auto',
+                allowedExt:'',
                 groupClassName: 'col-6',
                 maxFileSize: '',
                 placeholderImage: {
@@ -527,6 +529,7 @@
                 maxCount: 1,
                 rowHeight: 'auto',
                 groupClassName: 'col-6',
+                allowedExt:'',
                 maxFileSize: '',
                 placeholderImage: {
                     image: '{{asset('public/assets/back-end/img/400x400/img2.jpg')}}',

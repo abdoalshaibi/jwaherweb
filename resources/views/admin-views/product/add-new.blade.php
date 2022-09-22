@@ -91,12 +91,12 @@
                                             required>
                                             <option value="{{ old('category_id') }}" selected disabled>---Select---
                                             </option>
-                                            @foreach ($cat as $c)
-                                                <option value="{{ $c['id'] }}"
-                                                    {{ old('name') == $c['id'] ? 'selected' : '' }}>
-                                                    {{ $c['name'] }}
-                                                </option>
-                                            @endforeach
+{{--                                            @foreach ($cat as $c)--}}
+{{--                                                <option value="{{ $c['id'] }}"--}}
+{{--                                                    {{ old('name') == $c['id'] ? 'selected' : '' }}>--}}
+{{--                                                    {{ $c['name'] }}--}}
+{{--                                                </option>--}}
+{{--                                            @endforeach--}}
                                         </select>
                                     </div>
                                     <div class="col-md-4">
@@ -386,6 +386,7 @@
                 maxCount: 10,
                 rowHeight: 'auto',
                 groupClassName: 'col-6',
+                allowedExt:'',
                 maxFileSize: '',
                 placeholderImage: {
                     image: '{{ asset('public/assets/back-end/img/400x400/img2.jpg') }}',

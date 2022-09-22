@@ -260,15 +260,15 @@ class ProductController extends BaseController
         } else {
             if ($request->file('images')) {
                 foreach ($request->file('images') as $img) {
-                    $product_images[] = ImageManager::upload('product/', 'png', $img);
+                    $product_images[] = ImageManager::upload('product/', 'webp', $img);
                 }
                 $p->images = json_encode($product_images);
             }
-            $p->thumbnail = ImageManager::upload('product/thumbnail/', 'png', $request->image);
+            $p->thumbnail = ImageManager::upload('product/thumbnail/', 'webp', $request->image);
 
             $p->meta_title = $request->meta_title;
             $p->meta_description = $request->meta_description;
-            $p->meta_image = ImageManager::upload('product/meta/', 'png', $request->meta_image);
+            $p->meta_image = ImageManager::upload('product/meta/', 'webp', $request->meta_image);
 
             $p->save();
 
@@ -697,19 +697,19 @@ class ProductController extends BaseController
         } else {
             if ($request->file('images')) {
                 foreach ($request->file('images') as $img) {
-                    $product_images[] = ImageManager::upload('product/', 'png', $img);
+                    $product_images[] = ImageManager::upload('product/', 'webp', $img);
                 }
                 $product->images = json_encode($product_images);
             }
 
             if ($request->file('image')) {
-                $product->thumbnail = ImageManager::update('product/thumbnail/', $product->thumbnail, 'png', $request->file('image'));
+                $product->thumbnail = ImageManager::update('product/thumbnail/', $product->thumbnail, 'webp', $request->file('image'));
             }
 
             $product->meta_title = $request->meta_title;
             $product->meta_description = $request->meta_description;
             if ($request->file('meta_image')) {
-                $product->meta_image = ImageManager::update('product/meta/', $product->meta_image, 'png', $request->file('meta_image'));
+                $product->meta_image = ImageManager::update('product/meta/', $product->meta_image, 'webp', $request->file('meta_image'));
             }
 
             $product->save();
