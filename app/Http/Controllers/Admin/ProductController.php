@@ -578,22 +578,22 @@ class ProductController extends BaseController
 
         $category = [];
         if ($request->category_id != null) {
-            array_push($category, [
+            $category[] = [
                 'id' => $request->category_id,
                 'position' => 1,
-            ]);
+            ];
         }
         if ($request->sub_category_id != null) {
-            array_push($category, [
+            $category[] = [
                 'id' => $request->sub_category_id,
                 'position' => 2,
-            ]);
+            ];
         }
         if ($request->sub_sub_category_id != null) {
-            array_push($category, [
+            $category[] = [
                 'id' => $request->sub_sub_category_id,
                 'position' => 3,
-            ]);
+            ];
         }
         $product->category_ids = json_encode($category);
         $product->brand_id = $request->brand_id;

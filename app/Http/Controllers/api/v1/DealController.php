@@ -11,9 +11,9 @@ use App\Model\Product;
 
 class DealController extends Controller
 {
-    public function get_featured_deal()
+    public function get_featured_deal(Request $request)
     {
-        $featured_deal = FlashDeal::where(['status' => 1])
+        $featured_deal = FlashDeal::where(['status' => 1])->where(['category_id'=>$request->category_id])
             ->where(['deal_type' => 'feature_deal'])->first();
 
         $p_ids = array();

@@ -77,7 +77,7 @@
                                     </div>
                                 </div>
                                 <!--image upload only for main category-->
-                                @if($category['parent_id']==0)
+{{--                                @if($category['parent_id']==0)--}}
                                     <div class="col-12 col-md-4 from_part_2">
                                         <label>{{\App\CPU\translate('image')}}</label><small style="color: red">
                                             ( {{\App\CPU\translate('ratio')}} 1:1 )</small>
@@ -100,9 +100,9 @@
                                             </center>
                                         </div>
                                     </div>
-                                @endif
+{{--                                @endif--}}
                             </div>
-                            
+
                             <button type="submit" class="btn btn-primary float-right">{{\App\CPU\translate('update')}}</button>
                         </form>
                     </div>

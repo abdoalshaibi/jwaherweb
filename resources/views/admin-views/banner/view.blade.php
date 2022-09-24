@@ -96,7 +96,7 @@
                                             <div class="col-md-4">
                                                 <label for="name">{{ \App\CPU\translate('Category') }}</label>
                                                 <select class="js-example-basic-multiple form-control" name="category_id"
-                                                        onchange="getRequest('{{ url('/') }}/admin/product/get-categories?parent_id='+this.value,'sub-category-select','select')"
+                                                        onchange="getRequest('{{ url('/') }}/admin/product/get-categories?parent_id='+this.value,'sub-category_id','select')"
                                                         required>
                                                     <option value="{{ old('category_id') }}" selected disabled>---Select---
                                                     </option>
@@ -111,14 +111,14 @@
                                             <div class="col-md-4">
                                                 <label for="name">{{ \App\CPU\translate('Sub Category') }}</label>
                                                 <select class="js-example-basic-multiple form-control" name="sub_category_id"
-                                                        id="sub-category-select"
-                                                        onchange="getRequest('{{ url('/') }}/admin/product/get-categories?parent_id='+this.value,'sub-sub-category-select','select')">
+                                                        id="sub-category_id"
+                                                        onchange="getRequest('{{ url('/') }}/admin/product/get-categories?parent_id='+this.value,'sub-sub-category_id','select')">
                                                 </select>
                                             </div>
                                             <div class="col-md-4">
                                                 <label for="name">{{ \App\CPU\translate('Sub Sub Category') }}</label>
                                                 <select class="js-example-basic-multiple form-control" name="sub_sub_category_id"
-                                                        id="sub-sub-category-select">
+                                                        id="sub-sub-category_id">
                                                 </select>
                                             </div>
                                         </div>
@@ -136,10 +136,10 @@
                                         </div>
 
                                         <div class="form-group" id="resource-attribute" style="display: none">
-                                            <label for="shop_id">{{\App\CPU\translate('attribute')}}</label>
+                                            <label for="attribute_id">{{\App\CPU\translate('attribute')}}</label>
                                             <select style="width: 100%"
                                                     class="js-example-responsive form-control"
-                                                    name="shop_id">
+                                                    name="attribute_id">
                                                     @foreach (\App\Model\Attribute::all() as  $attribute)
                                                     <option value="{{$attribute['id']}}">{{$attribute['name']}}</option>
                                                 @endforeach

@@ -173,7 +173,7 @@
                                             <a class="btn btn-primary btn-sm" style="cursor: pointer;"
                                                 title="{{ \App\CPU\translate('Edit')}}"
                                                href="{{route('admin.category.edit',[$category['id']])}}">
-                                                <i class="tio-edit"></i> 
+                                                <i class="tio-edit"></i>
                                             </a>
                                             <a class="btn btn-danger btn-sm delete" style="cursor: pointer;"
                                                 title="{{ \App\CPU\translate('Delete')}}"
