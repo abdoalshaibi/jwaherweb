@@ -21,14 +21,15 @@ class BannerController extends Controller
             return response()->json(['errors' => Helpers::error_processor($validator)], 403);
         }
 
+        $banner=Banner::where(['category_id'=>$request->category_id]);
         if ($request['banner_type'] == 'all') {
-            $banners = Banner::where(['published' => 1])->get();
+            $banners = $banner->where(['published' => 1])->get();
         } elseif ($request['banner_type'] == 'main_banner') {
-            $banners = Banner::where(['published' => 1, 'banner_type' => 'Main Banner'])->get();
+            $banners = $banner->where(['published' => 1, 'banner_type' => 'Main Banner'])->get();
         } elseif ($request['banner_type'] == 'main_section_banner') {
-            $banners = Banner::where(['published' => 1, 'banner_type' => 'Main Section Banner'])->get();
+            $banners = $banner->where(['published' => 1, 'banner_type' => 'Main Section Banner'])->get();
         }else {
-            $banners = Banner::where(['published' => 1, 'banner_type' => 'Footer Banner'])->get();
+            $banners = $banner->where(['published' => 1, 'banner_type' => 'Footer Banner'])->get();
         }
         $pro_ids = [];
         $data = [];
@@ -40,7 +41,7 @@ class BannerController extends Controller
             }
             $data[] = $banner;
         }
-      
+
         return response()->json($data, 200);
 
     }
