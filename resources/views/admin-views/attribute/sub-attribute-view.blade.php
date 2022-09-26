@@ -50,18 +50,6 @@
                                     <input type="text" name="name[]" class="form-control" id="name"
                                            placeholder="{{\App\CPU\translate('Enter_Attribute_Name')}}" {{$lang == $default_lang? 'required':''}}>
 
-{{--                                            <label>{{\App\CPU\translate('main')}} {{\App\CPU\translate('attribute')}}--}}
-{{--                                                <span class="input-label-secondary">*</span></label>--}}
-{{--                                            <select  name="par_id"--}}
-{{--                                                    class="form-control" required>--}}
-
-{{--                                                @foreach(\App\Model\Attribute::where(['Parent_Id'=>null])->get() as $attribute)--}}
-{{--                                                    <option--}}
-{{--                                                        value="{{$attribute['id']}}">{{$attribute['name']}}</option>--}}
-{{--                                                @endforeach--}}
-
-{{--                                                <lable>value</lable>--}}
-{{--                                            </select>--}}
                                 </div>
                                 <input type="hidden" name="lang[]" value="{{$lang}}" id="lang">
 
