@@ -6,13 +6,25 @@ use App\CPU\Helpers;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\DB;
 
 class Attribute extends Model
 {
+    protected $casts = [
+        'Parent_Id' => 'integer',
+    ];
     public function translations()
     {
         return $this->morphMany(Translation::class, 'translationable');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Attribute::class, 'Parent_Id')->orderBy('priority','desc');
+    }
+
+    public function childes()
+    {
+        return $this->hasMany(Attribute::class, 'Parent_Id')->orderBy('priority','desc');
     }
 
     public function getNameAttribute($name)

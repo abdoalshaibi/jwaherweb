@@ -37,7 +37,7 @@ class SubAttributeController extends Controller
     {
         $attribute = new Attribute;
         $attribute->name = $request->name[array_search('en', $request->lang)];
-        $attribute->Parent_Id = $request->Parent_Id;
+        $attribute->Parent_Id = $request->par_id;
         $attribute->save();
         foreach ($request->lang as $index => $key) {
             if ($request->name[$index] && $key != 'en') {
@@ -96,7 +96,7 @@ class SubAttributeController extends Controller
         $output="";
         foreach($data as $row)
         {
-            $output .= '<option value="'.$row->id.'">'.$row->name.'</option>';
+            $output .= '<option data-role="tagsinput" value="'.$row->id.'">'.$row->name.'</option>';
         }
         echo $output;
     }

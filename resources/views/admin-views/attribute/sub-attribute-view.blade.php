@@ -50,22 +50,36 @@
                                     <input type="text" name="name[]" class="form-control" id="name"
                                            placeholder="{{\App\CPU\translate('Enter_Attribute_Name')}}" {{$lang == $default_lang? 'required':''}}>
 
-                                            <label
-                                                   for="exampleFormControlSelect1">{{\App\CPU\translate('main')}} {{\App\CPU\translate('attribute')}}
-                                                <span class="input-label-secondary">*</span></label>
-                                            <select id="exampleFormControlSelect1" name="Parent_Id"
-                                                    class="form-control" required>
-                                                @foreach(\App\Model\Attribute::where(['Parent_Id'=>null])->get() as $attribute)
-                                                    <option
-                                                        value="{{$attribute['id']}}">{{$attribute['name']}}</option>
-                                                @endforeach
+{{--                                            <label>{{\App\CPU\translate('main')}} {{\App\CPU\translate('attribute')}}--}}
+{{--                                                <span class="input-label-secondary">*</span></label>--}}
+{{--                                            <select  name="par_id"--}}
+{{--                                                    class="form-control" required>--}}
 
-                                                <lable>value</lable>
-                                            </select>
+{{--                                                @foreach(\App\Model\Attribute::where(['Parent_Id'=>null])->get() as $attribute)--}}
+{{--                                                    <option--}}
+{{--                                                        value="{{$attribute['id']}}">{{$attribute['name']}}</option>--}}
+{{--                                                @endforeach--}}
+
+{{--                                                <lable>value</lable>--}}
+{{--                                            </select>--}}
                                 </div>
                                 <input type="hidden" name="lang[]" value="{{$lang}}" id="lang">
 
                             @endforeach
+
+                            <div class="col-12 col-md-4">
+                                <div class="form-group">
+                                    <label
+                                        class="input-label">{{\App\CPU\translate('main')}} {{\App\CPU\translate('category')}}
+                                        <span class="input-label-secondary">*</span></label>
+                                    <select class="form-control" name="par_id" required>
+                                        @foreach(\App\Model\Attribute::where(['Parent_Id'=>null])->get() as $category)
+                                            <option
+                                                value="{{$category['id']}}">{{$category['name']}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
 
                             <button type="submit" class="btn btn-primary float-right">{{ \App\CPU\translate('submit')}}</button>
 
