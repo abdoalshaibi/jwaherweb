@@ -147,22 +147,22 @@ class ProductController extends BaseController
         $category = [];
 
         if ($request->category_id != null) {
-            array_push($category, [
+            $category[] = [
                 'id' => $request->category_id,
                 'position' => 1,
-            ]);
+            ];
         }
         if ($request->sub_category_id != null) {
-            array_push($category, [
+            $category[] = [
                 'id' => $request->sub_category_id,
                 'position' => 2,
-            ]);
+            ];
         }
         if ($request->sub_sub_category_id != null) {
-            array_push($category, [
+            $category[] = [
                 'id' => $request->sub_sub_category_id,
                 'position' => 3,
-            ]);
+            ];
         }
 
         $p->category_ids = json_encode($category);
@@ -275,22 +275,22 @@ class ProductController extends BaseController
             $data = [];
             foreach ($request->lang as $index => $key) {
                 if ($request->name[$index] && $key != 'en') {
-                    array_push($data, array(
+                    $data[] = array(
                         'translationable_type' => 'App\Model\Product',
                         'translationable_id' => $p->id,
                         'locale' => $key,
                         'key' => 'name',
                         'value' => $request->name[$index],
-                    ));
+                    );
                 }
                 if ($request->description[$index] && $key != 'en') {
-                    array_push($data, array(
+                    $data[] = array(
                         'translationable_type' => 'App\Model\Product',
                         'translationable_id' => $p->id,
                         'locale' => $key,
                         'key' => 'description',
                         'value' => $request->description[$index],
-                    ));
+                    );
                 }
             }
             Translation::insert($data);
@@ -565,13 +565,13 @@ class ProductController extends BaseController
                 );
             });
         }
-        // if (is_null($request->description[array_search('en', $request->lang)])) {
-        //     $validator->after(function ($validator) {
-        //         $validator->errors()->add(
-        //             'description', 'Description field is required!'
-        //         );
-        //     });
-        // }
+         if (is_null($request->description[array_search('en', $request->lang)])) {
+             $validator->after(function ($validator) {
+                 $validator->errors()->add(
+                     'description', 'Description field is required!'
+                 );
+             });
+         }
 
 
         $product->name = $request->name[array_search('en', $request->lang)];
@@ -811,7 +811,7 @@ class ProductController extends BaseController
 
             $thumbnail = explode('/', $collection['thumbnail']);
 
-            array_push($data, [
+            $data[] = [
                 'name' => $collection['name'],
                 'slug' => Str::slug($collection['name'], '-') . '-' . Str::random(6),
                 'category_ids' => json_encode([['id' => (string)$collection['category_id'], 'position' => 1], ['id' => (string)$collection['sub_category_id'], 'position' => 2], ['id' => (string)$collection['sub_sub_category_id'], 'position' => 3]]),
@@ -829,7 +829,7 @@ class ProductController extends BaseController
                 'video_provider' => 'youtube',
                 'video_url' => $collection['youtube_video_url'],
                 'images' => json_encode(['def.png']),
-                'thumbnail' => $thumbnail[1]??$thumbnail[0],
+                'thumbnail' => $thumbnail[1] ?? $thumbnail[0],
                 'status' => 1,
                 'request_status' => 1,
                 'colors' => json_encode([]),
@@ -839,7 +839,7 @@ class ProductController extends BaseController
                 'featured_status' => 1,
                 'added_by' => 'admin',
                 'user_id' => auth('admin')->id(),
-            ]);
+            ];
         }
         DB::table('products')->insert($data);
         Toastr::success(count($data) . ' - Products imported successfully!');

@@ -27,7 +27,7 @@ class AttributeController extends Controller
 
             $query_param = ['search' => $request['search']];
         }else{
-            $attributes = new Attribute();
+            $attributes =  Attribute::where(['Parent_Id'=>null]);
         }
         $attributes = $attributes->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
         return view('admin-views.attribute.view',compact('attributes','search'));

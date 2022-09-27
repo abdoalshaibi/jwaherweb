@@ -96,7 +96,7 @@ class SubAttributeController extends Controller
         $output="";
         foreach($data as $row)
         {
-            $output .= '<option data-role="tagsinput" value="'.$row->id.'">'.$row->name.'</option>';
+            $output .= '<option data-role="tagsinput" value="'.$row->name.'">'.$row->name.'</option>';
         }
         echo $output;
     }

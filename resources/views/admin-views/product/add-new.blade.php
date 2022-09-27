@@ -194,7 +194,7 @@
                                         <select
                                             class="js-example-basic-multiple js-states js-example-responsive form-control"
                                             name="choice_attributes[]" id="choice_attributes" multiple="multiple">
-                                            @foreach (\App\Model\Attribute::orderBy('name', 'asc')->get() as $key => $a)
+                                            @foreach (\App\Model\Attribute::where(['Parent_Id'=>null])->orderBy('name', 'asc')->get() as $key => $a)
                                                 <option value="{{ $a['id'] }}">
                                                     {{ $a['name'] }}
                                                 </option>
@@ -578,8 +578,7 @@
             let n = name.split(' ').join('');
             $('#customer_choice_options').append(
 
-
-                '<div class="row"><div class="col-md-3"><input type="hidden" name="choice_no[]" value="' + i +
+                '<div class="row"><div class="col-md-3"><input type="text" name="choice_no[]" value="' + i +
                 '"><input type="text" class="form-control" name="choice[]" value="' + n +
                 '" placeholder="{{ trans('Choice Title') }}" readonly></div> '+
                 '<div class="col-md-8">'+
