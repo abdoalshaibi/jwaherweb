@@ -565,16 +565,27 @@ class ProductController extends BaseController
                 );
             });
         }
-         if (is_null($request->description[array_search('en', $request->lang)])) {
-             $validator->after(function ($validator) {
-                 $validator->errors()->add(
-                     'description', 'Description field is required!'
-                 );
-             });
-         }
+
+        if (is_null($request->desc[array_search('en', $request->lang)])) {
+            $validator->after(function ($validator) {
+                $validator->errors()->add(
+                    'desc', 'desc field is required!'
+                );
+            });
+        }
+
+//         if (is_null($request->description[array_search('en', $request->lang)])) {
+//             $validator->after(function ($validator) {
+//                 $validator->errors()->add(
+//                     'description', 'Description field is required!'
+//                 );
+//             });
+//         }
 
 
         $product->name = $request->name[array_search('en', $request->lang)];
+        $product->desc = $request->desc[array_search('en', $request->lang)];
+
 
         $category = [];
         if ($request->category_id != null) {
