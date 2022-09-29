@@ -1537,4 +1537,5 @@
   'text_updated_successfully' => 'Text updated successfully',
   'value' => 'Value',
   'Feature Deal Update' => 'Feature Deal Update',
+  'sub_attribute' => 'Sub attribute',
 );

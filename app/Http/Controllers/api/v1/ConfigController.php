@@ -15,7 +15,7 @@ class ConfigController extends Controller
 {
     public function configuration()
     {
-        $currency = Currency::all();
+        $currency = Currency::where(['status'=>1])->get();
         $social_login = [];
         foreach (Helpers::get_business_settings('social_login') as $social) {
             $config = [
