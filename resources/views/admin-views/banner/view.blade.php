@@ -45,8 +45,8 @@
                                             <div class="form-group">
                                                 <label >{{\App\CPU\translate('main')}} {{\App\CPU\translate('category')}}
                                                     <span class="input-label-secondary">*</span></label>
-                                                <select id="exampleFormControlSelect1" name="category_id"
-                                                        class="form-control" required>
+                                                <select id="exampleFormControlSelect1" name="Mcategory_id"
+                                                        class="form-control">
                                                     @foreach(\App\Model\Category::where(['position'=>0])->get() as $category)
                                                         <option
                                                             value="{{$category['id']}}">{{$category['name']}}</option>
@@ -74,6 +74,8 @@
                                                     name="resource_type" required>
                                                 <option value="product">{{ \App\CPU\translate('Product')}}</option>
                                                 <option value="category">{{ \App\CPU\translate('Category')}}</option>
+                                                <option value="Subcategory">{{ \App\CPU\translate('Sub Category')}}</option>
+                                                <option value="SubSubcategory">{{ \App\CPU\translate('Sub Sub Category')}}</option>
                                                 <option value="shop">{{ \App\CPU\translate('Shop')}}</option>
                                                 <option value="brand">{{ \App\CPU\translate('Brand')}}</option>
                                                 <option value="attribute">{{ \App\CPU\translate('Attribute')}}</option>
@@ -96,8 +98,7 @@
                                             <div class="col-md-4">
                                                 <label for="name">{{ \App\CPU\translate('Category') }}</label>
                                                 <select class="js-example-basic-multiple form-control" name="category_id"
-                                                        onchange="getRequest('{{ url('/') }}/admin/product/get-categories?parent_id='+this.value,'sub-category_id','select')"
-                                                        required>
+                                                        >
                                                     <option value="{{ old('category_id') }}" selected disabled>---Select---
                                                     </option>
                                                     @foreach (\App\CPU\CategoryManager::parents() as $c)
@@ -108,21 +109,68 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <div class="col-md-4">
-                                                <label for="name">{{ \App\CPU\translate('Sub Category') }}</label>
-                                                <select class="js-example-basic-multiple form-control" name="sub_category_id"
-                                                        id="sub-category_id"
-                                                        onchange="getRequest('{{ url('/') }}/admin/product/get-categories?parent_id='+this.value,'sub-sub-category_id','select')">
-                                                </select>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label for="name">{{ \App\CPU\translate('Sub Sub Category') }}</label>
-                                                <select class="js-example-basic-multiple form-control" name="sub_sub_category_id"
-                                                        id="sub-sub-category_id">
-                                                </select>
-                                            </div>
                                         </div>
                                     </div>
+
+                                        <div class="form-group" id="resource-Subcategory" style="display: none">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <label for="name">{{ \App\CPU\translate('Category') }}</label>
+                                                    <select class="js-example-basic-multiple form-control" name="category_id"
+                                                            onchange="getRequest('{{ url('/') }}/admin/product/get-categories?parent_id='+this.value,'sub-category_id','select')"
+                                                            >
+                                                        <option value="{{ old('category_id') }}" selected disabled>---Select---
+                                                        </option>
+                                                        @foreach (\App\CPU\CategoryManager::parents() as $c)
+                                                            <option value="{{ $c['id'] }}"
+                                                                {{ old('name') == $c['id'] ? 'selected' : '' }}>
+                                                                {{ $c['name'] }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="name">{{ \App\CPU\translate('Sub Category') }}</label>
+                                                    <select class="js-example-basic-multiple form-control" name="Subcategory_id"
+                                                            id="sub-category_id">
+                                                    </select>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" id="resource-SubSubcategory" style="display: none">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <label for="name">{{ \App\CPU\translate('Category') }}</label>
+                                                    <select class="js-example-basic-multiple form-control" name="category_id"
+                                                            onchange="getRequest('{{ url('/') }}/admin/product/get-categories?parent_id='+this.value,'sub2-category_id','select')"
+                                                            >
+                                                        <option value="{{ old('category_id') }}" selected disabled>---Select---
+                                                        </option>
+                                                        @foreach (\App\CPU\CategoryManager::parents() as $c)
+                                                            <option value="{{ $c['id'] }}"
+                                                                {{ old('name') == $c['id'] ? 'selected' : '' }}>
+                                                                {{ $c['name'] }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="name">{{ \App\CPU\translate('Sub Category') }}</label>
+                                                    <select class="js-example-basic-multiple form-control" name="Subcategory_id"
+                                                            id="sub2-category_id"
+                                                            onchange="getRequest('{{ url('/') }}/admin/product/get-categories?parent_id='+this.value,'sub2-sub-category_id','select')">
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="name">{{ \App\CPU\translate('Sub Sub Category') }}</label>
+                                                    <select class="js-example-basic-multiple form-control" name="SubSubcategory_id"
+                                                            id="sub2-sub-category_id">
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
 
                                         <div class="form-group" id="resource-shop" style="display: none">
                                             <label for="shop_id">{{\App\CPU\translate('shop')}}</label>
@@ -303,6 +351,8 @@
             $('#resource-product').hide()
             $('#resource-brand').hide()
             $('#resource-category').hide()
+            $('#resource-Subcategory').hide()
+            $('#resource-SubSubcategory').hide()
             $('#resource-shop').hide()
             $('#resource-attribute').hide()
 
@@ -312,7 +362,13 @@
                 $('#resource-brand').show()
             } else if (data === 'category') {
                 $('#resource-category').show()
-            } else if (data === 'shop') {
+            }
+         else if (data === 'Subcategory') {
+            $('#resource-Subcategory').show()
+        } else if (data === 'SubSubcategory') {
+            $('#resource-SubSubcategory').show()
+        }
+            else if (data === 'shop') {
                 $('#resource-shop').show()
             }else if(data === 'attribute'){
                 $('#resource-attribute').show()
