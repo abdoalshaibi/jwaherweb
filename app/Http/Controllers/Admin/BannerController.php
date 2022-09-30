@@ -44,6 +44,7 @@ class BannerController extends Controller
         ]);
 
         $banner = new Banner;
+        $banner->category_id=$request->Mcategory_id;
         $banner->banner_type = $request->banner_type;
         $banner->resource_type = $request->resource_type;
         $banner->resource_id = $request[$request->resource_type.'_id'];
