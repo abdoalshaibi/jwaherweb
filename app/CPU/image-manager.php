@@ -4,7 +4,6 @@ namespace App\CPU;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
 
 class ImageManager
 {

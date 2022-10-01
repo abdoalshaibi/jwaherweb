@@ -17,9 +17,9 @@ class ProductManager
         return Product::active()->with(['rating'])->where('id', $id)->first();
     }
 
-    public static function get_latest_products($limit = 10, $offset = 1)
+    public static function get_latest_products($category_id,$limit = 10, $offset = 1)
     {
-        $paginator = Product::active()->with(['rating'])->latest()->paginate($limit, ['*'], 'page', $offset);
+        $paginator = Product::active()->with(['rating'])->where('category_ids', 'LIKE', '%'.$category_id.'%')->latest()->paginate($limit, ['*'], 'page', $offset);
         /*$paginator->count();*/
         return [
             'total_size' => $paginator->total(),
@@ -29,10 +29,10 @@ class ProductManager
         ];
     }
 
-    public static function get_featured_products($limit = 10, $offset = 1)
+    public static function get_featured_products($category_id,$limit = 10, $offset = 1)
     {
         //change review to ratting
-        $paginator = Product::with(['rating'])->active()
+        $paginator = Product::with(['rating'])->active()->where('category_ids', 'LIKE', '%'.$category_id.'%')
             ->where('featured', 1)
             ->withCount(['order_details'])->orderBy('order_details_count', 'DESC')
             ->paginate($limit, ['*'], 'page', $offset);

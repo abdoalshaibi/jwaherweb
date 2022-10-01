@@ -60,7 +60,9 @@
                                         if ($t->locale == $lang && $t->key == "description") {
                                             $translate[$lang]['description'] = $t->value;
                                         }
-
+                                        if ($t->locale == $lang && $t->key == "desc") {
+                                            $translate[$lang]['desc'] = $t->value;
+                                        }
                                     }
                                 }
                                 ?>
@@ -76,7 +78,7 @@
                                                for="{{ $lang }}_name">{{ \App\CPU\translate('description') }}
                                             ({{ strtoupper($lang) }})
                                         </label>
-                                        <input value="{{$translate[$lang]['name']??$product['name']}}" type="text" {{ $lang == $default_lang ? 'required' : '' }} name="desc[]"
+                                        <input value="{{$translate[$lang]['desc']??$product['desc']}}" type="text" {{ $lang == $default_lang ? 'required' : '' }} name="desc[]"
                                                id="{{ $lang }}_name" class="form-control" placeholder="description">
                                     </div>
                                     <input type="hidden" name="lang[]" value="{{$lang}}">

@@ -23,21 +23,21 @@ class ProductController extends Controller
 {
     public function get_latest_products(Request $request)
     {
-        $products = ProductManager::get_latest_products($request['limit'], $request['offset']);
+        $products = ProductManager::get_latest_products($request['category_id'],$request['limit'], $request['offset']);
         $products['products'] = Helpers::product_data_formatting($products['products'], true);
         return response()->json($products, 200);
     }
 
     public function get_featured_products(Request $request)
     {
-        $products = ProductManager::get_featured_products($request['limit'], $request['offset']);
+        $products = ProductManager::get_featured_products($request->category_id,$request['limit'], $request['offset']);
         $products['products'] = Helpers::product_data_formatting($products['products'], true);
         return response()->json($products, 200);
     }
 
     public function get_top_rated_products(Request $request)
     {
-        $products = ProductManager::get_top_rated_products($request['limit'], $request['offset']);
+        $products = ProductManager::get_top_rated_products($request->category_id,$request['limit'], $request['offset']);
         $products['products'] = Helpers::product_data_formatting($products['products'], true);
         return response()->json($products, 200);
     }
@@ -71,9 +71,9 @@ class ProductController extends Controller
 
     public function get_best_sellings(Request $request)
     {
-        $products = ProductManager::get_best_selling_products($request['limit'], $request['offset']);
+        $products = ProductManager::get_best_selling_products($request->category_id,$request['limit'], $request['offset']);
         $products['products'] = Helpers::product_data_formatting($products['products'], true);
-        
+
         return response()->json($products, 200);
     }
 
