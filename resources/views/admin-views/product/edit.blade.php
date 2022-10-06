@@ -220,7 +220,7 @@
                                         <select
                                             class="js-example-basic-multiple js-states js-example-responsive form-control"
                                             name="choice_attributes[]" id="choice_attributes" multiple="multiple">
-                                            @foreach (\App\Model\Attribute::orderBy('name', 'asc')->get() as $key => $a)
+                                            @foreach (\App\Model\Attribute::where(['Parent_Id'=>null])->orderBy('name', 'asc')->get() as $key => $a)
                                                 @if($product['attributes']!='null')
                                                     <option
                                                         value="{{ $a['id']}}" {{in_array($a->id,json_decode($product['attributes'],true))?'selected':''}}>

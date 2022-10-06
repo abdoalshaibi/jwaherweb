@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\CPU\Helpers;
 use App\Http\Controllers\Controller;
 use App\Model\Attribute;
+use App\Model\Category;
 use Illuminate\Http\Request;
 use App\Model\Translation;
 use Brian2694\Toastr\Facades\Toastr;
@@ -97,5 +98,17 @@ class AttributeController extends Controller
             return response()->json($data);
         }
         return null;
+    }
+
+    public function status(Request $request)
+    {
+        $category = Attribute::find($request->id);
+        $category->IsMain = $request->IsMain;
+        $category->save();
+        // Toastr::success('Service status updated!');
+        // return back();
+        return response()->json([
+            'success' => 1,
+        ], 200);
     }
 }

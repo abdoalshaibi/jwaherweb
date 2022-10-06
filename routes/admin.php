@@ -146,6 +146,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'as' => 'admin.'], fu
             Route::get('edit/{id}', 'AttributeController@edit')->name('edit');
             Route::post('update/{id}', 'AttributeController@update')->name('update');
             Route::post('delete', 'AttributeController@delete')->name('delete');
+            Route::post('status', 'AttributeController@status')->name('status');
         });
 
         Route::group(['prefix' => 'sub-attribute', 'as' => 'sub-attribute.','middleware'=>['module:product_management']], function () {

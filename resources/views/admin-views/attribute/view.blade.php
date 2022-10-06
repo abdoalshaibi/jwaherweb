@@ -95,6 +95,7 @@
                             <tr>
                                 <th style="">{{ \App\CPU\translate('SL#')}}</th>
                                 <th style="width: 40%;text-align:center;">{{ \App\CPU\translate('Name')}} </th>
+                                <th style="width: 40%;text-align:center;">{{ \App\CPU\translate('Main')}} </th>
                                 <th style="width: 40%;text-align:center;">{{ \App\CPU\translate('Action')}}</th>
                             </tr>
                             </thead>
@@ -103,6 +104,12 @@
                                 <tr>
                                     <td>{{$attributes->firstItem()+$key}}</td>
                                     <td style="width: 40%;text-align:center;">{{$attribute['name']}}</td>
+                                    <td style="width: 40%;text-align:center;"><label class="switch switch-status">
+                                        <input type="checkbox" class="attribute-status"
+                                               id="{{$attribute['id']}}" {{$attribute->IsMain == 1?'checked':''}}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                    </td>
                                     <td style="width: 40%;text-align:center;">
 
                                         <a class="btn btn-primary btn-sm edit" style="cursor: pointer;"
@@ -161,6 +168,36 @@
             $('#dataTable').DataTable();
         });
     </script>
+<script>
+    $(document).on('change', '.attribute-status', function () {
+        var id = $(this).attr("id");
+
+        alert(id)
+        if ($(this).prop("checked") == true) {
+            var status = 1;
+        } else if ($(this).prop("checked") == false) {
+            var status = 0;
+        }
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            }
+        });
+        $.ajax({
+            url: "{{route('admin.attribute.status')}}",
+            method: 'POST',
+            data: {
+                id: id,
+                IsMain: status
+            },
+            success: function (data) {
+                if(data.success == true) {
+                    toastr.success('{{\App\CPU\translate('Status updated successfully')}}');
+                }
+            }
+        });
+    });
+</script>
     <script>
 
 

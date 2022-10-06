@@ -2065,4 +2065,5 @@
   'This page is for A4 size page printer, so it won\'t be visible in smaller devices' => 'This page is for A4 size page printer  so it won t be visible in smaller devices',
   'print' => 'Print',
   'reset' => 'Reset',
+  'Main' => 'Main',
 );

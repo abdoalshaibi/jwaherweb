@@ -55,10 +55,9 @@
 
                             @endforeach
 
-                            <div class="col-12 col-md-4">
                                 <div class="form-group">
                                     <label
-                                        class="input-label">{{\App\CPU\translate('main')}} {{\App\CPU\translate('category')}}
+                                        >{{\App\CPU\translate('main')}} {{\App\CPU\translate('category')}}
                                         <span class="input-label-secondary">*</span></label>
                                     <select class="form-control" name="par_id" required>
                                         @foreach(\App\Model\Attribute::where(['Parent_Id'=>null])->get() as $category)
@@ -67,7 +66,6 @@
                                         @endforeach
                                     </select>
                                 </div>
-                            </div>
 
                             <button type="submit" class="btn btn-primary float-right">{{ \App\CPU\translate('submit')}}</button>
 
