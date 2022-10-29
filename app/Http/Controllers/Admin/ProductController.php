@@ -182,7 +182,7 @@ class ProductController extends BaseController
                 $str = 'choice_options_' . $no;
                 $item['name'] = 'choice_' . $no;
                 $item['title'] = $request->choice[$key];
-                $item['options'] = explode(',', implode('|', $request[$str]));
+                $item['options'] = explode('|', implode(',', $request[$str]));
                 array_push($choice_options, $item);
             }
         }
@@ -626,7 +626,7 @@ class ProductController extends BaseController
                 $str = 'choice_options_' . $no;
                 $item['name'] = 'choice_' . $no;
                 $item['title'] = $request->choice[$key];
-                $item['options'] = explode(',', implode('|', $request[$str]));
+                $item['options'] = explode('|', implode(',', $request[$str]));
                 array_push($choice_options, $item);
             }
         }
@@ -733,6 +733,15 @@ class ProductController extends BaseController
                             'locale' => $key,
                             'key' => 'name'],
                         ['value' => $request->name[$index]]
+                    );
+                }
+                if ($request->name[$index] && $key != 'en') {
+                    Translation::updateOrInsert(
+                        ['translationable_type' => 'App\Model\Product',
+                            'translationable_id' => $product->id,
+                            'locale' => $key,
+                            'key' => 'desc'],
+                        ['value' => $request->desc[$index]]
                     );
                 }
                 if ($request->description[$index] && $key != 'en') {

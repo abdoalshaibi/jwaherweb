@@ -78,7 +78,7 @@
                                                for="{{ $lang }}_name">{{ \App\CPU\translate('description') }}
                                             ({{ strtoupper($lang) }})
                                         </label>
-                                        <input value="{{$translate[$lang]['desc']??$product['desc']}}" type="text" {{ $lang == $default_lang ? 'required' : '' }} name="desc[]"
+                                        <input value="{{$translate[$lang]['desc']??$product['desc']}}" type="text" {{ $lang == 'en' ? 'required' : '' }} name="desc[]"
                                                id="{{ $lang }}_name" class="form-control" placeholder="description">
                                     </div>
                                     <input type="hidden" name="lang[]" value="{{$lang}}">
