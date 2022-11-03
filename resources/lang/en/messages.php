@@ -1538,4 +1538,6 @@
   'value' => 'Value',
   'Feature Deal Update' => 'Feature Deal Update',
   'sub_attribute' => 'Sub attribute',
+    'Detail' => 'Details',
+
 );

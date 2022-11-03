@@ -194,7 +194,7 @@
                                         <select
                                             class="js-example-basic-multiple js-states js-example-responsive form-control"
                                             name="choice_attributes[]" id="choice_attributes" multiple="multiple">
-                                            @foreach (\App\Model\Attribute::where(['Parent_Id'=>null])->orderBy('name', 'asc')->get() as $key => $a)
+                                            @foreach (\App\Model\Attribute::where(['IsMain'=>1,'Parent_Id'=>null])->orderBy('name', 'asc')->get() as $key => $a)
                                                 <option value="{{ $a['id'] }}">
                                                     {{ $a['name'] }}
                                                 </option>
@@ -204,6 +204,37 @@
 
                                     <div class="col-md-12 mt-2 mb-2">
                                         <div class="customer_choice_options" id="customer_choice_options"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mt-2">
+                        <div class="card-header">
+                            <h4>{{ \App\CPU\translate('Detail') }}</h4>
+                        </div>
+                        <div class="card-body">
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="attributes" style="padding-bottom: 3px">
+                                            {{ \App\CPU\translate('Attributes') }} :
+                                        </label>
+                                        <select
+                                            class="js-example-basic-multiple js-states js-example-responsive form-control"
+                                            name="choice_Details_attributes[]" id="choice_Details_attributes" multiple="multiple">
+                                            @foreach (\App\Model\Attribute::where(['IsMain'=>0,'Parent_Id'=>null])->orderBy('name', 'asc')->get() as $key => $a)
+                                                <option value="{{ $a['id'] }}">
+                                                    {{ $a['name'] }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-12 mt-2 mb-2">
+                                        <div class="customer_choice_Details_options" id="customer_choice_Details_options"></div>
                                     </div>
                                 </div>
                             </div>
@@ -578,30 +609,93 @@
 
         function add_more_customer_choice_option(i, name) {
             let n = name.split(' ').join('');
-            {{--$('#customer_choice_options').append(--}}
-            {{--    --}}
-            {{--    //'<div class="row"><div class="col-md-3"><input type="hidden" name="choice_no[]" value="' + i + '"><input type="text" class="form-control" name="choice[]" value="' + n + '" placeholder="{{trans('Choice Title') }}" readonly></div><div class="col-lg-9"><input type="text" class="form-control" name="choice_options_' + i + '[]" placeholder="{{trans('Enter choice values') }}" data-role="tagsinput" onchange="update_sku()"></div></div>'--}}
-
-            {{--);--}}
-
             $('#customer_choice_options').append(
 
-                '<div class="row"><div class="col-md-3"><input type="hidden" name="choice_no[]" value="' + i +
-                '"><input type="text" class="form-control" name="choice[]" value="' + n +
-                '" placeholder="{{ trans('Choice Title') }}" readonly></div> '+
-                '<div class="col-md-8">'+
-                '<select class="js-example-basic-multiple js-states js-example-responsive form-control"' +
-                'id="sub_Attribute_choice'+i+'" ' +
-                'onchange="update_sku()"'+
-                'name="choice_options_' + i + '[]"'+
-                'multiple="multiple"> '+''+
-                '</select>'+
-            '</div>'+'</div>'
-                );
+                '<div class="row"><div class="col-md-3"><input type="hidden" name="choice_no[]" value="' + i + '"><input type="text" class="form-control" name="choice[]" value="' + n + '" placeholder="{{trans('Choice Title') }}" readonly></div><div class="col-lg-9"><input type="text" class="form-control" name="choice_options_' + i + '[]" placeholder="{{trans('Enter choice values') }}" data-role="tagsinput" onchange="update_sku()"></div></div>'
+
+            );
+
+            {{--$('#customer_choice_options').append(--}}
+
+            {{--    '<div class="row"><div class="col-md-3"><input type="hidden" name="choice_no[]" value="' + i +--}}
+            {{--    '"><input type="text" class="form-control" name="choice[]" value="' + n +--}}
+            {{--    '" placeholder="{{ trans('Choice Title') }}" readonly></div> '+--}}
+            {{--    '<div class="col-md-8">'+--}}
+            {{--    '<select class="js-example-basic-multiple js-states js-example-responsive form-control"' +--}}
+            {{--    'id="sub_Attribute_choice'+i+'" ' +--}}
+            {{--    'onchange="update_sku()"'+--}}
+            {{--    'name="choice_options_' + i + '[]"'+--}}
+            {{--    'multiple="multiple"> '+''+--}}
+            {{--    '</select>'+--}}
+            {{--'</div>'+'</div>'--}}
+            {{--    );--}}
 
             $("input[data-role=tagsinput], select[multiple][data-role=tagsinput]").tagsinput();
         }
 
+        $('#choice_Details_attributes').on('change', function() {
+            $('#customer_choice_Details_options').html(null);
+            $.each($("#choice_Details_attributes option:selected"), function() {
+                //console.log($(this).val());
+                add_more_customer_choice_Details_option($(this).val(), $(this).text());
+
+
+                var id = $(this).val();
+                if (id) {
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                        }
+                    });
+                    $.ajax({
+                        type: 'GET',
+                        url: '{{route('admin.sub-attribute.getSubAttribute')}}',
+                        data: {
+                            Id: id
+                        },
+                        success: function (result) {
+                            $("#sub_Attribute_choice"+id).html(result);
+                            // alert("success: " + JSON.stringify(result));
+                        },
+                        error: function (result) {
+                            // alert("error: " + JSON.stringify(result));
+                        }
+                    });
+                }
+
+                $(document).ready(function() {
+                    $("#sub_Attribute_choice"+id).select2();
+                });
+
+
+            });
+        });
+
+        function add_more_customer_choice_Details_option(i, name) {
+            let n = name.split(' ').join('');
+            $('#customer_choice_Details_options').append(
+
+                '<div class="row"><div class="col-md-3"><input type="hidden" name="choice_Detail_no[]" value="' + i + '"><input type="text" class="form-control" name="choice_Detail[]" value="' + n + '" placeholder="{{trans('Choice Title') }}" readonly></div><div class="col-lg-9"><input type="text" class="form-control" name="choice_detail_options_' + i + '[]" placeholder="{{trans('Enter choice values') }}" data-role="tagsinput" onchange="update_sku()"></div></div>'
+
+            );
+
+            {{--$('#customer_choice_Details_options').append(--}}
+
+            {{--    '<div class="row"><div class="col-md-3"><input type="hidden" name="choice_no[]" value="' + i +--}}
+            {{--    '"><input type="text" class="form-control" name="choice[]" value="' + n +--}}
+            {{--    '" placeholder="{{ trans('Choice Title') }}" readonly></div> '+--}}
+            {{--    '<div class="col-md-8">'+--}}
+            {{--    '<select class="js-example-basic-multiple js-states js-example-responsive form-control"' +--}}
+            {{--    'id="sub_Attribute_choice'+i+'" ' +--}}
+            {{--    'onchange="update_sku()"'+--}}
+            {{--    'name="choice_options_' + i + '[]"'+--}}
+            {{--    'multiple="multiple"> '+''+--}}
+            {{--    '</select>'+--}}
+            {{--    '</div>'+'</div>'--}}
+            {{--);--}}
+
+            $("input[data-role=tagsinput], select[multiple][data-role=tagsinput]").tagsinput();
+        }
 
         $('#colors-selector').on('change', function() {
             update_sku();

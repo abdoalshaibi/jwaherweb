@@ -2066,4 +2066,5 @@
   'print' => 'Print',
   'reset' => 'Reset',
   'Main' => 'Main',
+  'Detail' => 'التفاصيل',
 );
