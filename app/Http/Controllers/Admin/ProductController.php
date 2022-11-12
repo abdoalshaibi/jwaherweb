@@ -225,6 +225,7 @@ class ProductController extends BaseController
                 $item['type'] = $str;
                 $item['price'] = BackEndHelper::currency_to_usd(abs($request['price_' . str_replace('.', '_', $str)]));
                 $item['sku'] = $request['sku_' . str_replace('.', '_', $str)];
+                $item['file'] = ImageManager::upload('product/', 'webp', $request['file_' . str_replace('.', '_', $str)]);
                 $item['qty'] = abs($request['qty_' . str_replace('.', '_', $str)]);
                 array_push($variations, $item);
                 $stock_count += $item['qty'];

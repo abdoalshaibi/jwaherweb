@@ -5,6 +5,9 @@
 				<td class="text-center">
 					<label for="" class="control-label">{{\App\CPU\translate('Variant')}}</label>
 				</td>
+                <td>
+
+                </td>
 				<td class="text-center">
 					<label for="" class="control-label">{{\App\CPU\translate('Variant Price')}}</label>
 				</td>
@@ -50,6 +53,19 @@
 				<td>
 					<label for="" class="control-label">{{ $str }}</label>
 				</td>
+                <td>
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label>{{ \App\CPU\translate('Upload product images') }}</label><small
+                                style="color: red">* ( {{ \App\CPU\translate('ratio') }} 1:1 )</small>
+                        </div>
+                        <div class="p-2 border border-dashed" style="max-width:430px;">
+
+                            <input type="file" name="file_{{$str}}"  multiple id="gallery-photo-add_{{$str}}">
+                        </div>
+
+                    </div>
+                </td>
 				<td>
 					<input type="number" name="price_{{ $str }}" value="{{ $unit_price }}" min="0" step="0.01" class="form-control" required>
 				</td>
@@ -71,13 +87,13 @@
 	{
 		var total_qty = 0;
 		var qty_elements = $('input[name^="qty_"]');
+
 		for(var i=0; i<qty_elements.length; i++)
 		{
 			total_qty += parseInt(qty_elements.eq(i).val());
 		}
 		if(qty_elements.length > 0)
 		{
-
 			$('input[name="current_stock"]').attr("readonly", true);
 			$('input[name="current_stock"]').val(total_qty);
 		}
@@ -90,7 +106,9 @@
 		var qty_elements = $('input[name^="qty_"]');
 		for(var i=0; i<qty_elements.length; i++)
 		{
-			total_qty += parseInt(qty_elements.eq(i).val());
+            alert(qty_elements.eq(i).text());
+
+            total_qty += parseInt(qty_elements.eq(i).val());
 		}
 		$('input[name="current_stock"]').val(total_qty);
 	});

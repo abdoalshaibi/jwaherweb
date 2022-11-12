@@ -676,7 +676,6 @@
             $('#customer_choice_Details_options').append(
 
                 '<div class="row"><div class="col-md-3"><input type="hidden" name="choice_Detail_no[]" value="' + i + '"><input type="text" class="form-control" name="choice_Detail[]" value="' + n + '" placeholder="{{trans('Choice Title') }}" readonly></div><div class="col-lg-9"><input type="text" class="form-control" name="choice_detail_options_' + i + '[]" placeholder="{{trans('Enter choice values') }}" data-role="tagsinput" onchange="update_sku()"></div></div>'
-
             );
 
             {{--$('#customer_choice_Details_options').append(--}}
