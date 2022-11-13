@@ -210,6 +210,7 @@ class Helpers
                     'type' => $var['type'],
                     'price' => (double)$var['price'],
                     'sku' => $var['sku'],
+                    'file'=>$var['file'],
                     'qty' => (integer)$var['qty'],
                 ];
             }

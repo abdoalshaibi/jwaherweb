@@ -5,6 +5,9 @@
         <td class="text-center">
             <label for="" class="control-label">{{\App\CPU\translate('Variant')}}</label>
         </td>
+        <td>
+            <label for="" class="control-label">{{\App\CPU\translate('Image')}}</label>
+        </td>
         <td class="text-center">
             <label for="" class="control-label">{{\App\CPU\translate('Variant Price')}}</label>
         </td>
@@ -23,6 +26,18 @@
             <td>
                 <label for="" class="control-label">{{ $combination['type'] }}</label>
                 <input value="{{ $combination['type'] }}" name="type[]" style="display: none">
+            </td>
+            <td>
+
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label>{{ \App\CPU\translate('Upload product images') }}</label><small
+                            style="color: red">* ( {{ \App\CPU\translate('ratio') }} 1:1 )</small>
+                    </div>
+                    <div class="p-2 border border-dashed" style="max-width:430px;">
+                        <input type="file" name="file_{{ $combination['type']}}" />
+                    </div>
+                </div>
             </td>
             <td>
                 <input type="number" name="price_{{ $combination['type'] }}"

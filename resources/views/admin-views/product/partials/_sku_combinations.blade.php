@@ -6,7 +6,7 @@
 					<label for="" class="control-label">{{\App\CPU\translate('Variant')}}</label>
 				</td>
                 <td>
-
+                    <label for="" class="control-label">{{\App\CPU\translate('Image')}}</label>
                 </td>
 				<td class="text-center">
 					<label for="" class="control-label">{{\App\CPU\translate('Variant Price')}}</label>
@@ -60,7 +60,6 @@
                                 style="color: red">* ( {{ \App\CPU\translate('ratio') }} 1:1 )</small>
                         </div>
                         <div class="p-2 border border-dashed" style="max-width:430px;">
-
                             <input type="file" name="file_{{$str}}"  multiple id="gallery-photo-add_{{$str}}">
                         </div>
 
