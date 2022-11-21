@@ -119,6 +119,18 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'as' => 'admin.'], fu
             Route::post('get-category-id', 'SubSubCategoryController@getCategoryId')->name('getCategoryId');
         });
 
+        Route::group(['prefix' => 'sub-sub-sub-category', 'as' => 'sub-sub-sub-category.','middleware'=>['module:product_management']], function () {
+            Route::get('view', 'SubSubSubCategoryController@index')->name('view');
+            Route::get('fetch', 'SubSubSubCategoryController@fetch')->name('fetch');
+            Route::post('store', 'SubSubSubCategoryController@store')->name('store');
+            Route::post('edit', 'SubSubSubCategoryController@edit')->name('edit');
+            Route::post('update', 'SubSubSubCategoryController@update')->name('update');
+            Route::post('delete', 'SubSubSubCategoryController@delete')->name('delete');
+            Route::post('get-sub-category', 'SubSubSubCategoryController@getSubCategory')->name('getSubCategory');
+            Route::post('get-category-id', 'SubSubSubCategoryController@getCategoryId')->name('getCategoryId');
+        });
+
+
         Route::group(['prefix' => 'brand', 'as' => 'brand.','middleware'=>['module:product_management']], function () {
             Route::get('add-new', 'BrandController@add_new')->name('add-new');
             Route::post('add-new', 'BrandController@store');

@@ -289,10 +289,10 @@ class ProductManager
         ];
     }
 
-    public static function get_discounted_product($limit = 10, $offset = 1)
+    public static function get_discounted_product($category_id,$limit = 10, $offset = 1)
     {
         //change review to ratting
-        $paginator = Product::with(['rating'])->active()->where('discount', '!=', 0)->latest()->paginate($limit, ['*'], 'page', $offset);
+        $paginator = Product::with(['rating'])->active()->where('category_ids', 'LIKE', '%'.$category_id.'%')->where('discount', '!=', 0)->latest()->paginate($limit, ['*'], 'page', $offset);
         return [
             'total_size' => $paginator->total(),
             'limit' => (int)$limit,

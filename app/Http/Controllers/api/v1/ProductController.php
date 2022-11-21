@@ -186,7 +186,7 @@ class ProductController extends Controller
 
     public function get_discounted_product(Request $request)
     {
-        $products = ProductManager::get_discounted_product($request['limit'], $request['offset']);
+        $products = ProductManager::get_discounted_product($request['category_id'],$request['limit'], $request['offset']);
         $products['products'] = Helpers::product_data_formatting($products['products'], true);
         return response()->json($products, 200);
     }

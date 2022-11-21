@@ -2067,4 +2067,8 @@
   'reset' => 'Reset',
   'Main' => 'Main',
   'Detail' => 'التفاصيل',
+  'sub_sub_sub_category' => 'تصنيف فرع فرع فرعي',
+  'New_sub_Sub_Sub_Category' => 'تصنيف فرع فرع فرعي جديد',
+  'sub_sub_sub_category_form' => 'تصنيف فرع فرع فرعي',
+  'Sub Sub Sub Category' => 'تصنيف فرع فرع فرعي',
 );

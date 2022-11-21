@@ -300,6 +300,13 @@
                                                 class="text-truncate">{{\App\CPU\translate('sub_sub_category')}}</span>
                                         </a>
                                     </li>
+                                    <li class="nav-item {{Request::is('admin/sub-sub-sub-category/view')?'active':''}}">
+                                        <a class="nav-link " href="{{route('admin.sub-sub-sub-category.view')}}">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span
+                                                class="text-truncate">{{\App\CPU\translate('sub_sub_sub_category')}}</span>
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
 
