@@ -182,7 +182,7 @@ class ProductController extends BaseController
                 $str = 'choice_options_' . $no;
                 $item['name'] = 'choice_' . $no;
                 $item['title'] = $request->choice[$key];
-                $item['options'] = explode('|', implode(',', $request[$str]));
+                $item['options'] = explode(',', implode('|', $request[$str]));
                 array_push($choice_options, $item);
             }
         }
@@ -193,13 +193,13 @@ class ProductController extends BaseController
             $colors_active = 1;
             array_push($options, $request->colors);
         }
-        if ($request->has('choice_no')) {
-            foreach ($request->choice_no as $key => $no) {
-                $name = 'choice_options_' . $no;
-                $my_str = implode('|', $request[$name]);
-                array_push($options, explode(',', $my_str));
-            }
-        }
+//        if ($request->has('choice_no')) {
+//            foreach ($request->choice_no as $key => $no) {
+//                $name = 'choice_options_' . $no;
+//                $my_str = implode('|', $request[$name]);
+//                array_push($options, explode(',', $my_str));
+//            }
+//        }
         //Generates the combinations of customer choice options
 
         $combinations = Helpers::combinations($options);
@@ -487,13 +487,13 @@ class ProductController extends BaseController
         $unit_price = $request->unit_price;
         $product_name = $request->name[array_search('en', $request->lang)];
 
-        if ($request->has('choice_no')) {
-            foreach ($request->choice_no as $key => $no) {
-                $name = 'choice_options_' . $no;
-                $my_str = implode('', $request[$name]);
-                array_push($options, explode(',', $my_str));
-            }
-        }
+//        if ($request->has('choice_no')) {
+//            foreach ($request->choice_no as $key => $no) {
+//                $name = 'choice_options_' . $no;
+//                $my_str = implode('', $request[$name]);
+//                array_push($options, explode(',', $my_str));
+//            }
+//        }
 
         $combinations = Helpers::combinations($options);
         return response()->json([
@@ -627,7 +627,7 @@ class ProductController extends BaseController
                 $str = 'choice_options_' . $no;
                 $item['name'] = 'choice_' . $no;
                 $item['title'] = $request->choice[$key];
-                $item['options'] = explode('|', implode(',', $request[$str]));
+                $item['options'] = explode(',', implode('|', $request[$str]));
                 array_push($choice_options, $item);
             }
         }
@@ -639,13 +639,13 @@ class ProductController extends BaseController
             $colors_active = 1;
             array_push($options, $request->colors);
         }
-        if ($request->has('choice_no')) {
-            foreach ($request->choice_no as $key => $no) {
-                $name = 'choice_options_' . $no;
-                $my_str = implode('|', $request[$name]);
-                array_push($options, explode(',', $my_str));
-            }
-        }
+//        if ($request->has('choice_no')) {
+//            foreach ($request->choice_no as $key => $no) {
+//                $name = 'choice_options_' . $no;
+//                $my_str = implode('|', $request[$name]);
+//                array_push($options, explode(',', $my_str));
+//            }
+//        }
         //Generates the combinations of customer choice options
         $combinations = Helpers::combinations($options);
         $variations = [];

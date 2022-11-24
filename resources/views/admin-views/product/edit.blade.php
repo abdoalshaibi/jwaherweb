@@ -652,18 +652,9 @@
         function add_more_customer_choice_option(i, name) {
             let n = name.split(' ').join('');
             $('#customer_choice_options').append(
-                '<div class="row"><div class="col-md-3"><input type="hidden" name="choice_no[]" value="' + i +
-                '"><input type="text" class="form-control" name="choice[]" value="' + n +
-                '" placeholder="{{ trans('Choice Title') }}" readonly></div> '+
-                '<div class="col-md-8">'+
-                '<select class="js-example-basic-multiple js-states js-example-responsive form-control"' +
-                'id="sub_Attribute_choice'+i+'" ' +
-                'onchange="update_sku()"'+
-                'name="choice_options_' + i + '[]"'+
-                'multiple="multiple"> '+''+
-                '</select>'+
-                '</div>'+'</div>'
-                );
+                '<div class="row"><div class="col-md-3"><input type="hidden" name="choice_no[]" value="' + i + '"><input type="text" class="form-control" name="choice[]" value="' + n + '" placeholder="{{trans('Choice Title') }}" readonly></div><div class="col-lg-9"><input type="text" class="form-control" name="choice_options_' + i + '[]" placeholder="{{trans('Enter choice values') }}" data-role="tagsinput" onchange="update_sku()"></div></div>'
+
+            );
 
             $("input[data-role=tagsinput], select[multiple][data-role=tagsinput]").tagsinput();
         }

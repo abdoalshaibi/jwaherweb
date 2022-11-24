@@ -30,10 +30,10 @@
             <td>
 
                 <div class="col-md-8">
-                    <div class="form-group">
-                        <label>{{ \App\CPU\translate('Upload product images') }}</label><small
-                            style="color: red">* ( {{ \App\CPU\translate('ratio') }} 1:1 )</small>
-                    </div>
+{{--                    <div class="form-group">--}}
+{{--                        <label>{{ \App\CPU\translate('Upload product images') }}</label><small--}}
+{{--                            style="color: red">* ( {{ \App\CPU\translate('ratio') }} 1:1 )</small>--}}
+{{--                    </div>--}}
                     <div class="p-2 border border-dashed" style="max-width:430px;">
                         <input type="file"  name="file_{{ $combination['type']}}" />
                     </div>
