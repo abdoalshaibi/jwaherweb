@@ -296,11 +296,11 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'as' => 'admin.'], fu
             Route::get('approve-status', 'ProductController@approve_status')->name('approve-status');
             Route::post('deny', 'ProductController@deny')->name('deny');
             Route::post('sku-combination', 'ProductController@sku_combination')->name('sku-combination');
+            Route::post('color_combination', 'ProductController@color_combination')->name('color_combination');
             Route::get('get-categories', 'ProductController@get_categories')->name('get-categories');
             Route::delete('delete/{id}', 'ProductController@delete')->name('delete');
             Route::get('updated-product-list','ProductController@updated_product_list')->name('updated-product-list');
             Route::post('updated-shipping','ProductController@updated_shipping')->name('updated-shipping');
-
             Route::get('view/{id}', 'ProductController@view')->name('view');
             Route::get('bulk-import', 'ProductController@bulk_import_index')->name('bulk-import');
             Route::post('bulk-import', 'ProductController@bulk_import_data');

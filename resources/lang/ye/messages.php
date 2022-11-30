@@ -1795,7 +1795,7 @@
   'seller_wise_shipping' => 'Seller wise shipping',
   'shipping_method_updated_successfully!!' => 'Shipping method updated successfully!!',
   'shipping_cost' => 'تكلفة الشحن',
-  'shipping_cost_multiply_with_quantity' => 'Shipping cost multiply with quantity',
+  'shipping_cost_multiply_with_quantity' => 'تضاعف تكلفة الشحن مع الكمية',
   'add_new_seller' => 'Add new seller',
   'admin_approval_for_products' => 'Admin approval for products',
   'approval_for_products' => 'Approval for products',
@@ -2055,7 +2055,7 @@
   'Sub Attribute' => 'Sub Attribute',
   'barcode' => 'Barcode',
   'code' => 'Code',
-  'minimum_order_quantity' => 'Minimum order quantity',
+  'minimum_order_quantity' => 'أقل كمية',
   'generate' => 'Generate',
   'product_code_sku' => 'Product code sku',
   'minimum_order_quantity_cannot_be_less_than_' => 'Minimum order quantity cannot be less than ',
@@ -2071,4 +2071,5 @@
   'New_sub_Sub_Sub_Category' => 'تصنيف فرع فرع فرعي جديد',
   'sub_sub_sub_category_form' => 'تصنيف فرع فرع فرعي',
   'Sub Sub Sub Category' => 'تصنيف فرع فرع فرعي',
+  'export' => 'Export',
 );

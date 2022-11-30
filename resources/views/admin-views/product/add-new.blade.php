@@ -7,7 +7,12 @@
     <link href="{{ asset('public/assets/select2/css/select2.min.css') }}" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 @endpush
-
+<style>
+    .thumb{
+        margin: 10px 5px 0 0;
+        width: 100px;
+    }
+</style>
 @section('content')
     <div class="content container-fluid">
         <nav aria-label="breadcrumb">
@@ -185,8 +190,12 @@
                                                 </option>
                                             @endforeach
                                         </select>
-                                    </div>
 
+
+
+                                    </div>
+                                    <div class="pt-4 col-12 color_combination" id="color_combination">
+                                    </div>
                                     <div class="col-md-6">
                                         <label for="attributes" style="padding-bottom: 3px">
                                             {{ \App\CPU\translate('Attributes') }} :
@@ -698,10 +707,12 @@
 
         $('#colors-selector').on('change', function() {
             update_sku();
+            update_color();
         });
 
         $('input[name="unit_price"]').on('keyup', function() {
             update_sku();
+            update_color();
         });
 
         function update_sku() {
@@ -722,6 +733,23 @@
                     } else {
                         $('#quantity').show();
                     }
+                }
+            });
+        }
+
+        function update_color() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                type: "POST",
+                url: '{{ route('admin.product.color_combination') }}',
+                data: $('#product_form').serialize(),
+                success: function(data) {
+                    $('#color_combination').html(data.view);
                 }
             });
         }

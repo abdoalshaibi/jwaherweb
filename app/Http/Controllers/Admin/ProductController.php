@@ -487,17 +487,44 @@ class ProductController extends BaseController
         $unit_price = $request->unit_price;
         $product_name = $request->name[array_search('en', $request->lang)];
 
-//        if ($request->has('choice_no')) {
-//            foreach ($request->choice_no as $key => $no) {
-//                $name = 'choice_options_' . $no;
-//                $my_str = implode('', $request[$name]);
-//                array_push($options, explode(',', $my_str));
-//            }
-//        }
+        if ($request->has('choice_no')) {
+            foreach ($request->choice_no as $key => $no) {
+                $name = 'choice_options_' . $no;
+                $my_str = implode('', $request[$name]);
+                array_push($options, explode(',', $my_str));
+            }
+        }
 
         $combinations = Helpers::combinations($options);
         return response()->json([
             'view' => view('admin-views.product.partials._sku_combinations', compact('combinations', 'unit_price', 'colors_active', 'product_name'))->render(),
+        ]);
+    }
+
+    public function color_combination(Request $request)
+    {
+        $options = [];
+        if ($request->has('colors_active') && $request->has('colors') && count($request->colors) > 0) {
+            $colors_active = 1;
+            array_push($options, $request->colors);
+        } else {
+            $colors_active = 0;
+        }
+
+//       $unit_price = $request->unit_price;
+        $product_name = $request->name[array_search('en', $request->lang)];
+
+        if ($request->has('choice_no')) {
+            foreach ($request->choice_no as $key => $no) {
+                $name = 'choice_options_' . $no;
+                $my_str = implode('', $request[$name]);
+                array_push($options, explode(',', $my_str));
+            }
+        }
+
+        $combinations = Helpers::combinations($options);
+        return response()->json([
+            'view' => view('admin-views.product.partials._color_combination', compact('combinations', 'colors_active', 'product_name'))->render(),
         ]);
     }
 
