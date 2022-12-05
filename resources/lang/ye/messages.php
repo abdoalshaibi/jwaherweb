@@ -2072,4 +2072,6 @@
   'sub_sub_sub_category_form' => 'تصنيف فرع فرع فرعي',
   'Sub Sub Sub Category' => 'تصنيف فرع فرع فرعي',
   'export' => 'Export',
+  'generate_barcode' => 'Generate barcode',
+  'maximum_quantity_270' => 'Maximum quantity 270',
 );
