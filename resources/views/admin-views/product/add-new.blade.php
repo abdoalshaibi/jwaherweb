@@ -4,27 +4,10 @@
 
 @push('css_or_js')
     <link href="{{ asset('public/assets/back-end/css/tags-input.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('public/assets/back-end/css/jquery.uploader.css') }}" rel="stylesheet">
-    <link href="{{ asset('public/assets/back-end/css/aiz-core.css') }}" rel="stylesheet">
     <link href="{{ asset('public/assets/select2/css/select2.min.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 @endpush
-<style>
-    .thumb{
-        margin: 10px 5px 0 0;
-        width: 100px;
-    }
-                           html,* { font-family: 'Inter'; box-sizing: border-box; }
-    body { background-color: #fafafa; line-height:1.6;}
-    .lead { font-size: 1.5rem; font-weight: 300; }
-    .container {
-        max-width: 760px;
-        margin: 100px auto;
-    }
 
-</style>
 @section('content')
     <div class="content container-fluid">
         <nav aria-label="breadcrumb">
@@ -203,8 +186,7 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="pt-4 col-12 color_combination" id="color_combination">
-                                    </div>
+
                                     <div class="col-md-6">
                                         <label for="attributes" style="padding-bottom: 3px">
                                             {{ \App\CPU\translate('Attributes') }} :
@@ -387,26 +369,26 @@
                                         class="form-control" required>
                                 </div>
 
-{{--                                <div class="col-md-8">--}}
-{{--                                    <div class="form-group">--}}
-{{--                                        <label>{{ \App\CPU\translate('Upload product images') }}</label><small--}}
-{{--                                            style="color: red">* ( {{ \App\CPU\translate('ratio') }} 1:1 )</small>--}}
-{{--                                    </div>--}}
-{{--                                    <div class="p-2 border border-dashed" style="max-width:430px;">--}}
-{{--                                        <div class="row" id="coba"></div>--}}
-{{--                                    </div>--}}
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label>{{ \App\CPU\translate('Upload product images') }}</label><small
+                                            style="color: red">* ( {{ \App\CPU\translate('ratio') }} 1:1 )</small>
+                                    </div>
+                                    <div class="p-2 border border-dashed" style="max-width:430px;">
+                                        <div class="row" id="coba"></div>
+                                    </div>
 
-{{--                                </div>--}}
+                                </div>
 
-{{--                                <div class="col-md-4">--}}
-{{--                                    <div class="form-group">--}}
-{{--                                        <label for="name">{{ \App\CPU\translate('Upload thumbnail') }}</label><small--}}
-{{--                                            style="color: red">* ( {{ \App\CPU\translate('ratio') }} 1:1 )</small>--}}
-{{--                                    </div>--}}
-{{--                                    <div style="max-width:200px;">--}}
-{{--                                        <div class="row" id="thumbnail"></div>--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="name">{{ \App\CPU\translate('Upload thumbnail') }}</label><small
+                                            style="color: red">* ( {{ \App\CPU\translate('ratio') }} 1:1 )</small>
+                                    </div>
+                                    <div style="max-width:200px;">
+                                        <div class="row" id="thumbnail"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -428,11 +410,6 @@
 @push('script')
     <script src="{{ asset('public/assets/back-end') }}/js/tags-input.min.js"></script>
     <script src="{{ asset('public/assets/back-end/js/spartan-multi-image-picker.js') }}"></script>
-    <script src="{{ asset('public/assets/back-end/js/jquery.ui.widget.js') }}"></script>
-    <script src="{{ asset('public/assets/back-end/js/jquery.fileupload.js') }}"></script>
-    <script src="{{ asset('public/assets/back-end/js/jquery.iframe-transport.js') }}"></script>
-    <script src="{{ asset('public/assets/back-end/js/aiz-core.js') }}"></script>
-
     <script>
         $(function() {
             $("#coba").spartanMultiImagePicker({
@@ -721,12 +698,10 @@
 
         $('#colors-selector').on('change', function() {
             update_sku();
-            update_color();
         });
 
         $('input[name="unit_price"]').on('keyup', function() {
             update_sku();
-            update_color();
         });
 
         function update_sku() {
@@ -747,23 +722,6 @@
                     } else {
                         $('#quantity').show();
                     }
-                }
-            });
-        }
-
-        function update_color() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            $.ajax({
-                type: "POST",
-                url: '{{ route('admin.product.color_combination') }}',
-                data: $('#product_form').serialize(),
-                success: function(data) {
-                    $('#color_combination').html(data.view);
                 }
             });
         }
