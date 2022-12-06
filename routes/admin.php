@@ -296,6 +296,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'as' => 'admin.'], fu
             Route::get('approve-status', 'ProductController@approve_status')->name('approve-status');
             Route::post('deny', 'ProductController@deny')->name('deny');
             Route::post('sku-combination', 'ProductController@sku_combination')->name('sku-combination');
+            Route::post('color_combination', 'ProductController@color_combination')->name('color_combination');
             Route::get('get-categories', 'ProductController@get_categories')->name('get-categories');
             Route::delete('delete/{id}', 'ProductController@delete')->name('delete');
             Route::get('updated-product-list','ProductController@updated_product_list')->name('updated-product-list');

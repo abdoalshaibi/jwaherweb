@@ -7,7 +7,12 @@
     <link href="{{ asset('public/assets/select2/css/select2.min.css') }}" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 @endpush
-
+<style>
+    .thumb{
+        margin: 10px 5px 0 0;
+        width: 100px;
+    }
+</style>
 @section('content')
     <div class="content container-fluid">
         <nav aria-label="breadcrumb">
@@ -185,7 +190,9 @@
                                                 </option>
                                             @endforeach
                                         </select>
-                                    </div>
+                                        <div class="pt-4 col-12 color_combinations" id="color_combinations">
+                                        </div>
+                                        </div>
 
                                     <div class="col-md-6">
                                         <label for="attributes" style="padding-bottom: 3px">
@@ -369,26 +376,26 @@
                                         class="form-control" required>
                                 </div>
 
-                                <div class="col-md-8">
-                                    <div class="form-group">
-                                        <label>{{ \App\CPU\translate('Upload product images') }}</label><small
-                                            style="color: red">* ( {{ \App\CPU\translate('ratio') }} 1:1 )</small>
-                                    </div>
-                                    <div class="p-2 border border-dashed" style="max-width:430px;">
-                                        <div class="row" id="coba"></div>
-                                    </div>
+{{--                                <div class="col-md-8">--}}
+{{--                                    <div class="form-group">--}}
+{{--                                        <label>{{ \App\CPU\translate('Upload product images') }}</label><small--}}
+{{--                                            style="color: red">* ( {{ \App\CPU\translate('ratio') }} 1:1 )</small>--}}
+{{--                                    </div>--}}
+{{--                                    <div class="p-2 border border-dashed" style="max-width:430px;">--}}
+{{--                                        <div class="row" id="coba"></div>--}}
+{{--                                    </div>--}}
 
-                                </div>
+{{--                                </div>--}}
 
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="name">{{ \App\CPU\translate('Upload thumbnail') }}</label><small
-                                            style="color: red">* ( {{ \App\CPU\translate('ratio') }} 1:1 )</small>
-                                    </div>
-                                    <div style="max-width:200px;">
-                                        <div class="row" id="thumbnail"></div>
-                                    </div>
-                                </div>
+{{--                                <div class="col-md-4">--}}
+{{--                                    <div class="form-group">--}}
+{{--                                        <label for="name">{{ \App\CPU\translate('Upload thumbnail') }}</label><small--}}
+{{--                                            style="color: red">* ( {{ \App\CPU\translate('ratio') }} 1:1 )</small>--}}
+{{--                                    </div>--}}
+{{--                                    <div style="max-width:200px;">--}}
+{{--                                        <div class="row" id="thumbnail"></div>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
                             </div>
                         </div>
                     </div>
@@ -609,26 +616,26 @@
 
         function add_more_customer_choice_option(i, name) {
             let n = name.split(' ').join('');
-            $('#customer_choice_options').append(
-
-                '<div class="row"><div class="col-md-3"><input type="hidden" name="choice_no[]" value="' + i + '"><input type="text" class="form-control" name="choice[]" value="' + n + '" placeholder="{{trans('Choice Title') }}" readonly></div><div class="col-lg-9"><input type="text" class="form-control" name="choice_options_' + i + '[]" placeholder="{{trans('Enter choice values') }}" data-role="tagsinput" onchange="update_sku()"></div></div>'
-
-            );
-
             {{--$('#customer_choice_options').append(--}}
 
-            {{--    '<div class="row"><div class="col-md-3"><input type="hidden" name="choice_no[]" value="' + i +--}}
-            {{--    '"><input type="text" class="form-control" name="choice[]" value="' + n +--}}
-            {{--    '" placeholder="{{ trans('Choice Title') }}" readonly></div> '+--}}
-            {{--    '<div class="col-md-8">'+--}}
-            {{--    '<select class="js-example-basic-multiple js-states js-example-responsive form-control"' +--}}
-            {{--    'id="sub_Attribute_choice'+i+'" ' +--}}
-            {{--    'onchange="update_sku()"'+--}}
-            {{--    'name="choice_options_' + i + '[]"'+--}}
-            {{--    'multiple="multiple"> '+''+--}}
-            {{--    '</select>'+--}}
-            {{--'</div>'+'</div>'--}}
-            {{--    );--}}
+            {{--    '<div class="row"><div class="col-md-3"><input type="hidden" name="choice_no[]" value="' + i + '"><input type="text" class="form-control" name="choice[]" value="' + n + '" placeholder="{{trans('Choice Title') }}" readonly></div><div class="col-lg-9"><input type="text" class="form-control" name="choice_options_' + i + '[]" placeholder="{{trans('Enter choice values') }}" data-role="tagsinput" onchange="update_sku()"></div></div>'--}}
+
+            {{--);--}}
+
+            $('#customer_choice_options').append(
+
+                '<div class="row"><div class="col-md-3"><input type="hidden" name="choice_no[]" value="' + i +
+                '"><input type="text" class="form-control" name="choice[]" value="' + n +
+                '" placeholder="{{ trans('Choice Title') }}" readonly></div> '+
+                '<div class="col-md-8">'+
+                '<select class="js-example-basic-multiple js-states js-example-responsive form-control"' +
+                'id="sub_Attribute_choice'+i+'" ' +
+                'onchange="update_sku()"'+
+                'name="choice_options_' + i + '[]"'+
+                'multiple="multiple"> '+''+
+                '</select>'+
+            '</div>'+'</div>'
+                );
 
             $("input[data-role=tagsinput], select[multiple][data-role=tagsinput]").tagsinput();
         }
@@ -698,10 +705,12 @@
 
         $('#colors-selector').on('change', function() {
             update_sku();
+            update_color();
         });
 
         $('input[name="unit_price"]').on('keyup', function() {
             update_sku();
+            update_color();
         });
 
         function update_sku() {
@@ -722,6 +731,23 @@
                     } else {
                         $('#quantity').show();
                     }
+                }
+            });
+        }
+
+        function update_color() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                type: "POST",
+                url: '{{ route('admin.product.color_combination') }}',
+                data: $('#product_form').serialize(),
+                success: function(data) {
+                    $('#color_combinations').html(data.view);
                 }
             });
         }
