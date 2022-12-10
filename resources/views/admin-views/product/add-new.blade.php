@@ -136,7 +136,17 @@
                                                 placeholder="{{ \App\CPU\translate('code') }}" required>
                                         </div>
                                     </div>
-
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="input-label"
+                                                   for="exampleFormControlInput1">{{ \App\CPU\translate('rack') }}
+                                                <span class="text-danger">*</span>
+                                           </label>
+                                            <input type="text" minlength="6" id="generate_number" name="rack"
+                                                   class="form-control" value="{{ old('rack') }}"
+                                                   placeholder="{{ \App\CPU\translate('rack') }}" required>
+                                        </div>
+                                    </div>
                                     <div class="col-md-4">
                                         <label for="name">{{ \App\CPU\translate('Brand') }}</label>
                                         <select

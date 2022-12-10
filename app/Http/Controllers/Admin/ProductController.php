@@ -241,9 +241,10 @@ class ProductController extends BaseController
                     array(
                         'user_id' => auth('admin')->id(),
                         'added_by' => "admin",
-                        'name' => "admin",
+                        'name' => $request->name[array_search('en', $request->lang)],
                         'desc' => $request->desc[array_search('en', $request->lang)],
                         'code' => $color_name.'_'.$request->code,
+                        'rack' => $request->rack,
                         'slug' => Str::slug($request->name[array_search('en', $request->lang)], '-') . '-' . Str::random(6),
                         'category_ids' => json_encode($category),
                         'brand_id' => $request->brand_id,
@@ -723,13 +724,13 @@ class ProductController extends BaseController
         $unit_price = $request->unit_price;
         $product_name = $request->name[array_search('en', $request->lang)];
 
-//        if ($request->has('choice_no')) {
-//            foreach ($request->choice_no as $key => $no) {
-//                $name = 'choice_options_' . $no;
-//                $my_str = implode(',', $request[$name]);
-//                array_push($options, explode(',', $my_str));
-//            }
-//        }
+        if ($request->has('choice_no')) {
+            foreach ($request->choice_no as $key => $no) {
+                $name = 'choice_options_' . $no;
+                $my_str = implode(',', $request[$name]);
+                array_push($options, explode(',', $my_str));
+            }
+        }
 
         $combinations = Helpers::combinations($options);
         return response()->json([
@@ -873,6 +874,7 @@ class ProductController extends BaseController
         $product->brand_id = $request->brand_id;
         $product->unit = $request->unit;
         $product->code = $request->code;
+        $product->rack = $request->rack;
         $product->minimum_order_qty = $request->minimum_order_qty;
         $product->details = $request->description[array_search('en', $request->lang)];
         $product_images = json_decode($product->images);
@@ -1097,6 +1099,8 @@ class ProductController extends BaseController
 
             $data[] = [
                 'name' => $collection['name'],
+                'desc'=>$collection['desc'],
+                'rack'=>$collection['rack'],
                 'slug' => Str::slug($collection['name'], '-') . '-' . Str::random(6),
                 'category_ids' => json_encode([['id' => (string)$collection['category_id'], 'position' => 1], ['id' => (string)$collection['sub_category_id'], 'position' => 2], ['id' => (string)$collection['sub_sub_category_id'], 'position' => 3]]),
                 'brand_id' => $collection['brand_id'],
