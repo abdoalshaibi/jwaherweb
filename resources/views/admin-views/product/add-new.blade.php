@@ -179,7 +179,6 @@
                             <h4>{{ \App\CPU\translate('Variations') }}</h4>
                         </div>
                         <div class="card-body">
-
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-6">
@@ -200,8 +199,6 @@
                                                 </option>
                                             @endforeach
                                         </select>
-                                        <div class="pt-4 col-12 color_combinations" id="color_combinations">
-                                        </div>
                                         </div>
 
                                     <div class="col-md-6">
@@ -226,6 +223,15 @@
                             </div>
                         </div>
                     </div>
+
+
+
+                                                    <div class="col-md-12">
+                                                        <div class="p-1 border border-dashed" style="max-width:2000px;">
+                                                            <div class="row" id="jhghjghjghj"></div>
+                                                        </div>
+
+                                                    </div>
 
                     <div class="card mt-2">
                         <div class="card-header">
@@ -386,26 +392,11 @@
                                         class="form-control" required>
                                 </div>
 
-{{--                                <div class="col-md-8">--}}
-{{--                                    <div class="form-group">--}}
-{{--                                        <label>{{ \App\CPU\translate('Upload product images') }}</label><small--}}
-{{--                                            style="color: red">* ( {{ \App\CPU\translate('ratio') }} 1:1 )</small>--}}
-{{--                                    </div>--}}
-{{--                                    <div class="p-2 border border-dashed" style="max-width:430px;">--}}
-{{--                                        <div class="row" id="coba"></div>--}}
-{{--                                    </div>--}}
+                                <div class="row" id="single_product"></div>
 
-{{--                                </div>--}}
 
-{{--                                <div class="col-md-4">--}}
-{{--                                    <div class="form-group">--}}
-{{--                                        <label for="name">{{ \App\CPU\translate('Upload thumbnail') }}</label><small--}}
-{{--                                            style="color: red">* ( {{ \App\CPU\translate('ratio') }} 1:1 )</small>--}}
-{{--                                    </div>--}}
-{{--                                    <div style="max-width:200px;">--}}
-{{--                                        <div class="row" id="thumbnail"></div>--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
+
+
                             </div>
                         </div>
                     </div>
@@ -428,79 +419,8 @@
     <script src="{{ asset('public/assets/back-end') }}/js/tags-input.min.js"></script>
     <script src="{{ asset('public/assets/back-end/js/spartan-multi-image-picker.js') }}"></script>
     <script>
+
         $(function() {
-            $("#coba").spartanMultiImagePicker({
-                fieldName: 'images[]',
-                maxCount: 10,
-                rowHeight: 'auto',
-                groupClassName: 'col-6',
-                allowedExt:'',
-                maxFileSize: '',
-                placeholderImage: {
-                    image: '{{ asset('public/assets/back-end/img/400x400/img2.jpg') }}',
-                    width: '100%',
-                },
-                dropFileLabel: "Drop Here",
-                onAddRow: function(index, file) {
-
-                },
-                onRenderedPreview: function(index) {
-
-                },
-                onRemoveRow: function(index) {
-
-                },
-                onExtensionErr: function(index, file) {
-                    toastr.error(
-                    '{{ \App\CPU\translate('Please only input png or jpg type file') }}', {
-                        CloseButton: true,
-                        ProgressBar: true
-                    });
-                },
-                onSizeErr: function(index, file) {
-                    toastr.error('{{ \App\CPU\translate('File size too big') }}', {
-                        CloseButton: true,
-                        ProgressBar: true
-                    });
-                }
-            });
-
-            $("#thumbnail").spartanMultiImagePicker({
-                fieldName: 'image',
-                maxCount: 1,
-                rowHeight: 'auto',
-                allowedExt:'',
-                groupClassName: 'col-12',
-                maxFileSize: '',
-                placeholderImage: {
-                    image: '{{ asset('public/assets/back-end/img/400x400/img2.jpg') }}',
-                    width: '100%',
-                },
-                dropFileLabel: "Drop Here",
-                onAddRow: function(index, file) {
-
-                },
-                onRenderedPreview: function(index) {
-
-                },
-                onRemoveRow: function(index) {
-
-                },
-                onExtensionErr: function(index, file) {
-                    toastr.error(
-                    '{{ \App\CPU\translate('Please only input png or jpg type file') }}', {
-                        CloseButton: true,
-                        ProgressBar: true
-                    });
-                },
-                onSizeErr: function(index, file) {
-                    toastr.error('{{ \App\CPU\translate('File size too big') }}', {
-                        CloseButton: true,
-                        ProgressBar: true
-                    });
-                }
-            });
-
             $("#meta_img").spartanMultiImagePicker({
                 fieldName: 'meta_image',
                 maxCount: 1,
@@ -566,6 +486,86 @@
     </script>
 
     <script>
+
+
+        single_product_image();
+        product_image();
+
+        function product_image() {
+            $("#coba").spartanMultiImagePicker({
+                fieldName: 'images[]',
+                maxCount: 10,
+                rowHeight: 'auto',
+                groupClassName: 'col-6',
+                allowedExt: '',
+                maxFileSize: '',
+                placeholderImage: {
+                    image: '{{ asset('public/assets/back-end/img/400x400/img2.jpg') }}',
+                    width: '100%',
+                },
+                dropFileLabel: "Drop Here",
+                onAddRow: function (index, file) {
+
+                },
+                onRenderedPreview: function (index) {
+
+                },
+                onRemoveRow: function (index) {
+
+                },
+                onExtensionErr: function (index, file) {
+                    toastr.error(
+                        '{{ \App\CPU\translate('Please only input png or jpg type file') }}', {
+                            CloseButton: true,
+                            ProgressBar: true
+                        });
+                },
+                onSizeErr: function (index, file) {
+                    toastr.error('{{ \App\CPU\translate('File size too big') }}', {
+                        CloseButton: true,
+                        ProgressBar: true
+                    });
+                }
+            });
+
+            $("#thumbnail").spartanMultiImagePicker({
+                fieldName: 'image',
+                maxCount: 1,
+                rowHeight: 'auto',
+                allowedExt: '',
+                groupClassName: 'col-12',
+                maxFileSize: '',
+                placeholderImage: {
+                    image: '{{ asset('public/assets/back-end/img/400x400/img2.jpg') }}',
+                    width: '100%',
+                },
+                dropFileLabel: "Drop Here",
+                onAddRow: function (index, file) {
+
+                },
+                onRenderedPreview: function (index) {
+
+                },
+                onRemoveRow: function (index) {
+
+                },
+                onExtensionErr: function (index, file) {
+                    toastr.error(
+                        '{{ \App\CPU\translate('Please only input png or jpg type file') }}', {
+                            CloseButton: true,
+                            ProgressBar: true
+                        });
+                },
+                onSizeErr: function (index, file) {
+                    toastr.error('{{ \App\CPU\translate('File size too big') }}', {
+                        CloseButton: true,
+                        ProgressBar: true
+                    });
+                }
+            });
+
+        }
+
         function getRequest(route, id, type) {
             $.get({
                 url: route,
@@ -581,8 +581,13 @@
         $('input[name="colors_active"]').on('change', function() {
             if (!$('input[name="colors_active"]').is(':checked')) {
                 $('#colors-selector').prop('disabled', true);
+                single_product_image();
+                product_image();
+                $('#jhghjghjghj').html(null);
+
             } else {
                 $('#colors-selector').prop('disabled', false);
+                $('#single_product').html(null);
             }
         });
 
@@ -626,26 +631,20 @@
 
         function add_more_customer_choice_option(i, name) {
             let n = name.split(' ').join('');
-            {{--$('#customer_choice_options').append(--}}
-
-            {{--    '<div class="row"><div class="col-md-3"><input type="hidden" name="choice_no[]" value="' + i + '"><input type="text" class="form-control" name="choice[]" value="' + n + '" placeholder="{{trans('Choice Title') }}" readonly></div><div class="col-lg-9"><input type="text" class="form-control" name="choice_options_' + i + '[]" placeholder="{{trans('Enter choice values') }}" data-role="tagsinput" onchange="update_sku()"></div></div>'--}}
-
-            {{--);--}}
 
             $('#customer_choice_options').append(
-
                 '<div class="row"><div class="col-md-3"><input type="hidden" name="choice_no[]" value="' + i +
                 '"><input type="text" class="form-control" name="choice[]" value="' + n +
-                '" placeholder="{{ trans('Choice Title') }}" readonly></div> '+
-                '<div class="col-md-8">'+
+                '" placeholder="{{ trans('Choice Title') }}" readonly></div> ' +
+                '<div class="col-md-8">' +
                 '<select class="js-example-basic-multiple js-states js-example-responsive form-control"' +
-                'id="sub_Attribute_choice'+i+'" ' +
-                'onchange="update_sku()"'+
-                'name="choice_options_' + i + '[]"'+
-                'multiple="multiple"> '+''+
-                '</select>'+
-            '</div>'+'</div>'
-                );
+                'id="sub_Attribute_choice' + i + '" ' +
+                'onchange="update_sku()"' +
+                'name="choice_options_' + i + '[]"' +
+                'multiple="multiple"> ' + '' +
+                '</select>' +
+                '</div>' + '</div>'
+            );
 
             $("input[data-role=tagsinput], select[multiple][data-role=tagsinput]").tagsinput();
         }
@@ -695,32 +694,155 @@
                 '<div class="row"><div class="col-md-3"><input type="hidden" name="choice_Detail_no[]" value="' + i + '"><input type="text" class="form-control" name="choice_Detail[]" value="' + n + '" placeholder="{{trans('Choice Title') }}" readonly></div><div class="col-lg-9"><input type="text" class="form-control" name="choice_detail_options_' + i + '[]" placeholder="{{trans('Enter choice values') }}" data-role="tagsinput" onchange="update_sku()"></div></div>'
             );
 
-            {{--$('#customer_choice_Details_options').append(--}}
-
-            {{--    '<div class="row"><div class="col-md-3"><input type="hidden" name="choice_no[]" value="' + i +--}}
-            {{--    '"><input type="text" class="form-control" name="choice[]" value="' + n +--}}
-            {{--    '" placeholder="{{ trans('Choice Title') }}" readonly></div> '+--}}
-            {{--    '<div class="col-md-8">'+--}}
-            {{--    '<select class="js-example-basic-multiple js-states js-example-responsive form-control"' +--}}
-            {{--    'id="sub_Attribute_choice'+i+'" ' +--}}
-            {{--    'onchange="update_sku()"'+--}}
-            {{--    'name="choice_options_' + i + '[]"'+--}}
-            {{--    'multiple="multiple"> '+''+--}}
-            {{--    '</select>'+--}}
-            {{--    '</div>'+'</div>'--}}
-            {{--);--}}
-
             $("input[data-role=tagsinput], select[multiple][data-role=tagsinput]").tagsinput();
         }
 
+
+        function add_color_image(i, name) {
+            let n = name.replaceAll(/\s/g, '')
+            $('#jhghjghjghj').append(
+                '<div class="col-md-6">' +
+                '<div class="form-group">' +
+                '<input type="hidden" name="Color_choice_no[]" value="' + i + '">' +
+                '<input type="hidden" class="form-control" name="Color_choice[]" value="' + n + '" placeholder="{{trans('Choice Title') }}" readonly>' +
+                '<label>{{ \App\CPU\translate('Upload product images') }}</label><small' +
+                ' style="color: red">* ( {{ \App\CPU\translate('ratio') }} 1:1 )</small>' +
+                '</div>' +
+                '<div class="p-2 border border-dashed" >' +
+                '<div class="row" id="' + n + '"></div>' +
+                '</div>' +
+                '</div>' +
+
+                '<div class="col-md-6">' +
+                '<div class="form-group">' +
+                '<label for="name">{{ \App\CPU\translate('Upload thumbnail') }}</label><small' +
+                'style="color: red">* ( {{ \App\CPU\translate('ratio') }} 1:1 )</small>' +
+                '</div>' +
+                '<div>' +
+                '<div class="row" id="' + n + 'thwt"></div>' +
+                '</div>' +
+                '</div>'
+            );
+        }
+
+        function single_product_image() {
+
+            $('#single_product').append(
+                '<div class="col-md-8">'+
+                '<div class="form-group">'+
+                '<label>{{ \App\CPU\translate('Upload product images') }}</label><small'+
+            'style="color: red">* ( {{ \App\CPU\translate('ratio') }} 1:1 )</small>'+
+        '</div>'+
+            '<div class="p-2 border border-dashed" style="max-width:430px;">'+
+                '<div class="row" id="coba"></div>'+
+            '</div>'+
+
+        '</div>'+
+
+            '<div class="col-md-4">'+
+                '<div class="form-group">'+
+                    '<label for="name">{{ \App\CPU\translate('Upload thumbnail') }}</label><small'+
+                    'style="color: red">* ( {{ \App\CPU\translate('ratio') }} 1:1 )</small>'+
+                '</div>'+
+                '<div style="max-width:200px;">'+
+                    '<div class="row" id="thumbnail"></div>'+
+                '</div>'+
+            '</div>'+
+            '</div>'+
+            '</div>'
+            );
+        }
+
+        function add_color_image1(i, name) {
+            let n ="#"+name.replaceAll(/\s/g,'')
+            //alert(n);
+            $(n).spartanMultiImagePicker({
+                fieldName: 'images_'+i+'[]',
+                maxCount: 10,
+                rowHeight: 'auto',
+                groupClassName: 'col-2',
+                allowedExt: '',
+                maxFileSize: '',
+                placeholderImage: {
+                    image: '{{ asset('public/assets/back-end/img/400x400/img2.jpg') }}',
+                    width: '100%',
+                },
+                dropFileLabel: "Drop Here",
+                onAddRow: function (index, file) {
+
+                },
+                onRenderedPreview: function (index) {
+
+                },
+                onRemoveRow: function (index) {
+
+                },
+                onExtensionErr: function (index, file) {
+                    toastr.error(
+                        '{{ \App\CPU\translate('Please only input png or jpg type file') }}', {
+                            CloseButton: true,
+                            ProgressBar: true
+                        });
+                },
+                onSizeErr: function (index, file) {
+                    toastr.error('{{ \App\CPU\translate('File size too big') }}', {
+                        CloseButton: true,
+                        ProgressBar: true
+                    });
+                }
+            });
+
+            $(n+'thwt').spartanMultiImagePicker({
+                fieldName: 'images_'+i+'[]',
+                maxCount: 1,
+                rowHeight: 'auto',
+                groupClassName: 'col-2',
+                allowedExt: '',
+                maxFileSize: '',
+                placeholderImage: {
+                    image: '{{ asset('public/assets/back-end/img/400x400/img2.jpg') }}',
+                    width: '100%',
+                },
+                dropFileLabel: "Drop Here",
+                onAddRow: function (index, file) {
+
+                },
+                onRenderedPreview: function (index) {
+
+                },
+                onRemoveRow: function (index) {
+
+                },
+                onExtensionErr: function (index, file) {
+                    toastr.error(
+                        '{{ \App\CPU\translate('Please only input png or jpg type file') }}', {
+                            CloseButton: true,
+                            ProgressBar: true
+                        });
+                },
+                onSizeErr: function (index, file) {
+                    toastr.error('{{ \App\CPU\translate('File size too big') }}', {
+                        CloseButton: true,
+                        ProgressBar: true
+                    });
+                }
+            });
+        }
+
         $('#colors-selector').on('change', function() {
-            update_sku();
-            update_color();
+
+            $('#jhghjghjghj').html(null);
+
+            $.each($("#colors-selector option:selected"), function() {
+                update_sku();
+                add_color_image($(this).val(), $(this).text());
+                add_color_image1($(this).val(), $(this).text());
+
+            });
         });
 
         $('input[name="unit_price"]').on('keyup', function() {
             update_sku();
-            update_color();
         });
 
         function update_sku() {
@@ -741,23 +863,6 @@
                     } else {
                         $('#quantity').show();
                     }
-                }
-            });
-        }
-
-        function update_color() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            $.ajax({
-                type: "POST",
-                url: '{{ route('admin.product.color_combination') }}',
-                data: $('#product_form').serialize(),
-                success: function(data) {
-                    $('#color_combinations').html(data.view);
                 }
             });
         }

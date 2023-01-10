@@ -90,8 +90,6 @@
 		var qty_elements = $('input[name^="qty_"]');
 		for(var i=0; i<qty_elements.length; i++)
 		{
-            alert(qty_elements.eq(i).text());
-
             total_qty += parseInt(qty_elements.eq(i).val());
 		}
 		$('input[name="current_stock"]').val(total_qty);

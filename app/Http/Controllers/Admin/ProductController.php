@@ -165,53 +165,82 @@ class ProductController extends BaseController
             }
         }
 
+        $Image_options = [];
+        if ($request->has('Color_choice')) {
+            foreach ($request->Color_choice_no as $key => $no) {
+                $str = 'images_' . $no;
+                $product_images=[];
+                if ($request->file('images_' . $no)) {
+                    foreach ($request->file($str) as $img) {
+                        $product_images[] = ImageManager::upload('product/', 'webp', $img);
+                    }
+                    array_push($Image_options, $product_images);
+                }
+            }
+        }
         //combinations start
         $options = [];
+        $options2 = [];
+        $variations = [];
+        $stock_counts = [];
+        $colors = [];
+
+
         if ($request->has('colors_active') && $request->has('colors') && count($request->colors) > 0) {
             $colors_active = 1;
             array_push($options, $request->colors);
         }
 
+        $colors = Helpers::combinations($options);
+        if (count($colors[0]) > 0) {
+            foreach ($colors as $key => $color) {
+                $options2 = [];
+                array_push($options2, $color);
 
-        $combinations = Helpers::combinations($options);
-
-        $variations = [];
-        $imagesss=[];
-        $colorCode = [];
-        $stock_count = 0;
-        if (count($combinations[0]) > 0) {
-            foreach ($combinations as $key => $combination) {
-                $str = '';
-                foreach ($combination as $k => $item) {
-                    if ($k > 0) {
-                        $str .= '-' . str_replace(' ', '', $item);
-                    } else {
-                        if ($request->has('colors_active') && $request->has('colors') && count($request->colors) > 0) {
-                            $color_name = Color::where('code', $item)->first()->name;
-                            $str .= $color_name;
-                        } else {
-                            $str .= str_replace(' ', '', $item);
-                        }
+                if ($request->has('choice_no')) {
+                    foreach ($request->choice_no as $key => $no) {
+                        $name = 'choice_options_' . $no;
+                        $my_str =  $request[$name];
+                        array_push($options2,  $my_str);
                     }
-                    array_push($colorCode, $item);
                 }
-                $item = [];
-                $item['type'] = $str;
-                $item['price'] = BackEndHelper::currency_to_usd(abs($request['price_' . str_replace('.', '_', $str)]));
-                $item['sku'] = $request['sku_' . str_replace('.', '_', $str)];
-                $item['qty'] = abs($request['qty_' . str_replace('.', '_', $str)]);
-                array_push($variations, $item);
-                $stock_count += $item['qty'];
 
-                $x= $request->file('imageiiii_' . str_replace('.', '_', $str));
-               // foreach ($x as $imagewww)
-                //{
-                    $temp_images=ImageManager::upload('product/', 'webp',  $x);
-                //}
-                array_push($imagesss, $temp_images);
+                $combinations = Helpers::combinations($options2);
+
+                $variations0 = [];
+                $stock_count = 0;
+
+                if (count($combinations[0]) > 0) {
+                    foreach ($combinations as $key => $combination) {
+                        $str = '';
+                        foreach ($combination as $k => $item) {
+                            if ($k > 0) {
+                                $str .= '-' . str_replace(' ', '', $item);
+                            } else {
+                                if ($request->has('colors_active') && $request->has('colors') && count($request->colors) > 0) {
+                                    $color_name = Color::where('code', $item)->first()->name;
+                                    $str .= $color_name;
+                                } else {
+                                    $str .= str_replace(' ', '', $item);
+                                }
+                            }
+
+                        }
+                        $item = [];
+                        $item['type'] = $str;
+                        $item['price'] = BackEndHelper::currency_to_usd(abs($request['price_' . str_replace('.', '_', $str)]));
+                        $item['sku'] = $request['sku_' . str_replace('.', '_', $str)];
+                        $item['qty'] = abs($request['qty_' . str_replace('.', '_', $str)]);
+                        array_push($variations0, $item);
+                        $stock_count += $item['qty'];
+
+                    }
+                }
+                array_push($variations, $variations0);
+                array_push($stock_counts, $stock_count);
+                array_push($colors, $color);
+
             }
-        } else {
-            $stock_count = (integer)$request['current_stock'];
         }
 
         if ($validator->errors()->count() > 0) {
@@ -223,19 +252,8 @@ class ProductController extends BaseController
         if ($request->ajax()) {
             return response()->json([], 200);
         } else {
-            if ($request->file('images')) {
-                foreach ($request->file('images') as $img) {
-                    $product_images[] = ImageManager::upload('product/', 'webp', $img);
-                }
-                $images = json_encode($product_images);
-            }
-
 
             for ($i=0;$i<count($variations);$i++) {
-                $variationww = [];
-                $colorww = [];
-                array_push($colorww, $colorCode[$i]);
-                array_push($variationww, $variations[$i]);
 
                 $data[] =
                     array(
@@ -243,7 +261,7 @@ class ProductController extends BaseController
                         'added_by' => "admin",
                         'name' => $request->name[array_search('en', $request->lang)],
                         'desc' => $request->desc[array_search('en', $request->lang)],
-                        'code' => $color_name.'_'.$request->code,
+                        'code' => random_int(100000, 999999),
                         'rack' => $request->rack,
                         'slug' => Str::slug($request->name[array_search('en', $request->lang)], '-') . '-' . Str::random(6),
                         'category_ids' => json_encode($category),
@@ -251,8 +269,8 @@ class ProductController extends BaseController
                         'unit' => $request->unit,
                         'details' => $request->description[array_search('en', $request->lang)],
                         'choice_options' => json_encode($choice_options),
-                        'colors' => json_encode($colorww),
-                        'variation' => json_encode($variationww),
+                        'colors' => json_encode($colors[$i]),
+                        'variation' => json_encode($variations[$i]),
                         'unit_price' => BackEndHelper::currency_to_usd($request->unit_price),
                         'purchase_price' => BackEndHelper::currency_to_usd($request->purchase_price),
                         'tax' => $request->tax_type == 'flat' ? BackEndHelper::currency_to_usd($request->tax) : $request->tax,
@@ -260,14 +278,14 @@ class ProductController extends BaseController
                         'discount' => $request->discount_type == 'flat' ? BackEndHelper::currency_to_usd($request->discount) : $request->discount,
                         'discount_type' => $request->discount_type,
                         'attributes' => json_encode($request->choice_attributes),
-                        'current_stock' => abs($stock_count),
+                        'current_stock' => abs($stock_counts[$i]),
                         'minimum_order_qty' => $request->minimum_order_qty,
                         'video_provider' => 'youtube',
                         'video_url' => $request->video_link,
                         'request_status' => 1,
                         'shipping_cost' => BackEndHelper::currency_to_usd($request->shipping_cost),
                         'multiply_qty' => $request->multiplyQTY == 'on' ? 1 : 0,
-                        'images' =>  json_encode($imagesss),
+                        'images' =>  json_encode($Image_options[$i]),
                         'thumbnail' => ImageManager::upload('product/thumbnail/', 'webp', $request->image),
                         'meta_title' => $request->meta_title,
                         'meta_description' => $request->meta_description,
